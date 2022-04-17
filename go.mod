@@ -1,4 +1,4 @@
-module scyna
+module github.com/scyna/go
 
 go 1.17
 
