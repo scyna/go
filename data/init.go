@@ -2,7 +2,8 @@ package scyna_data
 
 import (
 	"flag"
-	"scyna"
+
+	scyna "github.com/scyna/go"
 )
 
 func Init() {
