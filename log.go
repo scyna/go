@@ -13,7 +13,6 @@ type Logger interface {
 	Warning(messsage string)
 	Debug(messsage string)
 	Fatal(messsage string)
-	reset(id uint64)
 }
 
 type LogLevel int
@@ -37,6 +36,9 @@ type LogData struct {
 type logger struct {
 	session bool
 	ID      uint64
+}
+
+type loggerNull struct {
 }
 
 var logQueue chan LogData
@@ -134,6 +136,18 @@ func (l *logger) Fatal(messsage string) {
 	l.writeLog(LOG_FATAL, messsage)
 }
 
-func (l *logger) reset(id uint64) {
-	l.ID = id
+/*null logger*/
+func (l *loggerNull) Info(messsage string) {
+}
+
+func (l *loggerNull) Error(messsage string) {
+}
+
+func (l *loggerNull) Warning(messsage string) {
+}
+
+func (l *loggerNull) Debug(messsage string) {
+}
+
+func (l *loggerNull) Fatal(messsage string) {
 }

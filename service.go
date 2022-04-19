@@ -29,13 +29,14 @@ type ServicePool struct {
 	sync.Pool
 }
 
+var nullLogger loggerNull
+
 func (service *Service) reset() {
 	service.Request.Body = service.Request.Body[0:0]
 	service.Request.CallID = uint64(0)
 	service.Response.Body = service.Response.Body[0:0]
 	service.Response.Code = int32(0)
 	service.Response.SessionID = uint64(0)
-	service.LOG.reset(0)
 }
 
 func NewService() *Service {
@@ -49,7 +50,6 @@ func NewService() *Service {
 			SessionID: 0,
 			Code:      200,
 		},
-		LOG: &logger{false, 0},
 	}
 }
 
@@ -83,6 +83,12 @@ func RegisterService(url string, handler ServiceHandler) {
 		}
 
 		service.Reply = m.Reply
+		if service.Request.LogDisable {
+			service.LOG = &nullLogger
+		} else {
+			service.LOG = &logger{session: false, ID: service.Request.CallID}
+		}
+
 		handler(service)
 	})
 
@@ -160,7 +166,6 @@ func (s *Service) Parse(request proto.Message) bool {
 			return false
 		}
 	}
-	s.LOG.reset(s.Request.CallID)
 	return true
 }
 

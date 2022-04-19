@@ -11,8 +11,9 @@ message Request
 {
   uint64 CallID = 1;
   bytes Body = 2;
-  bool JSON = 3;
   string Data = 4;
+  bool JSON = 3;
+  bool LogDisable = 5; /*enable/disable logging*/
 }
 
 message Response 
