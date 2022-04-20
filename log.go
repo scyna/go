@@ -114,6 +114,7 @@ func (l *logger) writeLog(level LogLevel, message string) {
 		Message:  message,
 		Session:  l.session,
 	})
+	log.Print(message) //FIXME: for debug only
 }
 
 func (l *logger) Info(messsage string) {
