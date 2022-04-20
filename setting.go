@@ -17,7 +17,7 @@ type settings struct {
 func (s *settings) Remove(key string) bool {
 	request := RemoveSettingRequest{Module: module, Key: key}
 	var response Error
-	if err := CallService(SETTING_WRITE_URL, &request, &response); err.Code == OK.GetCode() {
+	if err := CallService(SETTING_REMOVE_URL, &request, &response); err.Code == OK.GetCode() {
 		s.removed(key)
 		return true
 	}
