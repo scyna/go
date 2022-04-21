@@ -8,8 +8,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"runtime"
-	"strings"
 	"sync"
 	"time"
 
@@ -243,23 +241,6 @@ func (r *Response) ReadFrom(responseData []byte) error {
 		return err
 	}
 	return nil
-}
-
-func appendPrefix(message string) string {
-	pc, file, line, ok := runtime.Caller(3)
-	if !ok {
-		return fmt.Sprintf("[?:0 - ?] %s", message)
-	}
-	path := strings.Split(file, "/")
-	filename := path[len(path)-1]
-
-	fn := runtime.FuncForPC(pc)
-	if fn == nil {
-		return fmt.Sprintf("[%s:%d - ?] %s", filename, line, message)
-	}
-	fPath := strings.Split(fn.Name(), "/")
-	funcName := fPath[len(fPath)-1]
-	return fmt.Sprintf("[%s:%d - %s] %s", filename, line, funcName, message)
 }
 
 func saveErrorCall(client string, status int, id uint64, day int, start time.Time, url string) {

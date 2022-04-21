@@ -1,7 +1,10 @@
 package scyna
 
 import (
+	"fmt"
 	"log"
+	"runtime"
+	"strings"
 	"time"
 
 	"github.com/scylladb/gocqlx/v2/qb"
@@ -106,7 +109,7 @@ func releaseLog() {
 }
 
 func (l *logger) writeLog(level LogLevel, message string) {
-	message = appendPrefix(message)
+	message = formatLog(message)
 	AddLog(LogData{
 		ID:       l.ID,
 		Sequence: Session.NextSequence(),
@@ -151,4 +154,21 @@ func (l *loggerNull) Debug(messsage string) {
 }
 
 func (l *loggerNull) Fatal(messsage string) {
+}
+
+func formatLog(message string) string {
+	pc, file, line, ok := runtime.Caller(3)
+	if !ok {
+		return fmt.Sprintf("[?:0 - ?] %s", message)
+	}
+	path := strings.Split(file, "/")
+	filename := path[len(path)-1]
+
+	fn := runtime.FuncForPC(pc)
+	if fn == nil {
+		return fmt.Sprintf("[%s:%d - ?] %s", filename, line, message)
+	}
+	fPath := strings.Split(fn.Name(), "/")
+	funcName := fPath[len(fPath)-1]
+	return fmt.Sprintf("[%s:%d - %s] %s", filename, line, funcName, message)
 }
