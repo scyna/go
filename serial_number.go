@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-type SerialNumber struct {
+type serialNumber struct {
 	key    string
 	mutex  sync.Mutex
 	prefix uint32
@@ -14,8 +14,8 @@ type SerialNumber struct {
 	next   uint64
 }
 
-func InitSN(key string) *SerialNumber {
-	return &SerialNumber{
+func InitSN(key string) *serialNumber {
+	return &serialNumber{
 		key:    key,
 		prefix: 0,
 		last:   0,
@@ -23,7 +23,7 @@ func InitSN(key string) *SerialNumber {
 	}
 }
 
-func (sn *SerialNumber) Next() string {
+func (sn *serialNumber) Next() string {
 	sn.mutex.Lock()
 	defer sn.mutex.Unlock()
 
