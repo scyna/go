@@ -93,6 +93,7 @@ func DirectInit(name string, c *Configuration) {
 
 	/*registration*/
 	RegisterSignal(SETTING_UPDATE_CHANNEL+module, UpdateSettingHandler)
+	RegisterSignal(SETTING_REMOVE_CHANNEL+module, RemoveSettingHandler)
 }
 
 func initScylla(host []string, username string, password string, location string) {

@@ -94,6 +94,19 @@ func UpdateSettingHandler(data []byte) {
 	}
 }
 
+func RemoveSettingHandler(data []byte) {
+	var setting SettingRemovedSignal
+	err := proto.Unmarshal(data, &setting)
+	if err != nil {
+		log.Println("SettingRemoveHandler: Error parser SettingRemoveHandler")
+		return
+	}
+
+	if setting.Module == module {
+		Settings.removed(setting.Key)
+	}
+}
+
 func (s *settings) updated(key string, value string) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()

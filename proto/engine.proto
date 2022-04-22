@@ -86,6 +86,11 @@ message SettingUpdatedSignal {
   string Value = 3;
 }
 
+message SettingRemovedSignal {
+  string Module = 1;
+  string Key = 2;
+}
+
 message RemoveSettingRequest {
   string Module = 1;
   string Key = 2;

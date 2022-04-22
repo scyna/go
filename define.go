@@ -11,6 +11,7 @@ const (
 	SETTING_READ_URL       = "/scyna/setting/read"
 	SETTING_REMOVE_URL     = "/scyna/setting/remove"
 	SETTING_UPDATE_CHANNEL = "scyna.setting.updated."
+	SETTING_REMOVE_CHANNEL = "scyna.setting.removed."
 	CALL_WRITE_CHANNEL     = "scyna.call.write"
 	APP_UPDATE_CHANNEL     = "scyna.application.updated"
 	CLIENT_UPDATE_CHANNEL  = "scyna.client.updated"
