@@ -39,7 +39,7 @@ func RegisterStatelessSignal(channel string, handler SignalStatelessHandler) {
 	}
 }
 
-func EmitEmptySignal(channel string) {
+func EmitStatelessSignal(channel string) {
 	var data []byte
 	err := Connection.Publish(channel, data)
 	if err != nil {
