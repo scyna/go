@@ -286,3 +286,6 @@ func (s *Service) Auth(org string, secret string, apps []string, userID string) 
 	s.Response.Expired = response.Expired
 	return true, response.Token
 }
+
+
+tmp := reflect.ValueOf(&request).Interface().(proto.Message) //FIXME

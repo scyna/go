@@ -26,7 +26,7 @@ func CallService(t *testing.T, url string, request proto.Message) *scyna.Respons
 				t.Fatal("Server Error:", err)
 			}
 		} else {
-			t.Fatal("Server Error:", err)
+			t.Fatal("Server2 Error:", err)
 		}
 	} else {
 		t.Fatal("Bad Request:", err)

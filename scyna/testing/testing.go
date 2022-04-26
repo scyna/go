@@ -1,6 +1,10 @@
 package scyna_test
 
-import "github.com/scyna/go/scyna"
+import (
+	"log"
+
+	"github.com/scyna/go/scyna"
+)
 
 func Init() {
 	scyna.RemoteInit(scyna.RemoteConfig{
@@ -8,6 +12,7 @@ func Init() {
 		Name:       "scyna.test",
 		Secret:     "123456",
 	})
+	log.Print(scyna.Session.ID())
 	scyna.UseDirectLog(1)
 }
 

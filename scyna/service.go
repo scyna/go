@@ -52,10 +52,10 @@ func CallService(url string, request proto.Message, response proto.Message) *Err
 }
 
 func RegisterStatefullService[R proto.Message](url string, handler StatefulServiceHandler[R]) {
-	log.Println("[Register] Sub url: ", url)
+	log.Println("Register Service: ", url)
 	var request R
 	ref := reflect.New(reflect.TypeOf(request).Elem())
-	request = ref.Elem().Interface().(R)
+	request = ref.Interface().(R)
 
 	var ctx Context
 	_, err := Connection.QueueSubscribe(SubscribreURL(url), "API", func(m *nats.Msg) {
