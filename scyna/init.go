@@ -89,7 +89,6 @@ func DirectInit(name string, c *Configuration) {
 	/*init db*/
 	hosts := strings.Split(c.DBHost, ",")
 	initScylla(hosts, c.DBUsername, c.DBPassword, c.DBLocation)
-	Services = NewServicePool()
 
 	/*registration*/
 	RegisterSignal(SETTING_UPDATE_CHANNEL+module, UpdateSettingHandler)

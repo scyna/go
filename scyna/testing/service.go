@@ -10,32 +10,26 @@ import (
 )
 
 func CallService(t *testing.T, url string, request proto.Message) *scyna.Response {
-	var req scyna.Request
-	var res scyna.Response
+	req := scyna.Request{CallID: scyna.ID.Next(), JSON: false}
+	res := scyna.Response{}
 
 	if request != nil {
 		var err error
 		if req.Body, err = proto.Marshal(request); err != nil {
-			t.Fatal("Bad request")
+			t.Fatal("Bad Request:", err)
 		}
 	}
 
-	req.CallID = scyna.ID.Next()
-	req.JSON = false
-
-	reqBytes, err := proto.Marshal(&req)
-	if err != nil {
-		t.Fatal("Bad request")
-	}
-
-	msg, respErr := scyna.Connection.Request(scyna.PublishURL(url), reqBytes, 10*time.Second)
-	if respErr != nil {
-		t.Fatal("Service unavailable")
-	}
-
-	err = res.ReadFrom(msg.Data)
-	if err != nil {
-		t.Fatal("Can not parse response")
+	if data, err := proto.Marshal(&req); err == nil {
+		if msg, err := scyna.Connection.Request(scyna.PublishURL(url), data, 10*time.Second); err == nil {
+			if err := proto.Unmarshal(msg.Data, &res); err != nil {
+				t.Fatal("Server Error:", err)
+			}
+		} else {
+			t.Fatal("Server Error:", err)
+		}
+	} else {
+		t.Fatal("Bad Request:", err)
 	}
 	return &res
 }

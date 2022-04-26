@@ -14,7 +14,6 @@ import (
 
 var Connection *nats.Conn
 var JetStream nats.JetStreamContext
-var Services ServicePool
 var Session *session
 var DB gocqlx.Session
 var ID generator
