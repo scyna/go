@@ -2,11 +2,8 @@ package scyna
 
 import (
 	"encoding/json"
-	"log"
 	"strconv"
 	"sync"
-
-	"google.golang.org/protobuf/proto"
 )
 
 type settings struct {
@@ -81,29 +78,15 @@ func (s *settings) ReadObject(key string, value interface{}) bool {
 	return false
 }
 
-func UpdateSettingHandler(data []byte) {
-	var setting SettingUpdatedSignal
-	err := proto.Unmarshal(data, &setting)
-	if err != nil {
-		log.Println("SettingUpdateHandler: Error parser SettingUpdateHandler")
-		return
-	}
-
-	if setting.Module == module {
-		Settings.updated(setting.Key, setting.Value)
+func UpdateSettingHandler(data *SettingUpdatedSignal) {
+	if data.Module == module {
+		Settings.updated(data.Key, data.Value)
 	}
 }
 
-func RemoveSettingHandler(data []byte) {
-	var setting SettingRemovedSignal
-	err := proto.Unmarshal(data, &setting)
-	if err != nil {
-		log.Println("SettingRemoveHandler: Error parser SettingRemoveHandler")
-		return
-	}
-
-	if setting.Module == module {
-		Settings.removed(setting.Key)
+func RemoveSettingHandler(data *SettingRemovedSignal) {
+	if data.Module == module {
+		Settings.removed(data.Key)
 	}
 }
 
