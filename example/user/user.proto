@@ -1,0 +1,51 @@
+syntax = "proto3";
+package io.velo.user.proto;
+option java_multiple_files = true;
+option csharp_namespace = "example";
+
+message User
+{
+  uint64 id = 1;
+  string email = 2;
+  string name = 3;
+  string password = 4;
+}
+
+/*CREATE*/
+message CreateUserRequest 
+{
+  User user = 1;
+}
+
+message CreateUserResponse
+{
+  uint64 id = 1;
+}
+
+/*UPDATE*/
+message UpdateUserRequest
+{
+  User user = 1;
+}
+
+/*GET*/
+message GetUserRequest 
+{
+  string email = 1;
+}
+
+message GetUserResponse
+{
+  User user = 1;
+}
+
+/*LIST*/
+message ListFriendRequest
+{
+  string email = 1;
+}
+
+message ListFriendResponse
+{
+  repeated User friends = 1;
+}
