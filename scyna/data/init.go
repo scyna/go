@@ -3,7 +3,7 @@ package scyna_data
 import (
 	"flag"
 
-	scyna "github.com/scyna/go"
+	"github.com/scyna/go/scyna"
 )
 
 func Init() {
