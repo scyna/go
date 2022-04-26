@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/scyna/go/example/basic"
+	"github.com/scyna/go/scyna"
 	scyna_test "github.com/scyna/go/scyna/testing"
 )
 
@@ -22,4 +23,9 @@ func TestAdd(t *testing.T) {
 	request := basic.AddRequest{A: 5, B: 73}
 	response := basic.AddResponse{Sum: 78}
 	scyna_test.TestService(t, "/example/basic/add", &request, &response, 200)
+}
+
+func TestAddTooBig(t *testing.T) {
+	request := basic.AddRequest{A: 50, B: 73}
+	scyna_test.TestService(t, "/example/basic/add", &request, scyna.REQUEST_INVALID, 400)
 }
