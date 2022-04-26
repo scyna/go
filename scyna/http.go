@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-type context struct {
+type HttpContext struct {
 	Request  Request
 	Response Response
 }
@@ -17,16 +17,16 @@ type ContextPool struct {
 	sync.Pool
 }
 
-func (service *context) reset() {
-	service.Request.Body = service.Request.Body[0:0]
-	service.Request.CallID = uint64(0)
-	service.Response.Body = service.Response.Body[0:0]
-	service.Response.Code = int32(0)
-	service.Response.SessionID = uint64(0)
+func (ctx *HttpContext) reset() {
+	ctx.Request.Body = ctx.Request.Body[0:0]
+	ctx.Request.CallID = uint64(0)
+	ctx.Response.Body = ctx.Response.Body[0:0]
+	ctx.Response.Code = int32(0)
+	ctx.Response.SessionID = uint64(0)
 }
 
-func NewService() *context {
-	return &context{
+func NewContext() *HttpContext {
+	return &HttpContext{
 		Request: Request{
 			Body:   make([]byte, 4096),
 			CallID: 0,
@@ -39,20 +39,20 @@ func NewService() *context {
 	}
 }
 
-func (p *ContextPool) GetService() *context {
-	service, _ := p.Get().(*context)
+func (p *ContextPool) GetContext() *HttpContext {
+	service, _ := p.Get().(*HttpContext)
 	return service
 }
 
-func (p *ContextPool) PutService(service *context) {
+func (p *ContextPool) PutContext(service *HttpContext) {
 	service.reset()
 	p.Put(service)
 }
 
-func NewServicePool() ContextPool {
+func NewContextPool() ContextPool {
 	return ContextPool{
 		sync.Pool{
-			New: func() interface{} { return NewService() },
+			New: func() interface{} { return NewContext() },
 		}}
 }
 
