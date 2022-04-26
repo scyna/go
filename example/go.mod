@@ -1,4 +1,4 @@
-module github.com/scyna/go
+module github.com/scyna/go/example
 
 go 1.18
 

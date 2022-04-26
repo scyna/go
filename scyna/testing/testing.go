@@ -1,6 +1,6 @@
 package scyna_test
 
-import "github.com/scyna/go/scyna"
+import scyna "github.com/scyna/go"
 
 func Init() {
 	scyna.RemoteInit(scyna.RemoteConfig{
