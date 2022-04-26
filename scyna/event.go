@@ -2,16 +2,26 @@ package scyna
 
 import (
 	"log"
+	reflect "reflect"
 
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
 )
 
-type EventHandler func(data []byte)
+type EventHandler[R proto.Message] func(data R)
 
-func RegisterEvent(channel string, consumer string, handler EventHandler) {
+func RegisterEvent[R proto.Message](channel string, consumer string, handler EventHandler[R]) {
+	var request R
+	ref := reflect.New(reflect.TypeOf(request).Elem())
+	request = ref.Interface().(R)
+
 	_, err := JetStream.QueueSubscribe(channel, module, func(m *nats.Msg) {
-		handler(m.Data)
+		if err := proto.Unmarshal(m.Data, request); err == nil {
+			handler(request)
+		} else {
+			log.Print("Error in parsing data:", err)
+		}
+
 	}, nats.Durable(consumer))
 
 	if err != nil {
