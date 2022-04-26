@@ -2,6 +2,7 @@ package scyna
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"reflect"
 
@@ -11,15 +12,55 @@ import (
 
 type Context struct {
 	Request Request
+	Reply   string
 	LOG     Logger
 }
 
 func (ctx *Context) Error(e *Error) {
+	response := Response{Code: 400}
 
+	var err error
+	if ctx.Request.JSON {
+		response.Body, err = json.Marshal(e)
+	} else {
+		response.Body, err = proto.Marshal(e)
+	}
+
+	if err != nil {
+		response.Code = int32(500)
+		response.Body = []byte(err.Error())
+	}
+	ctx.flush(&response)
 }
 
 func (ctx *Context) Done(r proto.Message) {
+	response := Response{Code: 200}
 
+	var err error
+	if ctx.Request.JSON {
+		response.Body, err = json.Marshal(r)
+	} else {
+		response.Body, err = proto.Marshal(r)
+	}
+	if err != nil {
+		response.Code = int32(500)
+		response.Body = []byte(err.Error())
+	}
+
+	ctx.flush(&response)
+}
+
+func (ctx *Context) flush(response *Response) {
+	response.SessionID = Session.ID()
+	bytes, err := proto.Marshal(response)
+	if err != nil {
+		log.Print("Register marshal error response data:", err.Error())
+		return
+	}
+	err = Connection.Publish(ctx.Reply, bytes)
+	if err != nil {
+		LOG.Error(fmt.Sprintf("Nats publish to [%s] error: %s", ctx.Reply, err.Error()))
+	}
 }
 
 type StatefulServiceHandler[R proto.Message] func(ctx *Context, request R)
@@ -38,6 +79,7 @@ func RegisterStatefullService[R proto.Message](url string, handler StatefulServi
 			return
 		}
 
+		ctx.Reply = m.Reply
 		if ctx.Request.LogDisable {
 			ctx.LOG = &nullLogger
 		} else {
@@ -67,10 +109,25 @@ func RegisterStatefullService[R proto.Message](url string, handler StatefulServi
 	}
 }
 
-func CreateUser(ctx *Context, request *Request) {
+func RegisterStatelessService(url string, handler StatelessServiceHandler) {
+	log.Println("[Register] Sub url: ", url)
+	var ctx Context
+	_, err := Connection.QueueSubscribe(SubscribreURL(url), "API", func(m *nats.Msg) {
+		if err := proto.Unmarshal(m.Data, &ctx.Request); err != nil {
+			log.Print("Register unmarshal error response data:", err.Error())
+			return
+		}
 
-}
+		ctx.Reply = m.Reply
+		if ctx.Request.LogDisable {
+			ctx.LOG = &nullLogger
+		} else {
+			ctx.LOG = &logger{session: false, ID: ctx.Request.CallID}
+		}
+		handler(&ctx)
+	})
 
-func Test() {
-	RegisterStatefullService("", CreateUser)
+	if err != nil {
+		log.Fatal("Can not register service:", url)
+	}
 }
