@@ -69,6 +69,7 @@ func NewServicePool() ServicePool {
 }
 
 func RegisterService(url string, handler ServiceHandler) {
+
 	subscribeURL := SubscribreURL(url)
 	log.Println("[Register] Sub url: ", url)
 	_, err := Connection.QueueSubscribe(subscribeURL, "API", func(m *nats.Msg) {
