@@ -8,7 +8,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/nats-io/nats.go"
 	"github.com/scylladb/gocqlx/v2"
 )
@@ -20,7 +19,6 @@ var Session *session
 var DB gocqlx.Session
 var ID generator
 var Settings settings
-var Validator = validator.New()
 
 var httpClient *http.Client
 var module string

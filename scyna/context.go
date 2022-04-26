@@ -14,6 +14,14 @@ type Context struct {
 	LOG     Logger
 }
 
+func (ctx *Context) Error(e *Error) {
+
+}
+
+func (ctx *Context) Done(r proto.Message) {
+
+}
+
 type StatefulServiceHandler[R proto.Message] func(ctx *Context, request R)
 type StatelessServiceHandler func(ctx *Context)
 
@@ -39,7 +47,7 @@ func RegisterStatefullService[R proto.Message](url string, handler StatefulServi
 		if ctx.Request.JSON {
 			if err := json.Unmarshal(ctx.Request.Body, request); err != nil {
 				log.Print("Bad Request: " + err.Error())
-				//s.Error(BAD_REQUEST)
+				ctx.Error(BAD_REQUEST)
 			} else {
 				handler(&ctx, request)
 			}
@@ -47,7 +55,7 @@ func RegisterStatefullService[R proto.Message](url string, handler StatefulServi
 		} else {
 			if err := proto.Unmarshal(ctx.Request.Body, request); err != nil {
 				log.Print("Bad Request: " + err.Error())
-				//s.Error(BAD_REQUEST)
+				ctx.Error(BAD_REQUEST)
 			} else {
 				handler(&ctx, request)
 			}

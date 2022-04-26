@@ -1,9 +1,10 @@
 package scyna_data
 
 import (
-	"github.com/scylladb/gocqlx/v2/qb"
-	scyna "github.com/scyna/go"
 	"log"
+
+	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scyna/go/scyna"
 )
 
 func WriteSetting(module string, key string, value string) {
