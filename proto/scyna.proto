@@ -28,4 +28,5 @@ message EventOrSignal
 {
   uint64 CallID = 1;
   bytes Body = 2;
+  string Data = 3;
 }

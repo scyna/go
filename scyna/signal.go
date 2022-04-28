@@ -8,17 +8,25 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type SignalStatefulHandler[R proto.Message] func(data R)
-type SignalStatelessHandler func()
+type SignalStatefulHandler[R proto.Message] func(LOG Logger, data R)
+type SignalStatelessHandler func(LOG Logger)
 
 func RegisterStatefulSignal[R proto.Message](channel string, handler SignalStatefulHandler[R]) {
-	var request R
-	ref := reflect.New(reflect.TypeOf(request).Elem())
-	request = ref.Interface().(R)
+	var signal R
+	ref := reflect.New(reflect.TypeOf(signal).Elem())
+	signal = ref.Interface().(R)
+	LOG := &logger{session: false}
 
 	_, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
-		if err := proto.Unmarshal(m.Data, request); err == nil {
-			handler(request)
+		var msg EventOrSignal
+		if err := proto.Unmarshal(m.Data, &msg); err != nil {
+			log.Print("Register unmarshal error response data:", err.Error())
+			return
+		}
+		LOG.Reset(msg.CallID)
+
+		if err := proto.Unmarshal(msg.Body, signal); err == nil {
+			handler(LOG, signal)
 		} else {
 			log.Print("Error in parsing data:", err)
 		}
@@ -30,8 +38,15 @@ func RegisterStatefulSignal[R proto.Message](channel string, handler SignalState
 }
 
 func RegisterStatelessSignal(channel string, handler SignalStatelessHandler) {
+	LOG := &logger{session: false}
 	_, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
-		handler()
+		var msg EventOrSignal
+		if err := proto.Unmarshal(m.Data, &msg); err != nil {
+			log.Print("Register unmarshal error response data:", err.Error())
+			return
+		}
+		LOG.Reset(msg.CallID)
+		handler(LOG)
 	})
 
 	if err != nil {
@@ -42,21 +57,18 @@ func RegisterStatelessSignal(channel string, handler SignalStatelessHandler) {
 func EmitStatelessSignal(channel string) {
 	msg := EventOrSignal{CallID: ID.Next()}
 
-	if data, err := proto.Marshal(&msg); err != nil {
-		log.Print(err)
-	} else {
-		if err := Connection.Publish(channel, data); err != nil {
-			log.Print(err)
-		}
+	if data, err := proto.Marshal(&msg); err == nil {
+		Connection.Publish(channel, data)
 	}
 }
 
 func EmitSignal(channel string, event proto.Message) {
-	data, err := proto.Marshal(event)
-	if err != nil {
-		log.Print(err.Error())
+	msg := EventOrSignal{CallID: ID.Next()}
+	if data, err := proto.Marshal(event); err == nil {
+		msg.Body = data
 	}
-	if err := Connection.Publish(channel, data); err != nil {
-		log.Print(err.Error())
+
+	if data, err := proto.Marshal(&msg); err == nil {
+		Connection.Publish(channel, data)
 	}
 }

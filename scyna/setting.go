@@ -78,13 +78,13 @@ func (s *settings) ReadObject(key string, value interface{}) bool {
 	return false
 }
 
-func UpdateSettingHandler(data *SettingUpdatedSignal) {
+func UpdateSettingHandler(LOG Logger, data *SettingUpdatedSignal) {
 	if data.Module == module {
 		Settings.updated(data.Key, data.Value)
 	}
 }
 
-func RemoveSettingHandler(data *SettingRemovedSignal) {
+func RemoveSettingHandler(LOG Logger, data *SettingRemovedSignal) {
 	if data.Module == module {
 		Settings.removed(data.Key)
 	}
