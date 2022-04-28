@@ -21,3 +21,16 @@ func TestCreateShouldReturnSuccess(t *testing.T) {
 	var responseCreate proto.CreateUserRequest
 	scyna_test.CallServiceParseResponse(t, user.CREATE_USER_URL, requestCreate, &responseCreate, 200)
 }
+
+func TestCreateBadEmail(t *testing.T) {
+	cleanup()
+	requestCreate := &proto.CreateUserRequest{
+		User: &proto.User{
+			Email:    "a+gmail.com",
+			Name:     "Nguyen Van A",
+			Password: "1234565",
+		},
+	}
+
+	scyna_test.CallServiceCheckCode(t, user.CREATE_USER_URL, requestCreate, 400)
+}
