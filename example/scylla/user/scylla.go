@@ -61,7 +61,7 @@ func (r *ScyllaRepository) GetByEmail(LOG scyna.Logger, email string) (*scyna.Er
 	defer r.GetQueries.PutQuery(query)
 
 	var user User
-	if err := query.Bind(email).GetRelease(&user); err == nil {
+	if err := query.Bind(email).Get(&user); err == nil {
 		return nil, &user
 	} else {
 		log.Print(err)
