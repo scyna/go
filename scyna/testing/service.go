@@ -61,7 +61,7 @@ func CallServiceCheckCode(t *testing.T, url string, request proto.Message, code 
 func CallServiceParseResponse(t *testing.T, url string, request proto.Message, response proto.Message, code int32) {
 	res := CallService(t, url, request)
 	if res.Code != code {
-		t.Fatal("Code not match")
+		t.Fatal("Code not match:", res.Code)
 	}
 
 	if err := proto.Unmarshal(res.Body, response); err != nil {

@@ -10,11 +10,16 @@ var (
 	USER_NOT_EXISTED = &scyna.Error{Code: 101, Message: "User NOT Existed"}
 )
 
+const (
+	CREATE_USER_URL = "/example/user/create"
+	GET_USER_URL    = "/example/user/get"
+)
+
 type User struct {
-	ID       uint64
-	Name     string
-	Email    string
-	Password string
+	ID       uint64 `db:"id"`
+	Name     string `db:"name"`
+	Email    string `db:"email"`
+	Password string `db:"password"`
 }
 
 type IRepository interface {

@@ -8,7 +8,7 @@ import (
 )
 
 func Create(ctx *scyna.Context, request *proto.CreateUserRequest) {
-	ctx.LOG.Info("Receive CreateRequest")
+	ctx.LOG.Info("Receive CreateUserRequest")
 	if err := validateCreateRequest(request.User); err != nil {
 		ctx.Error(scyna.REQUEST_INVALID)
 		return
