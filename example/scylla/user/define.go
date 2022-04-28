@@ -21,6 +21,7 @@ type IRepository interface {
 	Create(LOG scyna.Logger, user *User) *scyna.Error
 	Exist(LOG scyna.Logger, emai string) *scyna.Error
 	GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User)
+	Release()
 }
 
 func FromProto(user *proto.User) *User {
