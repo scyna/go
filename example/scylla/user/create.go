@@ -19,5 +19,5 @@ func Create(ctx *scyna.Context, request *proto.CreateUserRequest) {
 		ctx.Error(err)
 		return
 	}
-	ctx.Done(&proto.CreateUserResponse{Id: uint64(user.ID)})
+	ctx.Done(&proto.CreateUserResponse{Id: user.ID})
 }
