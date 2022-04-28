@@ -15,7 +15,14 @@ func InitScyllaRepository() {
 }
 
 func (r *ScyllaRepository) Create(LOG scyna.Logger, user *User) *scyna.Error {
-	return nil
+	if err := qb.Insert("ex.user").
+		Columns("id", "name", "email", "password").
+		Query(scyna.DB).
+		Bind(user).
+		ExecRelease(); err == nil {
+		return nil
+	}
+	return scyna.SERVER_ERROR
 }
 
 func (r *ScyllaRepository) Exist(LOG scyna.Logger, email string) *scyna.Error {
@@ -32,6 +39,6 @@ func (r *ScyllaRepository) Exist(LOG scyna.Logger, email string) *scyna.Error {
 	return USER_NOT_EXISTED
 }
 
-func (r *ScyllaRepository) GetByEmail(LOG scyna.Logger, email string) *scyna.Error {
-	return nil
+func (r *ScyllaRepository) GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User) {
+	return nil, &User{}
 }

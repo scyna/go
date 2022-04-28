@@ -20,13 +20,23 @@ type User struct {
 type IRepository interface {
 	Create(LOG scyna.Logger, user *User) *scyna.Error
 	Exist(LOG scyna.Logger, emai string) *scyna.Error
-	GetByEmail(LOG scyna.Logger, email string) *scyna.Error
+	GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User)
 }
 
 func FromProto(user *proto.User) *User {
-	return nil
+	return &User{
+		ID:       user.Id,
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+	}
 }
 
 func (u *User) ToProto() *proto.User {
-	return nil
+	return &proto.User{
+		Id:       u.ID,
+		Name:     u.Name,
+		Email:    u.Email,
+		Password: u.Password,
+	}
 }
