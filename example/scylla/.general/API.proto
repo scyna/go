@@ -1,7 +1,7 @@
 syntax = "proto3";
-package io.velo.user.proto;
 option java_multiple_files = true;
-option csharp_namespace = "example";
+option csharp_namespace = "proto";
+option  go_package = ".;proto";
 
 message User
 {
@@ -32,6 +32,11 @@ message UpdateUserRequest
 message GetUserRequest 
 {
   string email = 1;
+}
+
+message GetUserByIDRequest 
+{
+  uint64 id = 1;
 }
 
 message GetUserResponse
