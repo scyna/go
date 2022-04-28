@@ -51,7 +51,7 @@ func CallService(url string, request proto.Message, response proto.Message) *Err
 	return SERVER_ERROR
 }
 
-func RegisterStatefullService[R proto.Message](url string, handler StatefulServiceHandler[R]) {
+func RegisterStatefulService[R proto.Message](url string, handler StatefulServiceHandler[R]) {
 	log.Println("Register Service: ", url)
 	var request R
 	ref := reflect.New(reflect.TypeOf(request).Elem())
