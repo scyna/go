@@ -31,11 +31,12 @@ message CreateSessionResponse {
 message EndSessionSignal {
   uint64 ID = 1;
   string Code = 2;
+  string Module = 3;
 }
 
 message UpdateSessionSignal {
   uint64 ID = 1;
-  string Code = 2;
+  string Module = 2;
 }
 
 /*GENERATOR*/
