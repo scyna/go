@@ -1,6 +1,6 @@
 syntax = "proto3";
 option  optimize_for = CODE_SIZE;
-option  go_package = ".;basic";
+option  go_package = ".;proto";
 
 message EchoRequest 
 {
