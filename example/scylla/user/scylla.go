@@ -1,7 +1,6 @@
 package user
 
 import (
-	"log"
 	"sync"
 
 	"github.com/scylladb/gocqlx/v2"
@@ -26,12 +25,11 @@ func (r *ScyllaRepository) Create(LOG scyna.Logger, user *User) *scyna.Error {
 		Columns("id", "name", "email", "password").
 		Query(scyna.DB).
 		BindStruct(user).
-		ExecRelease(); err == nil {
-		return nil
-	} else {
-		log.Print(err)
+		ExecRelease(); err != nil {
+		LOG.Error(err.Error())
+		return scyna.SERVER_ERROR
 	}
-	return scyna.SERVER_ERROR
+	return nil
 }
 
 func (r *ScyllaRepository) Exist(LOG scyna.Logger, email string) *scyna.Error {
@@ -42,10 +40,11 @@ func (r *ScyllaRepository) Exist(LOG scyna.Logger, email string) *scyna.Error {
 		Limit(1).
 		Query(scyna.DB).
 		Bind(email).
-		GetRelease(&id); err == nil {
-		return nil
+		GetRelease(&id); err != nil {
+		LOG.Error(err.Error())
+		return USER_NOT_EXISTED
 	}
-	return USER_NOT_EXISTED
+	return nil
 }
 
 func newGetQuery() *gocqlx.Queryx {
