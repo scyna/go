@@ -40,10 +40,14 @@ func RegisterStatelessSignal(channel string, handler SignalStatelessHandler) {
 }
 
 func EmitStatelessSignal(channel string) {
-	var data []byte
-	err := Connection.Publish(channel, data)
-	if err != nil {
-		log.Fatal(err.Error())
+	msg := EventOrSignal{CallID: ID.Next()}
+
+	if data, err := proto.Marshal(&msg); err != nil {
+		log.Print(err)
+	} else {
+		if err := Connection.Publish(channel, data); err != nil {
+			log.Print(err)
+		}
 	}
 }
 

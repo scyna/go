@@ -16,6 +16,7 @@ type Logger interface {
 	Warning(messsage string)
 	Debug(messsage string)
 	Fatal(messsage string)
+	Reset(id uint64)
 }
 
 type LogLevel int
@@ -39,9 +40,6 @@ type LogData struct {
 type logger struct {
 	session bool
 	ID      uint64
-}
-
-type loggerNull struct {
 }
 
 var logQueue chan LogData
@@ -110,14 +108,20 @@ func releaseLog() {
 
 func (l *logger) writeLog(level LogLevel, message string) {
 	message = formatLog(message)
-	AddLog(LogData{
-		ID:       l.ID,
-		Sequence: Session.NextSequence(),
-		Level:    level,
-		Message:  message,
-		Session:  l.session,
-	})
 	log.Print(message) //FIXME: for debug only
+	if l.ID > 0 {
+		AddLog(LogData{
+			ID:       l.ID,
+			Sequence: Session.NextSequence(),
+			Level:    level,
+			Message:  message,
+			Session:  l.session,
+		})
+	}
+}
+
+func (l *logger) Reset(id uint64) {
+	l.ID = id
 }
 
 func (l *logger) Info(messsage string) {
@@ -138,22 +142,6 @@ func (l *logger) Debug(messsage string) {
 
 func (l *logger) Fatal(messsage string) {
 	l.writeLog(LOG_FATAL, messsage)
-}
-
-/*null logger*/
-func (l *loggerNull) Info(messsage string) {
-}
-
-func (l *loggerNull) Error(messsage string) {
-}
-
-func (l *loggerNull) Warning(messsage string) {
-}
-
-func (l *loggerNull) Debug(messsage string) {
-}
-
-func (l *loggerNull) Fatal(messsage string) {
 }
 
 func formatLog(message string) string {

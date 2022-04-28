@@ -13,7 +13,6 @@ message Request
   bytes Body = 2;
   string Data = 4;
   bool JSON = 3;
-  bool LogDisable = 5; /*enable/disable logging*/
 }
 
 message Response 
@@ -25,9 +24,8 @@ message Response
   uint64 Expired = 5;
 }
 
-message Event
+message EventOrSignal
 {
   uint64 CallID = 1;
   bytes Body = 2;
-  uint32 LOG = 3;
 }

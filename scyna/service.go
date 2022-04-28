@@ -13,8 +13,6 @@ import (
 type StatefulServiceHandler[R proto.Message] func(ctx *Context, request R)
 type StatelessServiceHandler func(ctx *Context)
 
-var nullLogger loggerNull
-
 func CallService(url string, request proto.Message, response proto.Message) *Error {
 	req := Request{CallID: ID.Next(), JSON: false}
 	res := Response{}
@@ -57,7 +55,7 @@ func RegisterStatefulService[R proto.Message](url string, handler StatefulServic
 	ref := reflect.New(reflect.TypeOf(request).Elem())
 	request = ref.Interface().(R)
 
-	var ctx Context
+	ctx := Context{LOG: &logger{session: false}}
 	_, err := Connection.QueueSubscribe(SubscribreURL(url), "API", func(m *nats.Msg) {
 		if err := proto.Unmarshal(m.Data, &ctx.Request); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
@@ -65,11 +63,7 @@ func RegisterStatefulService[R proto.Message](url string, handler StatefulServic
 		}
 
 		ctx.Reply = m.Reply
-		if ctx.Request.LogDisable {
-			ctx.LOG = &nullLogger
-		} else {
-			ctx.LOG = &logger{session: false, ID: ctx.Request.CallID}
-		}
+		ctx.LOG.Reset(ctx.Request.CallID)
 
 		if ctx.Request.JSON {
 			if err := json.Unmarshal(ctx.Request.Body, request); err != nil {
@@ -96,7 +90,7 @@ func RegisterStatefulService[R proto.Message](url string, handler StatefulServic
 
 func RegisterStatelessService(url string, handler StatelessServiceHandler) {
 	log.Println("[Register] Sub url: ", url)
-	var ctx Context
+	ctx := Context{LOG: &logger{session: false}}
 	_, err := Connection.QueueSubscribe(SubscribreURL(url), "API", func(m *nats.Msg) {
 		if err := proto.Unmarshal(m.Data, &ctx.Request); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
@@ -104,11 +98,7 @@ func RegisterStatelessService(url string, handler StatelessServiceHandler) {
 		}
 
 		ctx.Reply = m.Reply
-		if ctx.Request.LogDisable {
-			ctx.LOG = &nullLogger
-		} else {
-			ctx.LOG = &logger{session: false, ID: ctx.Request.CallID}
-		}
+		ctx.LOG.Reset(ctx.Request.CallID)
 		handler(&ctx)
 	})
 
