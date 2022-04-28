@@ -1,6 +1,8 @@
 package user
 
 import (
+	"log"
+
 	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/scyna/go/scyna"
 )
@@ -18,9 +20,11 @@ func (r *ScyllaRepository) Create(LOG scyna.Logger, user *User) *scyna.Error {
 	if err := qb.Insert("ex.user").
 		Columns("id", "name", "email", "password").
 		Query(scyna.DB).
-		Bind(user).
+		BindStruct(user).
 		ExecRelease(); err == nil {
 		return nil
+	} else {
+		log.Print(err)
 	}
 	return scyna.SERVER_ERROR
 }
