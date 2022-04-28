@@ -52,7 +52,3 @@ func (r *ScyllaRepository) GetByEmail(LOG scyna.Logger, email string) (*scyna.Er
 	}
 	return USER_NOT_EXISTED, nil
 }
-
-func (r *ScyllaRepository) Release() {
-	/**/
-}
