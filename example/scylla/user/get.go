@@ -6,7 +6,7 @@ import (
 )
 
 func Get(ctx *scyna.Context, request *proto.GetUserRequest) {
-	ctx.LOG.Info("Receive CreateRequest")
+	ctx.LOG.Info("Receive GetUserRequest")
 	if err, user := Repository.GetByEmail(ctx.LOG, request.Email); err != nil {
 		ctx.Error(err)
 		return

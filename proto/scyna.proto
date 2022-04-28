@@ -24,3 +24,10 @@ message Response
   string Token = 4;
   uint64 Expired = 5;
 }
+
+message Event
+{
+  uint64 CallID = 1;
+  bytes Body = 2;
+  uint32 LOG = 3;
+}

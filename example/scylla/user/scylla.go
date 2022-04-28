@@ -37,7 +37,7 @@ func (r *ScyllaRepository) Exist(LOG scyna.Logger, email string) *scyna.Error {
 		Limit(1).
 		Query(scyna.DB).
 		Bind(email).
-		SelectRelease(&id); err == nil {
+		GetRelease(&id); err == nil {
 		return nil
 	}
 	return USER_NOT_EXISTED
@@ -46,13 +46,15 @@ func (r *ScyllaRepository) Exist(LOG scyna.Logger, email string) *scyna.Error {
 func (r *ScyllaRepository) GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User) {
 	var user User
 	if err := qb.Select("ex.user").
-		Columns("id", "name", "email", "pasword").
+		Columns("id", "name", "email", "password").
 		Where(qb.Eq("email")).
 		Limit(1).
 		Query(scyna.DB).
 		Bind(email).
-		SelectRelease(&user); err == nil {
+		GetRelease(&user); err == nil {
 		return nil, &user
+	} else {
+		log.Print(err)
 	}
 	return USER_NOT_EXISTED, nil
 }
