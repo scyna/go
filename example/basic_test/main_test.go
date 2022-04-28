@@ -14,8 +14,8 @@ func TestMain(m *testing.M) {
 
 	/*register APIs*/
 	scyna.RegisterStatelessService("/example/basic/hello", basic.Hello)
-	scyna.RegisterStatefullService("/example/basic/echo", basic.Echo)
-	scyna.RegisterStatefullService("/example/basic/add", basic.Add)
+	scyna.RegisterStatefulService("/example/basic/echo", basic.Echo)
+	scyna.RegisterStatefulService("/example/basic/add", basic.Add)
 
 	exitVal := m.Run()
 	scyna_test.Release()
