@@ -18,3 +18,7 @@ CREATE TABLE ex.has_friend
     friend_id      bigint,
     PRIMARY KEY(user_id, friend_id)
 );
+
+insert into scyna.module(org_code, code, description, type, secret)
+values ('scyna', 'scyna.example', 'Scyna Example', 2, '123456');
+insert into scyna.application(org_code, code, auth, name) VALUES ('scyna', 'scyna.example', '', '');
