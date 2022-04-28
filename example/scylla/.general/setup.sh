@@ -1,0 +1,1 @@
+cqlsh -f user.cql
