@@ -21,7 +21,7 @@ func PublishURL(urlPath string) string {
 	return ret
 }
 
-func SubscribreURL(urlPath string) string {
+func SubscriberURL(urlPath string) string {
 	subURL := pathrgxp.ReplaceAllString(urlPath, "*")
 	subURL = strings.Replace(subURL, "/", ".", -1)
 	subURL = fmt.Sprintf("API%s", subURL)
