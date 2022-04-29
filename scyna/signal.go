@@ -18,15 +18,13 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 	ref := reflect.New(reflect.TypeOf(signal).Elem())
 	signal = ref.Interface().(R)
 
-	_, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
+	if _, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
 		if err := proto.Unmarshal(m.Data, signal); err == nil {
 			handler(signal)
 		} else {
 			log.Print("Error in parsing data:", err)
 		}
-	})
-
-	if err != nil {
+	}); err != nil {
 		log.Fatal("Error in register event")
 	}
 }
@@ -38,7 +36,7 @@ func RegisterStatefulSignal[R proto.Message](channel string, handler SignalState
 	signal = ref.Interface().(R)
 	LOG := &logger{session: false}
 
-	_, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
+	if _, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
@@ -51,32 +49,23 @@ func RegisterStatefulSignal[R proto.Message](channel string, handler SignalState
 		} else {
 			log.Print("Error in parsing data:", err)
 		}
-	})
-
-	if err != nil {
+	}); err != nil {
 		log.Fatal("Error in register event")
 	}
 }
 
 func RegisterStatelessSignal(channel string, handler SignalStatelessHandler) {
 	log.Print("Register signal:", channel)
-	log.Print("1")
 	LOG := &logger{session: false}
-	_, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
-		log.Print("2")
+	if _, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
-			log.Print("3")
 			log.Print("Register unmarshal error response data:", err.Error())
 			return
 		}
-		log.Print("4")
 		LOG.Reset(msg.CallID)
 		handler(LOG)
-		log.Print("5")
-	})
-
-	if err != nil {
+	}); err != nil {
 		log.Fatal("Error in register event")
 	}
 }

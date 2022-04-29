@@ -1,6 +1,21 @@
 package scyna
 
-func newServiceCall() {
+type ICallRepository interface {
+	NewServiceCall()
+	NewSignalCall()
+	NewEventCall()
+}
+
+var CallRepository ICallRepository
+
+func InitCallRepository() {
+
+}
+
+type callRepository struct {
+}
+
+func (r *callRepository) NewServiceCall() {
 
 }
 

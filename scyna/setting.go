@@ -32,7 +32,6 @@ func (s *settings) Write(key string, value string) bool {
 }
 
 func (s *settings) ReadString(key string) (bool, string) {
-
 	/*from cache*/
 	s.mutex.Lock()
 	if val, ok := s.data[key]; ok {
@@ -53,11 +52,11 @@ func (s *settings) ReadString(key string) (bool, string) {
 
 func (s *settings) ReadInt(key string) (bool, int) {
 	if ok, val := s.ReadString(key); ok {
-		i, err := strconv.Atoi(val)
-		if err != nil {
+		if i, err := strconv.Atoi(val); err != nil {
 			return false, 0
+		} else {
+			return true, i
 		}
-		return true, i
 	}
 	return false, 0
 }
