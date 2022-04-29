@@ -56,7 +56,7 @@ func RegisterStatefulService[R proto.Message](url string, handler StatefulServic
 	request = ref.Interface().(R)
 
 	ctx := Context{LOG: &logger{session: false}}
-	_, err := Connection.QueueSubscribe(SubscribreURL(url), "API", func(m *nats.Msg) {
+	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {
 		if err := proto.Unmarshal(m.Data, &ctx.Request); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
 			return
@@ -91,7 +91,7 @@ func RegisterStatefulService[R proto.Message](url string, handler StatefulServic
 func RegisterStatelessService(url string, handler StatelessServiceHandler) {
 	log.Println("[Register] Sub url: ", url)
 	ctx := Context{LOG: &logger{session: false}}
-	_, err := Connection.QueueSubscribe(SubscribreURL(url), "API", func(m *nats.Msg) {
+	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {
 		if err := proto.Unmarshal(m.Data, &ctx.Request); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
 			return
