@@ -263,7 +263,7 @@ func (x *AddResponse) GetSum() int32 {
 	return 0
 }
 
-type TestSignal struct {
+type HelloSignal struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -271,8 +271,8 @@ type TestSignal struct {
 	Text string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
 }
 
-func (x *TestSignal) Reset() {
-	*x = TestSignal{}
+func (x *HelloSignal) Reset() {
+	*x = HelloSignal{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_API_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -280,13 +280,13 @@ func (x *TestSignal) Reset() {
 	}
 }
 
-func (x *TestSignal) String() string {
+func (x *HelloSignal) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TestSignal) ProtoMessage() {}
+func (*HelloSignal) ProtoMessage() {}
 
-func (x *TestSignal) ProtoReflect() protoreflect.Message {
+func (x *HelloSignal) ProtoReflect() protoreflect.Message {
 	mi := &file_API_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -298,19 +298,19 @@ func (x *TestSignal) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TestSignal.ProtoReflect.Descriptor instead.
-func (*TestSignal) Descriptor() ([]byte, []int) {
+// Deprecated: Use HelloSignal.ProtoReflect.Descriptor instead.
+func (*HelloSignal) Descriptor() ([]byte, []int) {
 	return file_API_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *TestSignal) GetText() string {
+func (x *HelloSignal) GetText() string {
 	if x != nil {
 		return x.Text
 	}
 	return ""
 }
 
-type TestEvent struct {
+type HelloEvent struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -318,8 +318,8 @@ type TestEvent struct {
 	Text string `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
 }
 
-func (x *TestEvent) Reset() {
-	*x = TestEvent{}
+func (x *HelloEvent) Reset() {
+	*x = HelloEvent{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_API_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -327,13 +327,13 @@ func (x *TestEvent) Reset() {
 	}
 }
 
-func (x *TestEvent) String() string {
+func (x *HelloEvent) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TestEvent) ProtoMessage() {}
+func (*HelloEvent) ProtoMessage() {}
 
-func (x *TestEvent) ProtoReflect() protoreflect.Message {
+func (x *HelloEvent) ProtoReflect() protoreflect.Message {
 	mi := &file_API_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -345,12 +345,12 @@ func (x *TestEvent) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TestEvent.ProtoReflect.Descriptor instead.
-func (*TestEvent) Descriptor() ([]byte, []int) {
+// Deprecated: Use HelloEvent.ProtoReflect.Descriptor instead.
+func (*HelloEvent) Descriptor() ([]byte, []int) {
 	return file_API_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *TestEvent) GetText() string {
+func (x *HelloEvent) GetText() string {
 	if x != nil {
 		return x.Text
 	}
@@ -372,12 +372,12 @@ var file_API_proto_rawDesc = []byte{
 	0x52, 0x01, 0x61, 0x12, 0x0c, 0x0a, 0x01, 0x62, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x01,
 	0x62, 0x22, 0x1f, 0x0a, 0x0b, 0x41, 0x64, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
 	0x12, 0x10, 0x0a, 0x03, 0x73, 0x75, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x03, 0x73,
-	0x75, 0x6d, 0x22, 0x20, 0x0a, 0x0a, 0x54, 0x65, 0x73, 0x74, 0x53, 0x69, 0x67, 0x6e, 0x61, 0x6c,
-	0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x74, 0x65, 0x78, 0x74, 0x22, 0x1f, 0x0a, 0x09, 0x54, 0x65, 0x73, 0x74, 0x45, 0x76, 0x65, 0x6e,
-	0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x74, 0x65, 0x78, 0x74, 0x42, 0x0b, 0x48, 0x02, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x6d, 0x22, 0x21, 0x0a, 0x0b, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x53, 0x69, 0x67, 0x6e, 0x61,
+	0x6c, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x74, 0x65, 0x78, 0x74, 0x22, 0x20, 0x0a, 0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x45, 0x76,
+	0x65, 0x6e, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x42, 0x0b, 0x48, 0x02, 0x5a, 0x07, 0x2e, 0x3b, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -399,8 +399,8 @@ var file_API_proto_goTypes = []interface{}{
 	(*HelloResponse)(nil), // 2: HelloResponse
 	(*AddRequest)(nil),    // 3: AddRequest
 	(*AddResponse)(nil),   // 4: AddResponse
-	(*TestSignal)(nil),    // 5: TestSignal
-	(*TestEvent)(nil),     // 6: TestEvent
+	(*HelloSignal)(nil),   // 5: HelloSignal
+	(*HelloEvent)(nil),    // 6: HelloEvent
 }
 var file_API_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -477,7 +477,7 @@ func file_API_proto_init() {
 			}
 		}
 		file_API_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TestSignal); i {
+			switch v := v.(*HelloSignal); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -489,7 +489,7 @@ func file_API_proto_init() {
 			}
 		}
 		file_API_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TestEvent); i {
+			switch v := v.(*HelloEvent); i {
 			case 0:
 				return &v.state
 			case 1:

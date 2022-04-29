@@ -28,12 +28,12 @@ message AddResponse
   int32 sum = 1;
 }
 
-message TestSignal 
+message HelloSignal 
 {
   string text = 1;
 }
 
-message TestEvent
+message HelloEvent
 {
   string text = 1;
 }

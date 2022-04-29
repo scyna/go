@@ -8,8 +8,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type SignalStatefulHandler[R proto.Message] func(LOG Logger, data R)
 type SignalHandler[R proto.Message] func(data R)
+type SignalStatefulHandler[R proto.Message] func(LOG Logger, data R)
 type SignalStatelessHandler func(LOG Logger)
 
 func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {

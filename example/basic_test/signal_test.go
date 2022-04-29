@@ -9,8 +9,8 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func TestSignal(t *testing.T) {
+func TestHelloSignal(t *testing.T) {
 	scyna.EmitStatelessSignal(basic.STATELESS_CHANNEL)
-	scyna.EmitStatefulSignal(basic.TEST_SIGNAL_CHANNEL, &proto.TestSignal{Text: "Hello"})
+	scyna.EmitStatefulSignal(basic.HELLO_SIGNAL_CHANNEL, &proto.HelloSignal{Text: "Hello"})
 	time.Sleep(time.Second * 2)
 }

@@ -19,7 +19,7 @@ func TestMain(m *testing.M) {
 
 	/*register signals*/
 	scyna.RegisterStatelessSignal(basic.STATELESS_CHANNEL, basic.StatelessSignal)
-	scyna.RegisterStatefulSignal(basic.TEST_SIGNAL_CHANNEL, basic.TestSignal)
+	scyna.RegisterStatefulSignal(basic.HELLO_SIGNAL_CHANNEL, basic.HelloSignal)
 
 	exitVal := m.Run()
 	scyna_test.Release()
