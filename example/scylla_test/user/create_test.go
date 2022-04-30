@@ -18,10 +18,27 @@ func TestCreateShouldReturnSuccess(t *testing.T) {
 			Password: "1234565",
 		}}).
 		ExpectSuccess().Run(t)
+}
+
+func TestCreateThenGet(t *testing.T) {
+	cleanup()
+	var response proto.CreateUserResponse
+	scyna_test.ServiceTest(user.CREATE_USER_URL).
+		WithRequest(&proto.CreateUserRequest{User: &proto.User{
+			Email:    "a@gmail.com",
+			Name:     "Nguyen Van A",
+			Password: "1234565",
+		}}).
+		ExpectSuccess().RunAndReturnResponse(t, &response)
 
 	scyna_test.ServiceTest(user.GET_USER_URL).
 		WithRequest(&proto.GetUserRequest{Email: "a@gmail.com"}).
-		ExpectSuccess().Run(t)
+		ExpectResponse(&proto.CreateUserRequest{User: &proto.User{
+			Id:       response.Id,
+			Email:    "a@gmail.com",
+			Name:     "Nguyen Van A",
+			Password: "1234565",
+		}}).Run(t)
 }
 
 func TestCreateBadEmail(t *testing.T) {
