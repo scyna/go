@@ -15,17 +15,17 @@ const (
 	GET_USER_URL    = "/example/user/get"
 )
 
+type IRepository interface {
+	Create(LOG scyna.Logger, user *User) *scyna.Error
+	Exist(LOG scyna.Logger, email string) *scyna.Error
+	GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User)
+}
+
 type User struct {
 	ID       uint64 `db:"id"`
 	Name     string `db:"name"`
 	Email    string `db:"email"`
 	Password string `db:"password"`
-}
-
-type IRepository interface {
-	Create(LOG scyna.Logger, user *User) *scyna.Error
-	Exist(LOG scyna.Logger, email string) *scyna.Error
-	GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User)
 }
 
 func FromProto(user *proto.User) *User {

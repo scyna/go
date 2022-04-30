@@ -9,7 +9,7 @@ import (
 )
 
 type ScyllaRepository struct {
-	GetQueries *scyna.QueryPool
+	GetQueries *scyna.QueryPool /*for high frequence queries*/
 }
 
 var Repository IRepository
