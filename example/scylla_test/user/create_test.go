@@ -18,8 +18,7 @@ func TestCreateShouldReturnSuccess(t *testing.T) {
 		},
 	}
 
-	var responseCreate proto.CreateUserRequest
-	scyna_test.CallServiceParseResponse(t, user.CREATE_USER_URL, requestCreate, &responseCreate, 200)
+	scyna_test.CallServiceCheckCode(t, user.CREATE_USER_URL, requestCreate, 200)
 	scyna_test.CallServiceCheckCode(t, user.GET_USER_URL, &proto.GetUserRequest{Email: "a@gmail.com"}, 200)
 }
 
