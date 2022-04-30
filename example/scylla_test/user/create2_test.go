@@ -17,11 +17,11 @@ func TestCreate2ShouldReturnSuccess(t *testing.T) {
 			Name:     "Nguyen Van A",
 			Password: "1234565",
 		}}).
-		ExpectOK().Run(t)
+		ExpectSuccess().Run(t)
 
 	scyna_test.ServiceTest(user.GET_USER_URL).
 		WithRequest(&proto.GetUserRequest{Email: "a@gmail.com"}).
-		ExpectOK().Run(t)
+		ExpectSuccess().Run(t)
 }
 
 func TestCreate2BadEmail(t *testing.T) {

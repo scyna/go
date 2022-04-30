@@ -30,7 +30,7 @@ func (t *serviceTest) ExpectError(err *scyna.Error) *serviceTest {
 	return t
 }
 
-func (t *serviceTest) ExpectOK() *serviceTest {
+func (t *serviceTest) ExpectSuccess() *serviceTest {
 	t.status = 200
 	return t
 }
