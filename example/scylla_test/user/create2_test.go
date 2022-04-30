@@ -11,7 +11,7 @@ import (
 
 func TestCreate2ShouldReturnSuccess(t *testing.T) {
 	cleanup()
-	scyna_test.NewServiceTest(user.CREATE_USER_URL).
+	scyna_test.ServiceTest(user.CREATE_USER_URL).
 		WithRequest(&proto.CreateUserRequest{User: &proto.User{
 			Email:    "a@gmail.com",
 			Name:     "Nguyen Van A",
@@ -19,14 +19,14 @@ func TestCreate2ShouldReturnSuccess(t *testing.T) {
 		}}).
 		ExpectOK().Run(t)
 
-	scyna_test.NewServiceTest(user.GET_USER_URL).
+	scyna_test.ServiceTest(user.GET_USER_URL).
 		WithRequest(&proto.GetUserRequest{Email: "a@gmail.com"}).
 		ExpectOK().Run(t)
 }
 
 func TestCreate2BadEmail(t *testing.T) {
 	cleanup()
-	scyna_test.NewServiceTest(user.CREATE_USER_URL).
+	scyna_test.ServiceTest(user.CREATE_USER_URL).
 		WithRequest(&proto.CreateUserRequest{User: &proto.User{
 			Email:    "a+gmail.com",
 			Name:     "Nguyen Van A",

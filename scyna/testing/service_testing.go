@@ -15,7 +15,7 @@ type serviceTest struct {
 	status   int32
 }
 
-func NewServiceTest(url string) *serviceTest {
+func ServiceTest(url string) *serviceTest {
 	return &serviceTest{url: url}
 }
 
