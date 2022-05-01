@@ -14,8 +14,8 @@ func TestMain(m *testing.M) {
 	user.InitScyllaRepository()
 
 	/*register services*/
-	scyna.RegisterStatefulService(user.CREATE_USER_URL, user.Create)
-	scyna.RegisterStatefulService(user.GET_USER_URL, user.Get)
+	scyna.RegisterService(user.CREATE_USER_URL, user.Create)
+	scyna.RegisterService(user.GET_USER_URL, user.Get)
 
 	exitVal := m.Run()
 	cleanup()

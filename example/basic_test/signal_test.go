@@ -10,7 +10,7 @@ import (
 )
 
 func TestHelloSignal(t *testing.T) {
-	scyna.EmitStatelessSignal(basic.STATELESS_CHANNEL)
-	scyna.EmitStatefulSignal(basic.HELLO_SIGNAL_CHANNEL, &proto.HelloSignal{Text: "Hello"})
+	scyna.EmitSignalLite(basic.STATELESS_CHANNEL)
+	scyna.EmitSignal(basic.HELLO_SIGNAL_CHANNEL, &proto.HelloSignal{Text: "Hello"})
 	time.Sleep(time.Second * 2)
 }

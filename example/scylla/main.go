@@ -15,7 +15,7 @@ func main() {
 	})
 	defer scyna.Release()
 
-	scyna.RegisterStatefulService("/scyna.example/user/create", user.Create)
+	scyna.RegisterService("/scyna.example/user/create", user.Create)
 
 	scyna.Start()
 }

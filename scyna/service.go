@@ -10,8 +10,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type StatefulServiceHandler[R proto.Message] func(ctx *Context, request R)
-type StatelessServiceHandler func(ctx *Context)
+type ServiceHandler[R proto.Message] func(ctx *Context, request R)
 
 func CallService(url string, request proto.Message, response proto.Message) *Error {
 	req := Request{CallID: ID.Next(), JSON: false}
@@ -49,7 +48,7 @@ func CallService(url string, request proto.Message, response proto.Message) *Err
 	return SERVER_ERROR
 }
 
-func RegisterStatefulService[R proto.Message](url string, handler StatefulServiceHandler[R]) {
+func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	log.Println("Register Service: ", url)
 	var request R
 	ref := reflect.New(reflect.TypeOf(request).Elem())
@@ -81,25 +80,6 @@ func RegisterStatefulService[R proto.Message](url string, handler StatefulServic
 				handler(&ctx, request)
 			}
 		}
-	})
-
-	if err != nil {
-		log.Fatal("Can not register service:", url)
-	}
-}
-
-func RegisterStatelessService(url string, handler StatelessServiceHandler) {
-	log.Println("[Register] Sub url: ", url)
-	ctx := Context{LOG: &logger{session: false}}
-	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {
-		if err := proto.Unmarshal(m.Data, &ctx.Request); err != nil {
-			log.Print("Register unmarshal error response data:", err.Error())
-			return
-		}
-
-		ctx.Reply = m.Reply
-		ctx.LOG.Reset(ctx.Request.CallID)
-		handler(&ctx)
 	})
 
 	if err != nil {
