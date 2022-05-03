@@ -6,18 +6,17 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Hello(ctx *scyna.Context, request *proto.HelloRequest) {
-	ctx.LOG.Info("Receive HelloRequest")
+func Hello(c *scyna.Context, request *proto.HelloRequest) {
+	c.LOG.Info("Receive HelloRequest")
 
 	if err := validateHelloRequest(request); err != nil {
-		ctx.Error(scyna.REQUEST_INVALID)
+		c.Error(scyna.REQUEST_INVALID)
 		return
 	}
 
-	ctx.Done(&proto.HelloResponse{Content: "Hello " + request.Name})
+	c.Done(&proto.HelloResponse{Content: "Hello " + request.Name})
 }
 
 func validateHelloRequest(request *proto.HelloRequest) error {
-	return validation.ValidateStruct(request,
-		validation.Field(&request.Name, validation.Required, validation.Length(3, 40)))
+	return validation.Validate(request.Name, validation.Required, validation.Length(3, 40))
 }

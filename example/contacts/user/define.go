@@ -28,7 +28,7 @@ type User struct {
 	Password string `db:"password"`
 }
 
-func FromProto(user *proto.User) *User {
+func FromDTO(user *proto.User) *User {
 	return &User{
 		ID:       user.Id,
 		Name:     user.Name,
@@ -37,7 +37,7 @@ func FromProto(user *proto.User) *User {
 	}
 }
 
-func (u *User) ToProto() *proto.User {
+func (u *User) ToDTO() *proto.User {
 	return &proto.User{
 		Id:       u.ID,
 		Name:     u.Name,

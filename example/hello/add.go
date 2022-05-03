@@ -5,14 +5,14 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Add(ctx *scyna.Context, request *proto.AddRequest) {
-	ctx.LOG.Info("Receive AddRequest")
+func Add(c *scyna.Context, request *proto.AddRequest) {
+	c.LOG.Info("Receive AddRequest")
 
 	sum := request.A + request.B
 	if sum > 100 {
-		ctx.Error(ADD_RESULT_TOO_BIG)
+		c.Error(ADD_RESULT_TOO_BIG)
 		return
 	}
 
-	ctx.Done(&proto.AddResponse{Sum: sum})
+	c.Done(&proto.AddResponse{Sum: sum})
 }
