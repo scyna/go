@@ -9,7 +9,7 @@ import (
 	scyna_test "github.com/scyna/go/scyna/testing"
 )
 
-func TestHelloShouldSuccess(t *testing.T) {
+func TestHelloSuccess(t *testing.T) {
 	scyna_test.ServiceTest(hello.HELLO_URL).
 		WithRequest(&proto.HelloRequest{Name: "Alice"}).
 		ExpectResponse(&proto.HelloResponse{Content: "Hello Alice"}).

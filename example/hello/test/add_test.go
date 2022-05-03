@@ -9,7 +9,7 @@ import (
 	scyna_test "github.com/scyna/go/scyna/testing"
 )
 
-func TestAdd(t *testing.T) {
+func TestAddSuccess(t *testing.T) {
 	scyna_test.ServiceTest(hello.ADD_URL).
 		WithRequest(&proto.AddRequest{A: 5, B: 73}).
 		ExpectResponse(&proto.AddResponse{Sum: 78}).
