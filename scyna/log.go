@@ -88,7 +88,7 @@ func UseRemoteLog(count int) {
 					Text:    l.Message,
 					Session: l.Session,
 				}
-				EmitSignal(LOG_WRITE_CHANNEL, &event)
+				EmitSignalLite(LOG_WRITE_CHANNEL, &event)
 			}
 		}()
 	}
