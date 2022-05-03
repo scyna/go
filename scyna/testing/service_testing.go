@@ -59,7 +59,7 @@ func (st *serviceTest) Run(t *testing.T) {
 	}
 }
 
-func (st *serviceTest) RunAndReturnResponse(t *testing.T, response proto.Message) {
+func (st *serviceTest) RunAndReturn(t *testing.T, response proto.Message) {
 	var res = st.callService(t)
 	if st.status != res.Code {
 		t.Fatalf("Expect status %d but actually %d", st.status, res.Code)
