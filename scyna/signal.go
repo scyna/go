@@ -11,7 +11,7 @@ import (
 type SignalHandler[R proto.Message] func(LOG Logger, data R)
 
 func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
-	log.Print("Register signal:", channel)
+	log.Print("Register Signal:", channel)
 	var signal R
 	ref := reflect.New(reflect.TypeOf(signal).Elem())
 	signal = ref.Interface().(R)
@@ -31,7 +31,7 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 			log.Print("Error in parsing data:", err)
 		}
 	}); err != nil {
-		log.Fatal("Error in register event")
+		log.Fatal("Error in register signal")
 	}
 }
 

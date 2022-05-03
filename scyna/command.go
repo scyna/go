@@ -10,7 +10,7 @@ import (
 type CommandHandler func(ctx *Context)
 
 func RegisterCommand(url string, handler CommandHandler) {
-	log.Println("[Register] Sub url: ", url)
+	log.Println("Register Command:", url)
 	ctx := Context{LOG: &logger{session: false}}
 	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {
 		if err := proto.Unmarshal(m.Data, &ctx.Request); err != nil {
@@ -24,6 +24,6 @@ func RegisterCommand(url string, handler CommandHandler) {
 	})
 
 	if err != nil {
-		log.Fatal("Can not register service:", url)
+		log.Fatal("Can not register command:", url)
 	}
 }
