@@ -41,32 +41,29 @@ func (t *serviceTest) ExpectResponse(response proto.Message) *serviceTest {
 	return t
 }
 
-func (st *serviceTest) Run(t *testing.T) {
+func (st *serviceTest) Run(t *testing.T, response ...proto.Message) {
 	var res = st.callService(t)
 	if st.status != res.Code {
 		t.Fatalf("Expect status %d but actually %d", st.status, res.Code)
 	}
 
-	if st.response != nil {
-		tmp := proto.Clone(st.response)
-		if err := proto.Unmarshal(res.Body, tmp); err != nil {
+	if len(response) == 0 {
+		if st.response != nil {
+			tmp := proto.Clone(st.response)
+			if err := proto.Unmarshal(res.Body, tmp); err != nil {
+				t.Fatal("Can not parse response body")
+			}
+
+			if !proto.Equal(tmp, st.response) {
+				t.Fatal("Response not match")
+			}
+		}
+	} else if len(response) == 1 {
+		if err := proto.Unmarshal(res.Body, response[0]); err != nil {
 			t.Fatal("Can not parse response body")
 		}
-
-		if !proto.Equal(tmp, st.response) {
-			t.Fatal("Response not match")
-		}
-	}
-}
-
-func (st *serviceTest) RunAndReturn(t *testing.T, response proto.Message) {
-	var res = st.callService(t)
-	if st.status != res.Code {
-		t.Fatalf("Expect status %d but actually %d", st.status, res.Code)
-	}
-
-	if err := proto.Unmarshal(res.Body, response); err != nil {
-		t.Fatal("Can not parse response body")
+	} else {
+		t.Fatal("Too many parametter")
 	}
 }
 

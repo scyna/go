@@ -29,7 +29,7 @@ func TestCreateThenGet(t *testing.T) {
 			Name:     "Nguyen Van A",
 			Password: "1234565",
 		}}).
-		ExpectSuccess().RunAndReturn(t, &response)
+		ExpectSuccess().Run(t, &response)
 
 	scyna_test.ServiceTest(user.GET_USER_URL).
 		WithRequest(&proto.GetUserRequest{Email: "a@gmail.com"}).
