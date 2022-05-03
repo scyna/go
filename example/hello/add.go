@@ -10,7 +10,7 @@ func Add(ctx *scyna.Context, request *proto.AddRequest) {
 
 	sum := request.A + request.B
 	if sum > 100 {
-		ctx.Error(scyna.REQUEST_INVALID)
+		ctx.Error(ADD_RESULT_TOO_BIG)
 		return
 	}
 

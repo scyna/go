@@ -5,7 +5,6 @@ import (
 
 	"github.com/scyna/go/example/hello"
 	"github.com/scyna/go/example/hello/proto"
-	"github.com/scyna/go/scyna"
 	scyna_test "github.com/scyna/go/scyna/testing"
 )
 
@@ -19,6 +18,6 @@ func TestAddSuccess(t *testing.T) {
 func TestAddTooBig(t *testing.T) {
 	scyna_test.ServiceTest(hello.ADD_URL).
 		WithRequest(&proto.AddRequest{A: 50, B: 73}).
-		ExpectError(scyna.REQUEST_INVALID).
+		ExpectError(hello.ADD_RESULT_TOO_BIG).
 		Run(t)
 }
