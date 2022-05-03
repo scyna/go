@@ -13,12 +13,11 @@ func TestMain(m *testing.M) {
 	scyna_test.Init()
 
 	/*register services*/
-	scyna.RegisterServiceLite(basic.HELLO_URL, basic.Hello)
+	scyna.RegisterCommand(basic.HELLO_URL, basic.Hello)
 	scyna.RegisterService(basic.ECHO_URL, basic.Echo)
 	scyna.RegisterService(basic.ADD_URL, basic.Add)
 
 	/*register signals*/
-	scyna.RegisterSignalLite(basic.STATELESS_CHANNEL, basic.StatelessSignal)
 	scyna.RegisterSignal(basic.HELLO_SIGNAL_CHANNEL, basic.HelloSignal)
 
 	exitVal := m.Run()

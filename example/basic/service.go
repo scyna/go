@@ -6,7 +6,7 @@ import (
 )
 
 func Hello(ctx *scyna.Context) {
-	ctx.LOG.Info("Receive HelloRequest")
+	ctx.LOG.Info("Receive HelloCommand")
 	ctx.Done(&proto.HelloResponse{Text: "Hello World"})
 }
 

@@ -7,9 +7,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type ServiceLiteHandler func(ctx *Context)
+type CommandHandler func(ctx *Context)
 
-func RegisterServiceLite(url string, handler ServiceLiteHandler) {
+func RegisterCommand(url string, handler CommandHandler) {
 	log.Println("[Register] Sub url: ", url)
 	ctx := Context{LOG: &logger{session: false}}
 	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {
