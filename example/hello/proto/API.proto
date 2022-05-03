@@ -1,0 +1,24 @@
+syntax = "proto3";
+option  optimize_for = CODE_SIZE;
+option  go_package = ".;proto";
+
+message HelloRequest
+{
+  string name = 1;
+}
+
+message HelloResponse 
+{
+  string content = 1;
+}
+
+message AddRequest
+{
+  int32 a = 1;
+  int32 b = 2;
+}
+
+message AddResponse
+{
+  int32 sum = 1;
+}
