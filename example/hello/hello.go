@@ -19,5 +19,5 @@ func Hello(ctx *scyna.Context, request *proto.HelloRequest) {
 
 func validateHelloRequest(request *proto.HelloRequest) error {
 	return validation.ValidateStruct(request,
-		validation.Field(&request.Name, validation.Required, validation.Length(3, 50)))
+		validation.Field(&request.Name, validation.Required, validation.Length(3, 40)))
 }

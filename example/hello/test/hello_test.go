@@ -24,8 +24,9 @@ func TestHelloEmptyName(t *testing.T) {
 }
 
 func TestHelloLongName(t *testing.T) {
+	name := "Very long name will cause request invalid."
 	scyna_test.ServiceTest(hello.HELLO_URL).
-		WithRequest(&proto.HelloRequest{Name: "Very long name will cause request invalid. Very long name will cause request invalid"}).
+		WithRequest(&proto.HelloRequest{Name: name}).
 		ExpectError(scyna.REQUEST_INVALID).
 		Run(t)
 }
