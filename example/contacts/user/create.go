@@ -3,7 +3,7 @@ package user
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	"github.com/scyna/go/example/scylla/proto"
+	"github.com/scyna/go/example/contacts/proto"
 	"github.com/scyna/go/scyna"
 )
 

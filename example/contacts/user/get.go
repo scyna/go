@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/scyna/go/example/scylla/proto"
+	"github.com/scyna/go/example/contacts/proto"
 	"github.com/scyna/go/scyna"
 )
 
