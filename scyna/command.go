@@ -27,3 +27,7 @@ func RegisterCommand(url string, handler CommandHandler) {
 		log.Fatal("Can not register command:", url)
 	}
 }
+
+func SendCommand(url string, response proto.Message) *Error {
+	return CallService(url, nil, response)
+}
