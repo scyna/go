@@ -19,6 +19,7 @@ type IRepository interface {
 	Create(LOG scyna.Logger, user *User) *scyna.Error
 	Exist(LOG scyna.Logger, email string) *scyna.Error
 	GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User)
+	ListFriend(LOG scyna.Logger, uid uint64) (*scyna.Error, []*User)
 }
 
 type User struct {
