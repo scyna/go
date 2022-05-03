@@ -19,7 +19,7 @@ func Create(ctx *scyna.Context, request *proto.CreateUserRequest) {
 		return
 	}
 
-	user := FromProto(request.User)
+	user := FromDTO(request.User)
 	user.ID = scyna.ID.Next()
 	if err := Repository.Create(ctx.LOG, user); err != nil {
 		ctx.Error(err)

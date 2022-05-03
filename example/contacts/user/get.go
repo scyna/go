@@ -11,6 +11,6 @@ func Get(ctx *scyna.Context, request *proto.GetUserRequest) {
 		ctx.Error(err)
 		return
 	} else {
-		ctx.Done(&proto.GetUserResponse{User: user.ToProto()})
+		ctx.Done(&proto.GetUserResponse{User: user.ToDTO()})
 	}
 }
