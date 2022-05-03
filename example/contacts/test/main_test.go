@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/scyna/go/example/scylla/user"
+	"github.com/scyna/go/example/contacts/user"
 	"github.com/scyna/go/scyna"
 	scyna_test "github.com/scyna/go/scyna/testing"
 )
