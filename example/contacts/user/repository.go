@@ -32,21 +32,6 @@ func (r *ScyllaRepository) Create(LOG scyna.Logger, user *User) *scyna.Error {
 	return nil
 }
 
-func (r *ScyllaRepository) Exist(LOG scyna.Logger, email string) *scyna.Error {
-	var id uint64
-	if err := qb.Select("ex.user").
-		Columns("id").
-		Where(qb.Eq("email")).
-		Limit(1).
-		Query(scyna.DB).
-		Bind(email).
-		GetRelease(&id); err != nil {
-		LOG.Error(err.Error())
-		return USER_NOT_EXISTED
-	}
-	return nil
-}
-
 func newGetQuery() *gocqlx.Queryx {
 	return qb.Select("ex.user").
 		Columns("id", "name", "email", "password").

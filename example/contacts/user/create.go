@@ -14,7 +14,7 @@ func Create(ctx *scyna.Context, request *proto.CreateUserRequest) {
 		return
 	}
 
-	if err := Repository.Exist(ctx.LOG, request.User.Email); err == nil {
+	if err, _ := Repository.GetByEmail(ctx.LOG, request.User.Email); err == nil {
 		ctx.Error(USER_EXISTED)
 		return
 	}
