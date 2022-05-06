@@ -1,6 +1,10 @@
 package scyna
 
-import "time"
+import (
+	"time"
+
+	"google.golang.org/protobuf/proto"
+)
 
 type TraceType uint32
 
@@ -8,10 +12,9 @@ const (
 	TRACE_SERVICE TraceType = 1
 	TRACE_EVENT   TraceType = 2
 	TRACE_SIGNAL  TraceType = 3
-	TRACE_FUNC    TraceType = 4
 )
 
-type Trace struct {
+type context struct {
 	ParentID uint64
 	ID       uint64
 	Type     TraceType
@@ -20,35 +23,32 @@ type Trace struct {
 }
 
 type Service struct {
-	Trace
+	context
 	Request Request
 	Reply   string
 }
 
-func (tr *Trace) Save() {
+func (ctx *context) Tag(key string, value string) {
 	/*TODO*/
 }
 
-func (tr *Trace) Tag(key string, value string) {
+func (ctx *context) Log(level LogLevel, value string) {
 	/*TODO*/
 }
 
-func (tr *Trace) Log(level LogLevel, value string) {
+func (ctx *context) EmitSignal(channel string, data proto.Message) {
+
 	/*TODO*/
 }
 
-func (tr *Trace) SendRequest() {
+func (ctx *context) EmitEvent(channel string, data proto.Message) {
 	/*TODO*/
 }
 
-func (tr *Trace) EmitSignal() {
+func (ctx *context) CallService(url string, request proto.Message, response proto.Message) {
 	/*TODO*/
 }
 
-func (tr *Trace) PostEvent() {
-	/*TODO*/
-}
-
-func (tr *Trace) SendCommand() {
+func (ctx *context) SendCommand(url string, response proto.Message) {
 	/*TODO*/
 }
