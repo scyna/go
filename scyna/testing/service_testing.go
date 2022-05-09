@@ -68,7 +68,7 @@ func (st *serviceTest) Run(t *testing.T, response ...proto.Message) {
 }
 
 func (st *serviceTest) callService(t *testing.T) *scyna.Response {
-	req := scyna.Request{CallID: scyna.ID.Next(), JSON: false}
+	req := scyna.Request{TraceID: scyna.ID.Next(), JSON: false}
 	res := scyna.Response{}
 
 	if st.request != nil {

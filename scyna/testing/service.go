@@ -10,7 +10,7 @@ import (
 )
 
 func CallService(t *testing.T, url string, request proto.Message) *scyna.Response {
-	req := scyna.Request{CallID: scyna.ID.Next(), JSON: false}
+	req := scyna.Request{TraceID: scyna.ID.Next(), JSON: false}
 	res := scyna.Response{}
 
 	if request != nil {

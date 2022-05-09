@@ -7,7 +7,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func ListFriend(c *scyna.Context, request *proto.ListFriendRequest) {
+func ListFriend(c *scyna.Service, request *proto.ListFriendRequest) {
 	c.LOG.Info("Receive ListFriendRequest")
 
 	if validation.Validate(request.Email, validation.Required, is.Email) != nil {

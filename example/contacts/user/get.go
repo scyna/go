@@ -5,7 +5,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Get(ctx *scyna.Context, request *proto.GetUserRequest) {
+func Get(ctx *scyna.Service, request *proto.GetUserRequest) {
 	ctx.LOG.Info("Receive GetUserRequest")
 	if err, user := Repository.GetByEmail(ctx.LOG, request.Email); err != nil {
 		ctx.Error(err)

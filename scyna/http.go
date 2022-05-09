@@ -19,7 +19,7 @@ type ContextPool struct {
 
 func (ctx *HttpContext) reset() {
 	ctx.Request.Body = ctx.Request.Body[0:0]
-	ctx.Request.CallID = uint64(0)
+	ctx.Request.TraceID = uint64(0)
 	ctx.Response.Body = ctx.Response.Body[0:0]
 	ctx.Response.Code = int32(0)
 	ctx.Response.SessionID = uint64(0)
@@ -28,8 +28,8 @@ func (ctx *HttpContext) reset() {
 func NewContext() *HttpContext {
 	return &HttpContext{
 		Request: Request{
-			Body:   make([]byte, 4096),
-			CallID: 0,
+			Body:    make([]byte, 4096),
+			TraceID: 0,
 		},
 		Response: Response{
 			Body:      make([]byte, 0),

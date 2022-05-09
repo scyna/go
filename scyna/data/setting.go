@@ -20,8 +20,8 @@ func WriteSetting(module string, key string, value string) {
 		}
 	}
 
-	scyna.EmitSignal(scyna.SETTING_UPDATE_CHANNEL+module, &scyna.SettingUpdatedSignal{
-		Key:   key,
-		Value: value,
-	})
+	// scyna.EmitSignal(scyna.SETTING_UPDATE_CHANNEL+module, &scyna.SettingUpdatedSignal{
+	// 	Key:   key,
+	// 	Value: value,
+	// })
 }

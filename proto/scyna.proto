@@ -9,7 +9,7 @@ option go_package = ".;scyna";
 
 message Request 
 {
-  uint64 CallID = 1;
+  uint64 TraceID = 1;
   bytes Body = 2;
   string Data = 4;
   bool JSON = 3;
@@ -26,7 +26,7 @@ message Response
 
 message EventOrSignal
 {
-  uint64 CallID = 1;
+  uint64 ParentID = 1;
   bytes Body = 2;
   string Data = 3;
 }

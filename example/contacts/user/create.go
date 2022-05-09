@@ -7,7 +7,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Create(ctx *scyna.Context, request *proto.CreateUserRequest) {
+func Create(ctx *scyna.Service, request *proto.CreateUserRequest) {
 	ctx.LOG.Info("Receive CreateUserRequest")
 	if err := validateCreateRequest(request.User); err != nil {
 		ctx.Error(scyna.REQUEST_INVALID)

@@ -38,7 +38,7 @@ func (g *generator) Next() uint64 {
 }
 
 func (g *generator) getID() bool {
-	req := Request{CallID: 0, JSON: false}
+	req := Request{TraceID: 0, JSON: false}
 	res := Response{}
 
 	if data, err := proto.Marshal(&req); err == nil {

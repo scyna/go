@@ -8,13 +8,13 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type Context struct {
+type Service struct {
+	Context
 	Request Request
 	Reply   string
-	LOG     Logger
 }
 
-func (ctx *Context) Error(e *Error) {
+func (ctx *Service) Error(e *Error) {
 	response := Response{Code: 400}
 
 	var err error
@@ -31,7 +31,7 @@ func (ctx *Context) Error(e *Error) {
 	ctx.flush(&response)
 }
 
-func (ctx *Context) Done(r proto.Message) {
+func (ctx *Service) Done(r proto.Message) {
 	response := Response{Code: 200}
 
 	var err error
@@ -48,7 +48,7 @@ func (ctx *Context) Done(r proto.Message) {
 	ctx.flush(&response)
 }
 
-func (ctx *Context) AuthDone(r proto.Message, token string, expired uint64) {
+func (ctx *Service) AuthDone(r proto.Message, token string, expired uint64) {
 	response := Response{Code: 200, Token: token, Expired: expired}
 
 	var err error
@@ -82,7 +82,7 @@ func (ctx *Context) AuthDone(r proto.Message, token string, expired uint64) {
 // 	return true, response.Token
 // }
 
-func (ctx *Context) flush(response *Response) {
+func (ctx *Service) flush(response *Response) {
 	response.SessionID = Session.ID()
 	bytes, err := proto.Marshal(response)
 	if err != nil {

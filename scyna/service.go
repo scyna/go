@@ -10,10 +10,10 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type ServiceHandler[R proto.Message] func(ctx *Context, request R)
+type ServiceHandler[R proto.Message] func(ctx *Service, request R)
 
 func CallService(url string, request proto.Message, response proto.Message) *Error {
-	req := Request{CallID: ID.Next(), JSON: false}
+	req := Request{TraceID: ID.Next(), JSON: false}
 	res := Response{}
 
 	if request != nil {
@@ -53,16 +53,23 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	var request R
 	ref := reflect.New(reflect.TypeOf(request).Elem())
 	request = ref.Interface().(R)
+	ctx := Service{
+		Context: Context{
+			Path: url,
+			Type: TRACE_SERVICE,
+			LOG:  &logger{session: false},
+		},
+	}
 
-	ctx := Context{LOG: &logger{session: false}}
 	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {
 		if err := proto.Unmarshal(m.Data, &ctx.Request); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
 			return
 		}
 
+		ctx.ID = ctx.Request.TraceID
 		ctx.Reply = m.Reply
-		ctx.LOG.Reset(ctx.Request.CallID)
+		ctx.LOG.Reset(ctx.ID)
 
 		if ctx.Request.JSON {
 			if err := json.Unmarshal(ctx.Request.Body, request); err != nil {
