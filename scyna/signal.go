@@ -41,9 +41,7 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 			log.Print("Error in parsing data:", err)
 		}
 
-		context.Duration = uint64(time.Now().UnixNano() - context.Time.UnixNano())
 		context.Save()
-
 	}); err != nil {
 		log.Fatal("Error in register signal")
 	}

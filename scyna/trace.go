@@ -104,6 +104,7 @@ func (ctx *Context) Tag(key string, value string) {
 }
 
 func (ctx *Context) Save() {
+	ctx.Duration = uint64(time.Now().UnixNano() - ctx.Time.UnixNano())
 	EmitSignalLite(TRACE_CREATED_CHANNEL, &TraceCreatedSignal{
 		ID:        ctx.ID,
 		ParentID:  ctx.ParentID,
