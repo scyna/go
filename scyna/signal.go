@@ -17,21 +17,23 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 	ref := reflect.New(reflect.TypeOf(signal).Elem())
 	signal = ref.Interface().(R)
 
+	context := Context{
+		Path:      channel,
+		SessionID: Session.ID(),
+		Type:      TRACE_SIGNAL,
+		LOG:       &logger{session: false},
+	}
+
 	if _, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
 			return
 		}
-
-		context := Context{
-			ID:        ID.Next(),
-			ParentID:  msg.ParentID,
-			Time:      time.Now(),
-			Path:      channel,
-			SessionID: Session.ID(),
-			Type:      TRACE_SIGNAL,
-		}
+		context.Time = time.Now()
+		context.ID = ID.Next()
+		context.ParentID = msg.ParentID
+		context.LOG.Reset(context.ID)
 
 		if err := proto.Unmarshal(msg.Body, signal); err == nil {
 			handler(&context, signal)
@@ -39,6 +41,7 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 			log.Print("Error in parsing data:", err)
 		}
 
+		context.Duration = uint64(time.Now().UnixNano() - context.Time.UnixNano())
 		context.Save()
 
 	}); err != nil {

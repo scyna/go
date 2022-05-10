@@ -49,6 +49,16 @@ func (ctx *Context) PostEvent(channel string, data proto.Message) {
 }
 
 func (ctx *Context) CallService(url string, request proto.Message, response proto.Message) *Error {
+	context := Context{
+		ID:        ID.Next(),
+		ParentID:  ctx.ID,
+		Time:      time.Now(),
+		Path:      url,
+		SessionID: Session.ID(),
+		Type:      TRACE_SIGNAL,
+	}
+	defer context.Save()
+
 	req := Request{TraceID: ctx.ID, JSON: false}
 	res := Response{}
 
@@ -86,9 +96,22 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 }
 
 func (ctx *Context) Tag(key string, value string) {
-	/*TODO*/
+	EmitSignalLite(TAG_CREATED_CHANNEL, &TagCreatedSignal{
+		TraceID: ctx.ID,
+		Key:     key,
+		Value:   value,
+	})
 }
 
 func (ctx *Context) Save() {
-	/*TODO*/
+	EmitSignalLite(TRACE_CREATED_CHANNEL, &TraceCreatedSignal{
+		ID:        ctx.ID,
+		ParentID:  ctx.ParentID,
+		Type:      uint32(ctx.Type),
+		Time:      uint64(ctx.Time.UnixMicro()),
+		Duration:  ctx.Duration,
+		Path:      ctx.Path,
+		Source:    ctx.Source,
+		SessionID: ctx.SessionID,
+	})
 }

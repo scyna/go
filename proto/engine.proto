@@ -57,13 +57,30 @@ message GetSNResponse {
 }
 
 /*LOG*/
-message WriteLogSignal {
-  uint64 time = 1;
-  uint32 level = 2;
-  string text = 3;
-  uint64 id = 4;
-  uint64 seq = 5;
-  bool   session = 6;
+message LogCreatedSignal {
+  uint64 Time = 1;
+  uint32 Level = 2;
+  string Text = 3;
+  uint64 ID = 4;
+  uint64 SEQ = 5;
+  bool   Session = 6;
+}
+
+message TraceCreatedSignal {
+  uint64 ID = 1;
+  uint64 ParentID = 2;
+  uint32 Type = 3;
+  uint64 Time = 4;
+  uint64 Duration = 5;
+  string Path = 6;
+  string Source = 7;
+  uint64 SessionID = 8;
+}
+
+message TagCreatedSignal {
+  uint64 TraceID = 1;
+  string Key = 2;
+  string Value = 3;
 }
 
 /*SETTING*/

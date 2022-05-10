@@ -81,14 +81,14 @@ func UseRemoteLog(count int) {
 		go func() {
 			for l := range logQueue {
 				time_ := time.Now().UnixMicro()
-				event := WriteLogSignal{
+				event := LogCreatedSignal{
 					Time:    uint64(time_),
-					Id:      l.ID,
+					ID:      l.ID,
 					Level:   uint32(l.Level),
 					Text:    l.Message,
 					Session: l.Session,
 				}
-				EmitSignalLite(LOG_WRITE_CHANNEL, &event)
+				EmitSignalLite(LOG_CREATED_CHANNEL, &event)
 			}
 		}()
 	}
