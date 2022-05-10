@@ -9,6 +9,7 @@ const (
 	LOG_CREATED_CHANNEL    = "scyna.log"
 	TRACE_CREATED_CHANNEL  = "scyna.trace"
 	TAG_CREATED_CHANNEL    = "scyna.tag"
+	SERVICE_DONE_CHANNEL   = "scyna.tag.service"
 	SETTING_WRITE_URL      = "/scyna/setting/write"
 	SETTING_READ_URL       = "/scyna/setting/read"
 	SETTING_REMOVE_URL     = "/scyna/setting/remove"

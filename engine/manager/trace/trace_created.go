@@ -9,7 +9,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func WriteTrace(signal *scyna.TraceCreatedSignal) {
+func TraceCreated(signal *scyna.TraceCreatedSignal) {
 	log.Print("Write Trace to Database")
 	day := scyna.GetDayByTime(time.Now())
 

@@ -25,7 +25,7 @@ CREATE TABLE scyna.tag
 (
     trace_id     bigint,
     key          text,
-    value        blob,
+    value        text,
     PRIMARY KEY (trace_id, key)
 );
 

@@ -30,10 +30,3 @@ message EventOrSignal
   bytes Body = 2;
   string Data = 3;
 }
-
-message ServiceTag
-{
-  uint32 Status = 1;
-  string Request = 2;
-  string Response = 3;
-}

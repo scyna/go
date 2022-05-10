@@ -98,7 +98,7 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 	return SERVER_ERROR
 }
 
-func (ctx *Context) Tag(key string, value []byte) {
+func (ctx *Context) Tag(key string, value string) {
 	if ctx.ID == 0 {
 		return
 	}
