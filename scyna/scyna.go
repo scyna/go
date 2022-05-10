@@ -12,6 +12,8 @@ import (
 	"github.com/scylladb/gocqlx/v2"
 )
 
+const REQUEST_TIMEOUT = 10
+
 var Connection *nats.Conn
 var JetStream nats.JetStreamContext
 var Session *session

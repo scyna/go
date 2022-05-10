@@ -98,6 +98,7 @@ func (st *serviceTest) callService(t *testing.T) *scyna.Response {
 	} else {
 		t.Fatal("Bad Request:", err)
 	}
+
 	context.SessionID = res.SessionID
 	return &res
 }
