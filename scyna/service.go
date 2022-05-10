@@ -12,7 +12,7 @@ import (
 
 type ServiceHandler[R proto.Message] func(ctx *Service, request R)
 
-func CallService(url string, request proto.Message, response proto.Message) *Error {
+func callService(url string, request proto.Message, response proto.Message) *Error {
 	context := Context{
 		ID:       ID.Next(),
 		ParentID: 0,

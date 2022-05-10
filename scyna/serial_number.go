@@ -32,7 +32,7 @@ func (sn *serialNumber) Next() string {
 	} else {
 		request := GetSNRequest{Key: sn.key}
 		var response GetSNResponse
-		if r := CallService(GEN_GET_SN_URL, &request, &response); r.Code == 0 {
+		if r := callService(GEN_GET_SN_URL, &request, &response); r.Code == 0 {
 			sn.prefix = response.Prefix
 			sn.next = response.Start
 			sn.last = response.End
