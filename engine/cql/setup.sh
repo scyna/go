@@ -11,8 +11,8 @@ cqlsh -f module.cql
 echo "session"
 cqlsh -f session.cql
 
-echo "call"
-cqlsh -f call.cql
+echo "trace"
+cqlsh -f trace.cql
 
 echo "client"
 cqlsh -f client.cql

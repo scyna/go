@@ -49,7 +49,7 @@ func UseDirectLog(count int) {
 
 	for i := 0; i < count; i++ {
 		qSession := qb.Insert("scyna.session_log").Columns("session_id", "day", "time", "seq", "level", "message").Unique().Query(DB)
-		qService := qb.Insert("scyna.call_log").Columns("call_id", "time", "seq", "level", "message").Unique().Query(DB)
+		qService := qb.Insert("scyna.log").Columns("trace_id", "time", "seq", "level", "message").Unique().Query(DB)
 
 		go func() {
 			for l := range logQueue {
