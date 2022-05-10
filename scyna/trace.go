@@ -50,12 +50,11 @@ func (ctx *Context) PostEvent(channel string, data proto.Message) {
 
 func (ctx *Context) CallService(url string, request proto.Message, response proto.Message) *Error {
 	context := Context{
-		ID:        ID.Next(),
-		ParentID:  ctx.ID,
-		Time:      time.Now(),
-		Path:      url,
-		SessionID: Session.ID(),
-		Type:      TRACE_SIGNAL,
+		ID:       ID.Next(),
+		ParentID: ctx.ID,
+		Time:     time.Now(),
+		Path:     url,
+		Type:     TRACE_SERVICE,
 	}
 	defer context.Save()
 
@@ -81,6 +80,7 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 		return BAD_REQUEST
 	}
 
+	context.SessionID = res.SessionID
 	if res.Code == 200 {
 		if err := proto.Unmarshal(res.Body, response); err == nil {
 			return OK
@@ -92,7 +92,6 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 		}
 	}
 	return SERVER_ERROR
-
 }
 
 func (ctx *Context) Tag(key string, value string) {

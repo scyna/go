@@ -14,12 +14,11 @@ type ServiceHandler[R proto.Message] func(ctx *Service, request R)
 
 func CallService(url string, request proto.Message, response proto.Message) *Error {
 	context := Context{
-		ID:        ID.Next(),
-		ParentID:  0,
-		Time:      time.Now(),
-		Path:      url,
-		SessionID: Session.ID(),
-		Type:      TRACE_SIGNAL,
+		ID:       ID.Next(),
+		ParentID: 0,
+		Time:     time.Now(),
+		Path:     url,
+		Type:     TRACE_SERVICE,
 	}
 	defer context.Save()
 
@@ -45,6 +44,7 @@ func CallService(url string, request proto.Message, response proto.Message) *Err
 		return BAD_REQUEST
 	}
 
+	context.SessionID = res.SessionID
 	if res.Code == 200 {
 		if err := proto.Unmarshal(res.Body, response); err == nil {
 			return OK

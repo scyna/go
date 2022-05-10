@@ -68,6 +68,15 @@ func (st *serviceTest) Run(t *testing.T, response ...proto.Message) {
 }
 
 func (st *serviceTest) callService(t *testing.T) *scyna.Response {
+	context := scyna.Context{
+		ID:       scyna.ID.Next(),
+		ParentID: 0,
+		Time:     time.Now(),
+		Path:     st.url,
+		Type:     scyna.TRACE_SERVICE,
+	}
+	defer context.Save()
+
 	req := scyna.Request{TraceID: scyna.ID.Next(), JSON: false}
 	res := scyna.Response{}
 
@@ -89,5 +98,6 @@ func (st *serviceTest) callService(t *testing.T) *scyna.Response {
 	} else {
 		t.Fatal("Bad Request:", err)
 	}
+	context.SessionID = res.SessionID
 	return &res
 }
