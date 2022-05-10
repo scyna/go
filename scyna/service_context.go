@@ -12,6 +12,7 @@ type Service struct {
 	Context
 	Request Request
 	Reply   string
+	request proto.Message
 }
 
 func (ctx *Service) Error(e *Error) {
@@ -29,6 +30,7 @@ func (ctx *Service) Error(e *Error) {
 		response.Body = []byte(err.Error())
 	}
 	ctx.flush(&response)
+	ctx.saveTag(200, e)
 }
 
 func (ctx *Service) Done(r proto.Message) {
@@ -46,6 +48,7 @@ func (ctx *Service) Done(r proto.Message) {
 	}
 
 	ctx.flush(&response)
+	ctx.saveTag(200, r)
 }
 
 func (ctx *Service) AuthDone(r proto.Message, token string, expired uint64) {
@@ -63,6 +66,34 @@ func (ctx *Service) AuthDone(r proto.Message, token string, expired uint64) {
 	}
 
 	ctx.flush(&response)
+	ctx.saveTag(200, r)
+}
+
+func (ctx *Service) flush(response *Response) {
+	response.SessionID = Session.ID()
+	bytes, err := proto.Marshal(response)
+	if err != nil {
+		log.Print("Register marshal error response data:", err.Error())
+		return
+	}
+	err = Connection.Publish(ctx.Reply, bytes)
+	if err != nil {
+		LOG.Error(fmt.Sprintf("Nats publish to [%s] error: %s", ctx.Reply, err.Error()))
+	}
+}
+
+func (ctx *Service) saveTag(code uint32, response proto.Message) {
+	req, _ := json.Marshal(ctx.request)
+	res, _ := json.Marshal(response)
+
+	tag := ServiceTag{
+		Status:   code,
+		Request:  string(req),
+		Response: string(res),
+	}
+
+	data, _ := proto.Marshal(&tag)
+	ctx.Tag("data", data)
 }
 
 // func (s *Context) Auth(org string, secret string, apps []string, userID string) (bool, string) {
@@ -81,16 +112,3 @@ func (ctx *Service) AuthDone(r proto.Message, token string, expired uint64) {
 // 	s.Response.Expired = response.Expired
 // 	return true, response.Token
 // }
-
-func (ctx *Service) flush(response *Response) {
-	response.SessionID = Session.ID()
-	bytes, err := proto.Marshal(response)
-	if err != nil {
-		log.Print("Register marshal error response data:", err.Error())
-		return
-	}
-	err = Connection.Publish(ctx.Reply, bytes)
-	if err != nil {
-		LOG.Error(fmt.Sprintf("Nats publish to [%s] error: %s", ctx.Reply, err.Error()))
-	}
-}

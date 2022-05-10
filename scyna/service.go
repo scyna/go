@@ -69,6 +69,7 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 			Type: TRACE_SERVICE,
 			LOG:  &logger{session: false},
 		},
+		request: request,
 	}
 
 	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {

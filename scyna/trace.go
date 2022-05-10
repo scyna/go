@@ -98,7 +98,7 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 	return SERVER_ERROR
 }
 
-func (ctx *Context) Tag(key string, value string) {
+func (ctx *Context) Tag(key string, value []byte) {
 	EmitSignalLite(TAG_CREATED_CHANNEL, &TagCreatedSignal{
 		TraceID: ctx.ID,
 		Key:     key,

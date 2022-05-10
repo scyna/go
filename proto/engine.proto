@@ -80,7 +80,7 @@ message TraceCreatedSignal {
 message TagCreatedSignal {
   uint64 TraceID = 1;
   string Key = 2;
-  string Value = 3;
+  bytes Value = 3;
 }
 
 /*SETTING*/
