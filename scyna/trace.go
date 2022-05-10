@@ -48,6 +48,10 @@ func (ctx *Context) PostEvent(channel string, data proto.Message) {
 	}
 }
 
+func (ctx *Context) SendCommand(url string, response proto.Message) *Error {
+	return ctx.CallService(url, nil, response)
+}
+
 func (ctx *Context) CallService(url string, request proto.Message, response proto.Message) *Error {
 	context := Context{
 		ID:       ID.Next(),

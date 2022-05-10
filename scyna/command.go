@@ -36,6 +36,6 @@ func RegisterCommand(url string, handler CommandHandler) {
 	}
 }
 
-func SendCommand(url string, response proto.Message) *Error {
-	return CallService(url, nil, response)
-}
+// func SendCommand(url string, response proto.Message) *Error {
+// 	return CallService(url, nil, response)
+// }
