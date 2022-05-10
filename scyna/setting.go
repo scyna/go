@@ -14,7 +14,7 @@ type settings struct {
 func (s *settings) Remove(key string) bool {
 	request := RemoveSettingRequest{Module: module, Key: key}
 	var response Error
-	if err := CallService(SETTING_REMOVE_URL, &request, &response); err.Code == OK.GetCode() {
+	if err := callService(SETTING_REMOVE_URL, &request, &response); err.Code == OK.GetCode() {
 		s.removed(key)
 		return true
 	}
@@ -24,7 +24,7 @@ func (s *settings) Remove(key string) bool {
 func (s *settings) Write(key string, value string) bool {
 	request := WriteSettingRequest{Module: module, Key: key, Value: value}
 	var response Error
-	if err := CallService(SETTING_WRITE_URL, &request, &response); err.Code == OK.GetCode() {
+	if err := callService(SETTING_WRITE_URL, &request, &response); err.Code == OK.GetCode() {
 		s.updated(key, value)
 		return true
 	}
@@ -43,7 +43,7 @@ func (s *settings) ReadString(key string) (bool, string) {
 	/*from manager*/
 	request := ReadSettingRequest{Module: module, Key: key}
 	var response ReadSettingResponse
-	if err := CallService(SETTING_READ_URL, &request, &response); err.Code == OK.GetCode() {
+	if err := callService(SETTING_READ_URL, &request, &response); err.Code == OK.GetCode() {
 		s.updated(key, response.Value)
 		return true, response.Value
 	}
