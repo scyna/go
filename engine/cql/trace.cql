@@ -6,6 +6,7 @@ CREATE TABLE scyna.trace
     id          bigint,
     time        timestamp,
     session_id  bigint,
+    duration    bigint,
     parent_id   bigint,
     PRIMARY KEY ((path, day), id)
 );

@@ -2,32 +2,48 @@ package trace
 
 import (
 	"log"
+	"time"
 
+	"github.com/gocql/gocql"
+	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/scyna/go/scyna"
 )
 
 func WriteTrace(signal *scyna.TraceCreatedSignal) {
 	log.Print("Write Trace to Database")
+	day := scyna.GetDayByTime(time.Now())
 
-	// qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
-	// qBatch.Query("INSERT INTO scyna.call(id, day, time, duration, request, response, source, status, session_id, caller_id)"+
-	// 	" VALUES (?,?,?,?,?,?,?,?,?,?)",
-	// 	signal.Id,
-	// 	signal.Day,
-	// 	time.UnixMicro(int64(signal.Time)),
-	// 	signal.Duration,
-	// 	signal.Request,
-	// 	signal.Response,
-	// 	signal.Source,
-	// 	signal.Status,
-	// 	signal.SessionId,
-	// 	signal.CallerId)
-	// if len(signal.CallerId) > 0 {
-	// 	qBatch.Query("INSERT INTO scyna.client_has_call(client_id, call_id, day) VALUES (?,?,?)",
-	// 		signal.CallerId, signal.Id, signal.Day)
-	// }
-	// if err := scyna.DB.ExecuteBatch(qBatch); err != nil {
-	// 	log.Print(err)
-	// 	scyna.LOG.Error("Can not save call: " + err.Error())
-	// }
+	if signal.ParentID == 0 {
+		if err := qb.Insert("scyna.trace").
+			Columns("path", "day", "id", "time", "duration", "session_id").
+			Query(scyna.DB).
+			Bind(
+				signal.Path,
+				day,
+				signal.ID,
+				time.UnixMicro(int64(signal.Time)),
+				signal.Duration,
+				signal.SessionID).
+			ExecRelease(); err != nil {
+			log.Print(err)
+		}
+	} else {
+		qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
+		qBatch.Query("INSERT INTO scyna.trace(path, day, id, time, duration, session_id, parent_id)"+
+			" VALUES (?,?,?,?,?,?,?)",
+			signal.Path,
+			signal.ID,
+			day,
+			time.UnixMicro(int64(signal.Time)),
+			signal.Duration,
+			signal.SessionID,
+			signal.ParentID)
+		qBatch.Query("INSERT INTO scyna.span(parent_id, child_id) VALUES (?,?)",
+			signal.ParentID, signal.ID)
+
+		if err := scyna.DB.ExecuteBatch(qBatch); err != nil {
+			log.Print(err)
+		}
+	}
+
 }
