@@ -5,9 +5,11 @@ CREATE TABLE scyna.trace
     day         int,
     id          bigint,
     time        timestamp,
+    type        smallint,
     session_id  bigint,
     duration    bigint,
     parent_id   bigint,
+    source      text,
     PRIMARY KEY ((path, day), id)
 );
 CREATE INDEX ON scyna.trace(id);

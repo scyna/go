@@ -59,6 +59,7 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 		Time:     time.Now(),
 		Path:     url,
 		Type:     TRACE_SERVICE,
+		Source:   module,
 	}
 	defer context.Save()
 

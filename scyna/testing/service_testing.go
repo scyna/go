@@ -74,6 +74,7 @@ func (st *serviceTest) callService(t *testing.T) *scyna.Response {
 		Time:     time.Now(),
 		Path:     st.url,
 		Type:     scyna.TRACE_SERVICE,
+		Source:   "scyna.test",
 	}
 	defer context.Save()
 
