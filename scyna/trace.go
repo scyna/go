@@ -99,6 +99,9 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 }
 
 func (ctx *Context) Tag(key string, value []byte) {
+	if ctx.ID == 0 {
+		return
+	}
 	EmitSignalLite(TAG_CREATED_CHANNEL, &TagCreatedSignal{
 		TraceID: ctx.ID,
 		Key:     key,
