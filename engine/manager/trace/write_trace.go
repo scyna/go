@@ -1,4 +1,4 @@
-package call
+package trace
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Write(signal *scyna.TraceCreatedSignal) {
+func WriteTrace(signal *scyna.TraceCreatedSignal) {
 	log.Print("Write Trace to Database")
 
 	// qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)

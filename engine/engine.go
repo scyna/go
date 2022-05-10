@@ -5,14 +5,13 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/scyna/engine/manager/call"
-
 	"github.com/scyna/engine/gateway"
 	"github.com/scyna/engine/manager/authentication"
 	"github.com/scyna/engine/manager/generator"
 	"github.com/scyna/engine/manager/logging"
 	"github.com/scyna/engine/manager/session"
 	"github.com/scyna/engine/manager/setting"
+	"github.com/scyna/engine/manager/trace"
 	scyna "github.com/scyna/go/scyna"
 )
 
@@ -54,8 +53,8 @@ func main() {
 	scyna.RegisterSignalLite(scyna.LOG_CREATED_CHANNEL, logging.Write)
 
 	/*trace*/
-	scyna.RegisterSignalLite(scyna.TRACE_CREATED_CHANNEL, call.Write)
-	//scyna.RegisterSignalLite(scyna.TAG_CREATED_CHANNEL, call.Write)
+	scyna.RegisterSignalLite(scyna.TRACE_CREATED_CHANNEL, trace.WriteTrace)
+	scyna.RegisterSignalLite(scyna.TAG_CREATED_CHANNEL, trace.WriteTag)
 
 	/*setting*/
 	scyna.RegisterService(scyna.SETTING_READ_URL, setting.Read)
