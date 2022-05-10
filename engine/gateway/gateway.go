@@ -28,8 +28,6 @@ func NewGateway() *Gateway {
 func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	var app Application
 	callID := scyna.ID.Next()
-	start := time.Now()
-	day := scyna.GetDayByTime(start)
 
 	auth := false
 	ok, appID, json, url := parseUrl(req.URL.String())
@@ -104,11 +102,21 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	context := scyna.Context{
+		ID:       callID,
+		ParentID: 0,
+		Time:     time.Now(),
+		Path:     url,
+		Type:     scyna.TRACE_SERVICE,
+		Source:   app.Code,
+	}
+	defer context.Save()
+
 	/*build request*/
 	err := ctx.Request.Build(req)
 	if err != nil {
 		http.Error(rw, "Cannot process request", http.StatusInternalServerError)
-		gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
+		//gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
 		return
 	}
 
@@ -116,7 +124,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	reqBytes, err := proto.Marshal(&ctx.Request)
 	if err != nil {
 		http.Error(rw, "Cannot process request", http.StatusInternalServerError)
-		gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
+		//gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
 		return
 	}
 
@@ -125,7 +133,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if respErr != nil {
 		http.Error(rw, "No response", http.StatusInternalServerError)
 		log.Println("ServeHTTP: Nats: " + respErr.Error())
-		gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
+		//gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
 		return
 	}
 
@@ -134,7 +142,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if err := proto.Unmarshal(msg.Data, &ctx.Response); err != nil {
 		log.Println("nats-proxy:" + err.Error())
 		http.Error(rw, "Cannot deserialize response", http.StatusInternalServerError)
-		gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
+		//gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
 		return
 	}
 
@@ -176,6 +184,6 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		f.Flush()
 	}
 
-	duration := time.Now().UnixMicro() - start.UnixMicro()
-	gateway.saveCall(appID, callID, day, start, duration, url, "app", ctx)
+	//duration := time.Now().UnixMicro() - start.UnixMicro()
+	//gateway.saveCall(appID, callID, day, start, duration, url, "app", ctx)
 }
