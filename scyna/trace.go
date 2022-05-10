@@ -62,7 +62,7 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 	}
 	defer context.Save()
 
-	req := Request{TraceID: ctx.ID, JSON: false}
+	req := Request{TraceID: context.ID, JSON: false}
 	res := Response{}
 
 	if request != nil {
