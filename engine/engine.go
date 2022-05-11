@@ -2,17 +2,18 @@ package main
 
 import (
 	"flag"
-	"github.com/scyna/engine/proxy"
 	"log"
 	"net/http"
 
-	"github.com/scyna/engine/gateway"
-	"github.com/scyna/engine/manager/authentication"
-	"github.com/scyna/engine/manager/generator"
-	"github.com/scyna/engine/manager/logging"
-	"github.com/scyna/engine/manager/session"
-	"github.com/scyna/engine/manager/setting"
-	"github.com/scyna/engine/manager/trace"
+	"github.com/scyna/go/engine/gateway"
+	"github.com/scyna/go/engine/manager/authentication"
+	"github.com/scyna/go/engine/manager/generator"
+	"github.com/scyna/go/engine/manager/logging"
+	"github.com/scyna/go/engine/manager/session"
+	"github.com/scyna/go/engine/manager/setting"
+	"github.com/scyna/go/engine/manager/trace"
+	"github.com/scyna/go/engine/proxy"
+
 	scyna "github.com/scyna/go/scyna"
 )
 
