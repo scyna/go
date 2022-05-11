@@ -46,6 +46,16 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	ctx := gateway.Contexts.GetContext()
 	defer gateway.Contexts.PutContext(ctx)
 
+	context := scyna.Context{
+		ID:       callID,
+		ParentID: 0,
+		Time:     time.Now(),
+		Path:     url,
+		Type:     scyna.TRACE_SERVICE,
+		Source:   app.Code,
+	}
+	defer gateway.saveContext(&context)
+
 	/*headers*/
 	rw.Header().Set("Access-Control-Allow-Origin", req.Header.Get("Origin"))
 	rw.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -62,6 +72,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	if a, ok := gateway.Applications[appID]; !ok {
 		http.Error(rw, "Forbidden", http.StatusForbidden)
+		context.SessionID = scyna.Session.ID()
+		context.Status = http.StatusForbidden
 		return
 	} else {
 		app = a
@@ -77,13 +89,17 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			ctx.Request.Data = token
 			if exp := checkService(token, appID, url); exp == nil {
 				http.Error(rw, "Unauthorized", http.StatusUnauthorized)
+				context.SessionID = scyna.Session.ID()
+				context.Status = http.StatusUnauthorized
 				return
 			} else {
-				log.Print(exp)
+				//log.Print(exp)
 				now := time.Now()
 				if exp.Before(now) {
-					log.Print("Session expired")
 					http.Error(rw, "Unauthorized", http.StatusUnauthorized)
+					context.LOG.Info("Session expired")
+					context.SessionID = scyna.Session.ID()
+					context.Status = http.StatusUnauthorized
 					return
 				} else {
 					if exp.After(now.Add(time.Minute * 10)) {
@@ -96,28 +112,20 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 				}
 			}
 		} else {
-			log.Print("Can not get cookie")
 			http.Error(rw, "Unauthorized", http.StatusUnauthorized)
+			context.LOG.Info("Can not get cookie")
+			context.SessionID = scyna.Session.ID()
+			context.Status = http.StatusUnauthorized
 			return
 		}
 	}
-
-	context := scyna.Context{
-		ID:        callID,
-		ParentID:  0,
-		Time:      time.Now(),
-		Path:      url,
-		Type:      scyna.TRACE_SERVICE,
-		Source:    app.Code,
-		SessionID: scyna.Session.ID(),
-	}
-	defer gateway.saveContext(&context)
 
 	/*build request*/
 	err := ctx.Request.Build(req)
 	if err != nil {
 		http.Error(rw, "Cannot process request", http.StatusInternalServerError)
-		//gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
+		context.SessionID = scyna.Session.ID()
+		context.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -125,7 +133,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	reqBytes, err := proto.Marshal(&ctx.Request)
 	if err != nil {
 		http.Error(rw, "Cannot process request", http.StatusInternalServerError)
-		//gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
+		context.SessionID = scyna.Session.ID()
+		context.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -133,17 +142,19 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	msg, respErr := scyna.Connection.Request(scyna.PublishURL(url), reqBytes, 10*time.Second)
 	if respErr != nil {
 		http.Error(rw, "No response", http.StatusInternalServerError)
-		log.Println("ServeHTTP: Nats: " + respErr.Error())
-		//gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
+		context.LOG.Error("ServeHTTP: Nats: " + respErr.Error())
+		context.SessionID = scyna.Session.ID()
+		context.Status = http.StatusInternalServerError
 		return
 	}
 
 	/*response*/
-
 	if err := proto.Unmarshal(msg.Data, &ctx.Response); err != nil {
-		log.Println("nats-proxy:" + err.Error())
+		log.Println()
 		http.Error(rw, "Cannot deserialize response", http.StatusInternalServerError)
-		//gateway.saveErrorCall(appID, 500, callID, day, start, url, "app")
+		context.LOG.Error("nats-proxy:" + err.Error())
+		context.SessionID = scyna.Session.ID()
+		context.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -178,13 +189,12 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	rw.WriteHeader(int(ctx.Response.Code))
 	_, err = bytes.NewBuffer(ctx.Response.Body).WriteTo(rw)
 	if err != nil {
-		log.Println("Proxy write data error: " + err.Error())
+		context.LOG.Error("Proxy write data error: " + err.Error())
+		context.SessionID = scyna.Session.ID()
+		context.Status = 0
 	}
 
 	if f, ok := rw.(http.Flusher); ok {
 		f.Flush()
 	}
-
-	//duration := time.Now().UnixMicro() - start.UnixMicro()
-	//gateway.saveCall(appID, callID, day, start, duration, url, "app", ctx)
 }
