@@ -30,7 +30,7 @@ func (ctx *Service) Error(e *Error) {
 		response.Body = []byte(err.Error())
 	}
 	ctx.flush(&response)
-	ctx.tag(200, e)
+	ctx.tag(uint32(response.Code), e)
 }
 
 func (ctx *Service) Done(r proto.Message) {

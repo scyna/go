@@ -83,13 +83,12 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	context := scyna.Context{
-		ID:        callID,
-		ParentID:  0,
-		Time:      time.Now(),
-		Path:      url,
-		Type:      scyna.TRACE_SERVICE,
-		Source:    clientID,
-		SessionID: scyna.Session.ID(),
+		ID:       callID,
+		ParentID: 0,
+		Time:     time.Now(),
+		Path:     url,
+		Type:     scyna.TRACE_SERVICE,
+		Source:   clientID,
 	}
 	defer proxy.saveContext(&context)
 
@@ -137,6 +136,4 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if f, ok := rw.(http.Flusher); ok {
 		f.Flush()
 	}
-
-	context.Status = ctx.Response.Code
 }
