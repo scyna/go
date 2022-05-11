@@ -88,7 +88,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 				} else {
 					if exp.After(now.Add(time.Minute * 10)) {
 						/*auto extend expire*/
-						if updateSesion(token, now.Add(time.Hour*8)) {
+						if updateSession(token, now.Add(time.Hour*8)) {
 							cookie.Expires = now
 							http.SetCookie(rw, cookie)
 						}

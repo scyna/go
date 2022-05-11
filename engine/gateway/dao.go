@@ -15,7 +15,7 @@ func (gateway *Gateway) saveContext(ctx *scyna.Context) {
 	/*todo: make relation app_has_trace*/
 }
 
-func updateSesion(token string, exp time.Time) bool {
+func updateSession(token string, exp time.Time) bool {
 	err := qb.Update("scyna.authentication").
 		Set("expired").
 		Where(qb.Eq("id")).
