@@ -7,7 +7,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func WriteTag(signal *scyna.TagCreatedSignal) {
+func TagCreated(signal *scyna.TagCreatedSignal) {
 	log.Print("Write Tag to Database")
 
 	qb.Insert("scyna.tag").

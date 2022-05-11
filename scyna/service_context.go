@@ -30,7 +30,7 @@ func (ctx *Service) Error(e *Error) {
 		response.Body = []byte(err.Error())
 	}
 	ctx.flush(&response)
-	ctx.saveTag(200, e)
+	ctx.tag(200, e)
 }
 
 func (ctx *Service) Done(r proto.Message) {
@@ -48,7 +48,7 @@ func (ctx *Service) Done(r proto.Message) {
 	}
 
 	ctx.flush(&response)
-	ctx.saveTag(200, r)
+	ctx.tag(200, r)
 }
 
 func (ctx *Service) AuthDone(r proto.Message, token string, expired uint64) {
@@ -66,7 +66,7 @@ func (ctx *Service) AuthDone(r proto.Message, token string, expired uint64) {
 	}
 
 	ctx.flush(&response)
-	ctx.saveTag(200, r)
+	ctx.tag(200, r)
 }
 
 func (ctx *Service) flush(response *Response) {
@@ -82,18 +82,19 @@ func (ctx *Service) flush(response *Response) {
 	}
 }
 
-func (ctx *Service) saveTag(code uint32, response proto.Message) {
+func (ctx *Service) tag(code uint32, response proto.Message) {
+	if ctx.ID == 0 {
+		return
+	}
 	req, _ := json.Marshal(ctx.request)
 	res, _ := json.Marshal(response)
 
-	tag := ServiceTag{
+	EmitSignalLite(SERVICE_DONE_CHANNEL, &ServiceDoneSignal{
+		TraceID:  ctx.ID,
 		Status:   code,
 		Request:  string(req),
 		Response: string(res),
-	}
-
-	data, _ := proto.Marshal(&tag)
-	ctx.Tag("data", data)
+	})
 }
 
 // func (s *Context) Auth(org string, secret string, apps []string, userID string) (bool, string) {

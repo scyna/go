@@ -22,7 +22,7 @@ func callService(url string, request proto.Message, response proto.Message) *Err
 	}
 	defer context.Save()
 
-	req := Request{TraceID: ID.Next(), JSON: false}
+	req := Request{TraceID: context.ID, JSON: false}
 	res := Response{}
 
 	if request != nil {

@@ -53,8 +53,9 @@ func main() {
 	scyna.RegisterSignalLite(scyna.LOG_CREATED_CHANNEL, logging.Write)
 
 	/*trace*/
-	scyna.RegisterSignalLite(scyna.TRACE_CREATED_CHANNEL, trace.WriteTrace)
-	scyna.RegisterSignalLite(scyna.TAG_CREATED_CHANNEL, trace.WriteTag)
+	scyna.RegisterSignalLite(scyna.TRACE_CREATED_CHANNEL, trace.TraceCreated)
+	scyna.RegisterSignalLite(scyna.TAG_CREATED_CHANNEL, trace.TagCreated)
+	scyna.RegisterSignalLite(scyna.SERVICE_DONE_CHANNEL, trace.ServiceDone)
 
 	/*setting*/
 	scyna.RegisterService(scyna.SETTING_READ_URL, setting.Read)

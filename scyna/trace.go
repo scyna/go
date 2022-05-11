@@ -59,10 +59,11 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 		Time:     time.Now(),
 		Path:     url,
 		Type:     TRACE_SERVICE,
+		Source:   module,
 	}
 	defer context.Save()
 
-	req := Request{TraceID: ctx.ID, JSON: false}
+	req := Request{TraceID: context.ID, JSON: false}
 	res := Response{}
 
 	if request != nil {
@@ -98,7 +99,7 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 	return SERVER_ERROR
 }
 
-func (ctx *Context) Tag(key string, value []byte) {
+func (ctx *Context) Tag(key string, value string) {
 	if ctx.ID == 0 {
 		return
 	}

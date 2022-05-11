@@ -80,7 +80,14 @@ message TraceCreatedSignal {
 message TagCreatedSignal {
   uint64 TraceID = 1;
   string Key = 2;
-  bytes Value = 3;
+  string Value = 3;
+}
+
+message ServiceDoneSignal {
+  uint64 TraceID = 1;
+  uint32 Status = 2;
+  string Request = 3;
+  string Response = 4;
 }
 
 /*SETTING*/

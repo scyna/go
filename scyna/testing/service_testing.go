@@ -74,10 +74,11 @@ func (st *serviceTest) callService(t *testing.T) *scyna.Response {
 		Time:     time.Now(),
 		Path:     st.url,
 		Type:     scyna.TRACE_SERVICE,
+		Source:   "scyna.test",
 	}
 	defer context.Save()
 
-	req := scyna.Request{TraceID: scyna.ID.Next(), JSON: false}
+	req := scyna.Request{TraceID: context.ID, JSON: false}
 	res := scyna.Response{}
 
 	if st.request != nil {
