@@ -11,7 +11,8 @@ import (
 )
 
 func (gateway *Gateway) saveContext(ctx *scyna.Context) {
-	/*todo*/
+	ctx.Save() //FIXME: direct save
+	/*todo: make relation app_has_trace*/
 }
 
 func updateSesion(token string, exp time.Time) bool {

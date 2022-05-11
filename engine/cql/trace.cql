@@ -15,6 +15,22 @@ CREATE TABLE scyna.trace
 );
 CREATE INDEX ON scyna.trace(id);
 
+DROP TABLE IF EXISTS scyna.app_has_trace;
+CREATE TABLE scyna.app_has_trace
+(
+    app_code     text,
+    trace_id     bigint,
+    PRIMARY KEY (app_code, trace_id)
+);
+
+DROP TABLE IF EXISTS scyna.client_has_trace;
+CREATE TABLE scyna.client_has_trace
+(
+    client_id     text,
+    trace_id     bigint,
+    PRIMARY KEY (client_id, trace_id)
+);
+
 DROP TABLE IF EXISTS scyna.span;
 CREATE TABLE scyna.span
 (
