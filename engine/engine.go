@@ -13,8 +13,7 @@ import (
 	"github.com/scyna/go/engine/manager/setting"
 	"github.com/scyna/go/engine/manager/trace"
 	"github.com/scyna/go/engine/proxy"
-
-	scyna "github.com/scyna/go/scyna"
+	"github.com/scyna/go/scyna"
 )
 
 const MODULE_CODE = "scyna.engine"
