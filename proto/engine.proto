@@ -75,6 +75,7 @@ message TraceCreatedSignal {
   string Path = 6;
   string Source = 7;
   uint64 SessionID = 8;
+  int32  Status = 9;
 }
 
 message TagCreatedSignal {
@@ -85,9 +86,8 @@ message TagCreatedSignal {
 
 message ServiceDoneSignal {
   uint64 TraceID = 1;
-  uint32 Status = 2;
-  string Request = 3;
-  string Response = 4;
+  string Request = 2;
+  string Response = 3;
 }
 
 /*SETTING*/

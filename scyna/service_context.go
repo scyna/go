@@ -91,7 +91,6 @@ func (ctx *Service) tag(code uint32, response proto.Message) {
 
 	EmitSignalLite(SERVICE_DONE_CHANNEL, &ServiceDoneSignal{
 		TraceID:  ctx.ID,
-		Status:   code,
 		Request:  string(req),
 		Response: string(res),
 	})

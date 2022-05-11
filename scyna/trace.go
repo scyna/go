@@ -123,5 +123,6 @@ func (ctx *Context) Save() {
 		Path:      ctx.Path,
 		Source:    ctx.Source,
 		SessionID: ctx.SessionID,
+		Status:    ctx.Status,
 	})
 }

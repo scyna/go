@@ -19,7 +19,7 @@ func TraceCreated(signal *scyna.TraceCreatedSignal) {
 
 	if signal.ParentID == 0 {
 		if err := qb.Insert("scyna.trace").
-			Columns("type", "path", "day", "id", "time", "duration", "session_id", "source").
+			Columns("type", "path", "day", "id", "time", "duration", "session_id", "source", "status").
 			Query(scyna.DB).
 			Bind(
 				signal.Type,
@@ -29,13 +29,14 @@ func TraceCreated(signal *scyna.TraceCreatedSignal) {
 				time.UnixMicro(int64(signal.Time)),
 				signal.Duration,
 				signal.SessionID,
-				source).
+				source,
+				signal.Status).
 			ExecRelease(); err != nil {
 			log.Print(err)
 		}
 	} else {
 		qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
-		qBatch.Query("INSERT INTO scyna.trace(type, path, day, id, time, duration, session_id, parent_id, source)"+
+		qBatch.Query("INSERT INTO scyna.trace(type, path, day, id, time, duration, session_id, parent_id, source, status)"+
 			" VALUES (?,?,?,?,?,?,?,?)",
 			signal.Type,
 			signal.Path,
@@ -45,7 +46,8 @@ func TraceCreated(signal *scyna.TraceCreatedSignal) {
 			signal.Duration,
 			signal.SessionID,
 			signal.ParentID,
-			source)
+			source,
+			signal.Status)
 		qBatch.Query("INSERT INTO scyna.span(parent_id, child_id) VALUES (?,?)",
 			signal.ParentID, signal.ID)
 
