@@ -45,6 +45,7 @@ func callService(url string, request proto.Message, response proto.Message) *Err
 	}
 
 	context.SessionID = res.SessionID
+	context.Status = res.Code
 	if res.Code == 200 {
 		if err := proto.Unmarshal(res.Body, response); err == nil {
 			return OK

@@ -23,6 +23,7 @@ type Context struct {
 	Path      string    `db:"path"`
 	Source    string    `db:"source"`
 	SessionID uint64    `db:"session_id"`
+	Status    int32
 	LOG       Logger
 }
 
@@ -86,6 +87,7 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 	}
 
 	context.SessionID = res.SessionID
+	context.Status = res.Code
 	if res.Code == 200 {
 		if err := proto.Unmarshal(res.Body, response); err == nil {
 			return OK

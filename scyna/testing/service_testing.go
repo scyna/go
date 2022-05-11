@@ -101,5 +101,6 @@ func (st *serviceTest) callService(t *testing.T) *scyna.Response {
 	}
 
 	context.SessionID = res.SessionID
+	context.Status = res.Code
 	return &res
 }
