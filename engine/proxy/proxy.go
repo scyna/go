@@ -82,6 +82,16 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	context := scyna.Context{
+		ID:       callID,
+		ParentID: 0,
+		Time:     time.Now(),
+		Path:     url,
+		Type:     scyna.TRACE_SERVICE,
+		Source:   "",
+	}
+	defer proxy.saveContext(&context)
+
 	/*build request*/
 	err := ctx.Request.Build(req)
 	if err != nil {
