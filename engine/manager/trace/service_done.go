@@ -1,14 +1,11 @@
 package trace
 
 import (
-	"log"
-
 	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/scyna/go/scyna"
 )
 
 func ServiceDone(signal *scyna.ServiceDoneSignal) {
-	log.Print("Service Done")
 	qb.Insert("scyna.tag").
 		Columns("trace_id", "key", "value").
 		Query(scyna.DB).

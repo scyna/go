@@ -20,43 +20,7 @@ func callService(url string, request proto.Message, response proto.Message) *Err
 		Path:     url,
 		Type:     TRACE_SERVICE,
 	}
-	defer context.Save()
-
-	req := Request{TraceID: context.ID, JSON: false}
-	res := Response{}
-
-	if request != nil {
-		var err error
-		if req.Body, err = proto.Marshal(request); err != nil {
-			return BAD_REQUEST
-		}
-	}
-
-	if data, err := proto.Marshal(&req); err == nil {
-		if msg, err := Connection.Request(PublishURL(url), data, 10*time.Second); err == nil {
-			if err := proto.Unmarshal(msg.Data, &res); err != nil {
-				return SERVER_ERROR
-			}
-		} else {
-			return SERVER_ERROR
-		}
-	} else {
-		return BAD_REQUEST
-	}
-
-	context.SessionID = res.SessionID
-	context.Status = res.Code
-	if res.Code == 200 {
-		if err := proto.Unmarshal(res.Body, response); err == nil {
-			return OK
-		}
-	} else {
-		var ret Error
-		if err := proto.Unmarshal(res.Body, &ret); err == nil {
-			return &ret
-		}
-	}
-	return SERVER_ERROR
+	return callService_(&context, url, request, response)
 }
 
 func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
@@ -104,4 +68,44 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	if err != nil {
 		log.Fatal("Can not register service:", url)
 	}
+}
+
+func callService_(context *Context, url string, request proto.Message, response proto.Message) *Error {
+	defer context.Save()
+
+	req := Request{TraceID: context.ID, JSON: false}
+	res := Response{}
+
+	if request != nil {
+		var err error
+		if req.Body, err = proto.Marshal(request); err != nil {
+			return BAD_REQUEST
+		}
+	}
+
+	if data, err := proto.Marshal(&req); err == nil {
+		if msg, err := Connection.Request(PublishURL(url), data, 10*time.Second); err == nil {
+			if err := proto.Unmarshal(msg.Data, &res); err != nil {
+				return SERVER_ERROR
+			}
+		} else {
+			return SERVER_ERROR
+		}
+	} else {
+		return BAD_REQUEST
+	}
+
+	context.SessionID = res.SessionID
+	context.Status = res.Code
+	if res.Code == 200 {
+		if err := proto.Unmarshal(res.Body, response); err == nil {
+			return OK
+		}
+	} else {
+		var ret Error
+		if err := proto.Unmarshal(res.Body, &ret); err == nil {
+			return &ret
+		}
+	}
+	return SERVER_ERROR
 }

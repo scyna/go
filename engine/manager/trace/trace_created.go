@@ -10,7 +10,6 @@ import (
 )
 
 func TraceCreated(signal *scyna.TraceCreatedSignal) {
-	log.Print("Write Trace to Database")
 	day := scyna.GetDayByTime(time.Now())
 	var source *string = nil
 	if len(signal.Source) > 0 {

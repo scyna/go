@@ -1,15 +1,11 @@
 package trace
 
 import (
-	"log"
-
 	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/scyna/go/scyna"
 )
 
 func TagCreated(signal *scyna.TagCreatedSignal) {
-	log.Print("Write Tag to Database")
-
 	qb.Insert("scyna.tag").
 		Columns("trace_id", "key", "value").
 		Query(scyna.DB).
