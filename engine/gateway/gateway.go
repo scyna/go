@@ -103,12 +103,13 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	context := scyna.Context{
-		ID:       callID,
-		ParentID: 0,
-		Time:     time.Now(),
-		Path:     url,
-		Type:     scyna.TRACE_SERVICE,
-		Source:   app.Code,
+		ID:        callID,
+		ParentID:  0,
+		Time:      time.Now(),
+		Path:      url,
+		Type:      scyna.TRACE_SERVICE,
+		Source:    app.Code,
+		SessionID: scyna.Session.ID(),
 	}
 	defer gateway.saveContext(&context)
 

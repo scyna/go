@@ -83,12 +83,13 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	context := scyna.Context{
-		ID:       callID,
-		ParentID: 0,
-		Time:     time.Now(),
-		Path:     url,
-		Type:     scyna.TRACE_SERVICE,
-		Source:   clientID,
+		ID:        callID,
+		ParentID:  0,
+		Time:      time.Now(),
+		Path:      url,
+		Type:      scyna.TRACE_SERVICE,
+		Source:    clientID,
+		SessionID: scyna.Session.ID(),
 	}
 	defer proxy.saveContext(&context)
 
@@ -106,6 +107,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	reqBytes, err := proto.Marshal(&ctx.Request)
 	if err != nil {
 		http.Error(rw, "Cannot process request", http.StatusInternalServerError)
+		context.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -113,6 +115,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	msg, respErr := scyna.Connection.Request(scyna.PublishURL(url), reqBytes, 10*time.Second)
 	if respErr != nil {
 		http.Error(rw, "No response", http.StatusInternalServerError)
+		context.Status = http.StatusInternalServerError
 		log.Println("ServeHTTP: Nats: " + respErr.Error())
 		return
 	}
@@ -121,6 +124,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if err := proto.Unmarshal(msg.Data, &ctx.Response); err != nil {
 		log.Println("nats-proxy:" + err.Error())
 		http.Error(rw, "Cannot deserialize response", http.StatusInternalServerError)
+		context.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -133,4 +137,6 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if f, ok := rw.(http.Flusher); ok {
 		f.Flush()
 	}
+
+	context.Status = ctx.Response.Code
 }
