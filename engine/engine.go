@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/scyna/engine/proxy"
 	"log"
 	"net/http"
 
@@ -18,6 +19,10 @@ import (
 const MODULE_CODE = "scyna.engine"
 
 func main() {
+	managerPort := flag.String("manager_port", "8081", "Manager Port")
+	proxyPort := flag.String("proxy_port", "8080", "Proxy Port")
+	gatewayPort := flag.String("gateway_port", "8443", "GateWay Port")
+
 	natsUrl := flag.String("nats_url", "127.0.0.1", "Nats URL")
 	natsUsername := flag.String("nats_username", "", "Nats Username")
 	natsPassword := flag.String("nats_password", "", "Nats Password")
@@ -73,23 +78,23 @@ func main() {
 	go func() {
 		gateway_ := gateway.NewGateway()
 		log.Println("Scyna Gateway Started")
-		if err := http.ListenAndServe(":8443", gateway_); err != nil {
+		if err := http.ListenAndServe(":"+*gatewayPort, gateway_); err != nil {
 			log.Println("Gateway:" + err.Error())
 		}
 	}()
 
-	//go func() {
-	//	proxy_ := proxy.NewProxy()
-	//	log.Println("Scyna Proxy Started")
-	//	if err := http.ListenAndServe(":8080", proxy_); err != nil {
-	//		log.Println("Proxy:" + err.Error())
-	//	}
-	//}()
+	go func() {
+		proxy_ := proxy.NewProxy()
+		log.Println("Scyna Proxy Started")
+		if err := http.ListenAndServe(":"+*proxyPort, proxy_); err != nil {
+			log.Println("Proxy:" + err.Error())
+		}
+	}()
 
 	/*session*/
 	scyna.RegisterSignalLite(scyna.SESSION_END_CHANNEL, session.End)
 	scyna.RegisterSignalLite(scyna.SESSION_UPDATE_CHANNEL, session.Update)
 	http.HandleFunc(scyna.SESSION_CREATE_URL, session.Create)
 	log.Println("Scyna Manager Started")
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	log.Fatal(http.ListenAndServe(":"+*managerPort, nil))
 }
