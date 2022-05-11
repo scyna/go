@@ -25,7 +25,7 @@ func (ctx *HttpContext) reset() {
 	ctx.Response.SessionID = uint64(0)
 }
 
-func NewContext() *HttpContext {
+func newHttpContext() *HttpContext {
 	return &HttpContext{
 		Request: Request{
 			Body:    make([]byte, 4096),
@@ -52,7 +52,7 @@ func (p *ContextPool) PutContext(service *HttpContext) {
 func NewContextPool() ContextPool {
 	return ContextPool{
 		sync.Pool{
-			New: func() interface{} { return NewContext() },
+			New: func() interface{} { return newHttpContext() },
 		}}
 }
 

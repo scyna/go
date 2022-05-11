@@ -110,7 +110,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		Type:     scyna.TRACE_SERVICE,
 		Source:   app.Code,
 	}
-	defer context.Save()
+	defer gateway.saveContext(&context)
 
 	/*build request*/
 	err := ctx.Request.Build(req)
