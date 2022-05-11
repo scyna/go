@@ -11,15 +11,6 @@ CREATE TABLE scyna.module
 );
 CREATE INDEX ON scyna.module (code);
 
-DROP TABLE IF EXISTS scyna.module_has_call;
-CREATE TABLE scyna.module_has_call
-(
-    module_code text,
-    call_id     bigint,
-    day         int,
-    PRIMARY KEY ((module_code, day), call_id)
-);
-
 /*setting*/
 DROP TABLE IF EXISTS scyna.setting;
 CREATE TABLE scyna.setting

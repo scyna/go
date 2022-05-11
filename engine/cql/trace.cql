@@ -20,7 +20,8 @@ CREATE TABLE scyna.app_has_trace
 (
     app_code     text,
     trace_id     bigint,
-    PRIMARY KEY (app_code, trace_id)
+    day         int,
+    PRIMARY KEY ((app_code,day), trace_id)
 );
 
 DROP TABLE IF EXISTS scyna.client_has_trace;
@@ -28,7 +29,8 @@ CREATE TABLE scyna.client_has_trace
 (
     client_id     text,
     trace_id     bigint,
-    PRIMARY KEY (client_id, trace_id)
+    day         int,
+    PRIMARY KEY ((client_id,day), trace_id)
 );
 
 DROP TABLE IF EXISTS scyna.span;

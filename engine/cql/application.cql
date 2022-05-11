@@ -18,15 +18,6 @@ CREATE TABLE scyna.app_use_service
     PRIMARY KEY (app_code, service_url)
 );
 
-DROP TABLE IF EXISTS scyna.app_has_call;
-CREATE TABLE scyna.app_has_call
-(
-    app_code text,
-    call_id  bigint,
-    day      int,
-    PRIMARY KEY ((app_code, day), call_id)
-);
-
 DROP TABLE IF EXISTS scyna.authentication;
 CREATE TABLE scyna.authentication
 (

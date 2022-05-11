@@ -18,12 +18,3 @@ CREATE TABLE scyna.client_use_service
     service_url   text,
     PRIMARY KEY (client_id, service_url)
 );
-
-DROP TABLE IF EXISTS scyna.client_has_call;
-CREATE TABLE scyna.client_has_call
-(
-    client_id   text,
-    call_id     bigint,
-    day         int,
-    PRIMARY KEY ((client_id, day), call_id)
-);
