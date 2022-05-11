@@ -88,7 +88,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		Time:     time.Now(),
 		Path:     url,
 		Type:     scyna.TRACE_SERVICE,
-		Source:   "",
+		Source:   clientID,
 	}
 	defer proxy.saveContext(&context)
 
