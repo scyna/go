@@ -97,7 +97,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 				now := time.Now()
 				if exp.Before(now) {
 					http.Error(rw, "Unauthorized", http.StatusUnauthorized)
-					context.LOG.Info("Session expired")
+					scyna.LOG.Info("Session expired")
 					context.SessionID = scyna.Session.ID()
 					context.Status = http.StatusUnauthorized
 					return
@@ -113,7 +113,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			}
 		} else {
 			http.Error(rw, "Unauthorized", http.StatusUnauthorized)
-			context.LOG.Info("Can not get cookie")
+			scyna.LOG.Info("Can not get cookie")
 			context.SessionID = scyna.Session.ID()
 			context.Status = http.StatusUnauthorized
 			return
@@ -142,7 +142,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	msg, respErr := scyna.Connection.Request(scyna.PublishURL(url), reqBytes, 10*time.Second)
 	if respErr != nil {
 		http.Error(rw, "No response", http.StatusInternalServerError)
-		context.LOG.Error("ServeHTTP: Nats: " + respErr.Error())
+		scyna.LOG.Error("ServeHTTP: Nats: " + respErr.Error())
 		context.SessionID = scyna.Session.ID()
 		context.Status = http.StatusInternalServerError
 		return
@@ -152,7 +152,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if err := proto.Unmarshal(msg.Data, &ctx.Response); err != nil {
 		log.Println()
 		http.Error(rw, "Cannot deserialize response", http.StatusInternalServerError)
-		context.LOG.Error("nats-proxy:" + err.Error())
+		scyna.LOG.Error("nats-proxy:" + err.Error())
 		context.SessionID = scyna.Session.ID()
 		context.Status = http.StatusInternalServerError
 		return
@@ -189,7 +189,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	rw.WriteHeader(int(ctx.Response.Code))
 	_, err = bytes.NewBuffer(ctx.Response.Body).WriteTo(rw)
 	if err != nil {
-		context.LOG.Error("Proxy write data error: " + err.Error())
+		scyna.LOG.Error("Proxy write data error: " + err.Error())
 		context.SessionID = scyna.Session.ID()
 		context.Status = 0
 	}

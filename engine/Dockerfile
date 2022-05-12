@@ -2,7 +2,7 @@ FROM golang:1.18.1-alpine3.15 AS build-env
 
 ENV GO111MODULE=on
 
-WORKDIR  /workspace/engine
+WORKDIR /workspace/engine
 
 COPY ./gateway/ ./gateway
 COPY ./proxy/ ./proxy
