@@ -24,17 +24,17 @@ type Trace struct {
 	Status    int32     `db:"status"`
 }
 
-func (t *Trace) Save() {
-	t.Duration = uint64(time.Now().UnixNano() - t.Time.UnixNano())
+func (trace *Trace) Save() {
+	trace.Duration = uint64(time.Now().UnixNano() - trace.Time.UnixNano())
 	EmitSignalLite(TRACE_CREATED_CHANNEL, &TraceCreatedSignal{
-		ID:        t.ID,
-		ParentID:  t.ParentID,
-		Type:      uint32(t.Type),
-		Time:      uint64(t.Time.UnixMicro()),
-		Duration:  t.Duration,
-		Path:      t.Path,
-		Source:    t.Source,
-		SessionID: t.SessionID,
-		Status:    t.Status,
+		ID:        trace.ID,
+		ParentID:  trace.ParentID,
+		Type:      uint32(trace.Type),
+		Time:      uint64(trace.Time.UnixMicro()),
+		Duration:  trace.Duration,
+		Path:      trace.Path,
+		Source:    trace.Source,
+		SessionID: trace.SessionID,
+		Status:    trace.Status,
 	})
 }
