@@ -12,7 +12,7 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 )
 
-func (gateway *Gateway) saveContext(trace *scyna.Trace) {
+func (gateway *Gateway) saveTrace(trace *scyna.Trace) {
 	day := scyna.GetDayByTime(time.Now())
 	trace.Duration = uint64(time.Now().UnixNano() - trace.Time.UnixNano())
 	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)

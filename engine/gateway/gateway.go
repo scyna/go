@@ -54,7 +54,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		Type:     scyna.TRACE_SERVICE,
 		Source:   app.Code,
 	}
-	defer gateway.saveContext(&trace)
+	defer gateway.saveTrace(&trace)
 
 	/*headers*/
 	rw.Header().Set("Access-Control-Allow-Origin", req.Header.Get("Origin"))
@@ -187,8 +187,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	rw.WriteHeader(int(ctx.Response.Code))
-	context.SessionID = ctx.Response.SessionID
-	context.Status = ctx.Response.Code
+	trace.SessionID = ctx.Response.SessionID
+	trace.Status = ctx.Response.Code
 	_, err = bytes.NewBuffer(ctx.Response.Body).WriteTo(rw)
 	if err != nil {
 		scyna.LOG.Error("Proxy write data error: " + err.Error())
