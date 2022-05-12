@@ -26,7 +26,7 @@ type Trace struct {
 	Status    int32     `db:"status"`
 }
 
-func (trace *Trace) Save() {
+func (trace *Trace) Record() {
 	trace.Duration = uint64(time.Now().UnixNano() - trace.Time.UnixNano())
 	EmitSignalLite(TRACE_CREATED_CHANNEL, &TraceCreatedSignal{
 		ID:        trace.ID,
@@ -41,7 +41,7 @@ func (trace *Trace) Save() {
 	})
 }
 
-func (trace *Trace) Write() {
+func (trace *Trace) Save() {
 	day := GetDayByTime(time.Now())
 	trace.Duration = uint64(time.Now().UnixNano() - trace.Time.UnixNano())
 	qBatch := DB.NewBatch(gocql.LoggedBatch)

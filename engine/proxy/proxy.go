@@ -58,7 +58,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		Type:     scyna.TRACE_SERVICE,
 		Source:   clientID,
 	}
-	defer trace.Write()
+	defer trace.Save()
 
 	query := proxy.Queries.GetQuery()
 	defer proxy.Queries.Put(query)

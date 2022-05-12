@@ -43,7 +43,7 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 			log.Print("Error in parsing data:", err)
 		}
 
-		trace.Save()
+		trace.Record()
 	}); err != nil {
 		log.Fatal("Error in register Signal:", err)
 	}

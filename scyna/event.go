@@ -42,7 +42,7 @@ func RegisterEvent[R proto.Message](channel string, consumer string, handler Eve
 			log.Print("Error in parsing data:", err)
 		}
 
-		trace.Save()
+		trace.Record()
 	}, nats.Durable(consumer)); err != nil {
 		log.Fatal("Error in registering Event: ", err)
 	}

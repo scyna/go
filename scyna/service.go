@@ -68,7 +68,7 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 }
 
 func callService_(trace *Trace, url string, request proto.Message, response proto.Message) *Error {
-	defer trace.Save()
+	defer trace.Record()
 
 	req := Request{TraceID: trace.ID, JSON: false}
 	res := Response{}

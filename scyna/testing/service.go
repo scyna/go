@@ -76,7 +76,7 @@ func (st *serviceTest) callService(t *testing.T) *scyna.Response {
 		Type:     scyna.TRACE_SERVICE,
 		Source:   "scyna.test",
 	}
-	defer context.Save()
+	defer context.Record()
 
 	req := scyna.Request{TraceID: context.ID, JSON: false}
 	res := scyna.Response{}
