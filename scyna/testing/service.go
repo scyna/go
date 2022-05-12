@@ -1,7 +1,6 @@
 package scyna_test
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -9,19 +8,88 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func CallService(t *testing.T, url string, request proto.Message) *scyna.Response {
-	req := scyna.Request{TraceID: scyna.ID.Next(), JSON: false}
+type serviceTest struct {
+	url      string
+	request  proto.Message
+	response proto.Message
+	status   int32
+}
+
+func ServiceTest(url string) *serviceTest {
+	return &serviceTest{url: url}
+}
+
+func (t *serviceTest) WithRequest(request proto.Message) *serviceTest {
+	t.request = request
+	return t
+}
+
+func (t *serviceTest) ExpectError(err *scyna.Error) *serviceTest {
+	t.status = 400
+	t.response = err
+	return t
+}
+
+func (t *serviceTest) ExpectSuccess() *serviceTest {
+	t.status = 200
+	return t
+}
+
+func (t *serviceTest) ExpectResponse(response proto.Message) *serviceTest {
+	t.status = 200
+	t.response = response
+	return t
+}
+
+func (st *serviceTest) Run(t *testing.T, response ...proto.Message) {
+	var res = st.callService(t)
+	if st.status != res.Code {
+		t.Fatalf("Expect status %d but actually %d", st.status, res.Code)
+	}
+
+	if len(response) == 0 {
+		if st.response != nil {
+			tmp := proto.Clone(st.response)
+			if err := proto.Unmarshal(res.Body, tmp); err != nil {
+				t.Fatal("Can not parse response body")
+			}
+
+			if !proto.Equal(tmp, st.response) {
+				t.Fatal("Response not match")
+			}
+		}
+	} else if len(response) == 1 {
+		if err := proto.Unmarshal(res.Body, response[0]); err != nil {
+			t.Fatal("Can not parse response body")
+		}
+	} else {
+		t.Fatal("Too many parametter")
+	}
+}
+
+func (st *serviceTest) callService(t *testing.T) *scyna.Response {
+	context := scyna.Trace{
+		ID:       scyna.ID.Next(),
+		ParentID: 0,
+		Time:     time.Now(),
+		Path:     st.url,
+		Type:     scyna.TRACE_SERVICE,
+		Source:   "scyna.test",
+	}
+	defer context.Save()
+
+	req := scyna.Request{TraceID: context.ID, JSON: false}
 	res := scyna.Response{}
 
-	if request != nil {
+	if st.request != nil {
 		var err error
-		if req.Body, err = proto.Marshal(request); err != nil {
+		if req.Body, err = proto.Marshal(st.request); err != nil {
 			t.Fatal("Bad Request:", err)
 		}
 	}
 
 	if data, err := proto.Marshal(&req); err == nil {
-		if msg, err := scyna.Connection.Request(scyna.PublishURL(url), data, 10*time.Second); err == nil {
+		if msg, err := scyna.Connection.Request(scyna.PublishURL(st.url), data, 10*time.Second); err == nil {
 			if err := proto.Unmarshal(msg.Data, &res); err != nil {
 				t.Fatal("Server Error:", err)
 			}
@@ -31,40 +99,8 @@ func CallService(t *testing.T, url string, request proto.Message) *scyna.Respons
 	} else {
 		t.Fatal("Bad Request:", err)
 	}
+
+	context.SessionID = res.SessionID
+	context.Status = res.Code
 	return &res
-}
-
-func TestService(t *testing.T, url string, request proto.Message, response proto.Message, code int32) {
-	res := CallService(t, url, request)
-	if res.Code != code {
-		t.Fatal("Code not match:", res.Code)
-	}
-
-	tmp := proto.Clone(response)
-	if err := proto.Unmarshal(res.Body, tmp); err != nil {
-		t.Fatal("Can not parse response")
-	}
-	fmt.Printf("tmp %s", tmp)
-	fmt.Printf("respone %s", response)
-	if !proto.Equal(tmp, response) {
-		t.Fatal("Response not match")
-	}
-}
-
-func CallServiceCheckCode(t *testing.T, url string, request proto.Message, code int32) {
-	res := CallService(t, url, request)
-	if res.Code != code {
-		t.Fatal("Code not match:", res.Code)
-	}
-}
-
-func CallServiceParseResponse(t *testing.T, url string, request proto.Message, response proto.Message, code int32) {
-	res := CallService(t, url, request)
-	if res.Code != code {
-		t.Fatal("Code not match:", res.Code)
-	}
-
-	if err := proto.Unmarshal(res.Body, response); err != nil {
-		t.Fatal("Can not parse response")
-	}
 }
