@@ -2,6 +2,8 @@ package session
 
 import (
 	"bytes"
+	"github.com/scylladb/gocqlx/v2/qb"
+	"google.golang.org/protobuf/encoding/protojson"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -34,7 +36,27 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		var response scyna.CreateSessionResponse
 		response.SessionID = sid
 
-		response.Config = manager.DefaultConfig
+		var value string
+		if err := qb.Select("scyna.setting").
+			Columns("value").
+			Where(qb.Eq("module_code"), qb.Eq("key")).
+			Limit(1).
+			Query(scyna.DB).
+			Bind(request.Module, scyna.SETTING_KEY).
+			GetRelease(&value); err != nil {
+			log.Println("Can not find module config for module " + request.Module + " - " + err.Error())
+		}
+
+		if len(value) > 0 {
+			var config scyna.Configuration
+			err := protojson.Unmarshal([]byte(value), &config)
+			if err != nil {
+				response.Config = manager.DefaultConfig
+			}
+			response.Config = &config
+		} else {
+			response.Config = manager.DefaultConfig
+		}
 
 		if data, err := proto.Marshal(&response); err == nil {
 			w.WriteHeader(200)

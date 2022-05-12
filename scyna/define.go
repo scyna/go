@@ -15,6 +15,7 @@ const (
 	SETTING_REMOVE_URL     = "/scyna/setting/remove"
 	SETTING_UPDATE_CHANNEL = "scyna.setting.updated."
 	SETTING_REMOVE_CHANNEL = "scyna.setting.removed."
+	SETTING_KEY            = "scyna.module.config"
 	APP_UPDATE_CHANNEL     = "scyna.application.updated"
 	CLIENT_UPDATE_CHANNEL  = "scyna.client.updated"
 	AUTH_CREATE_URL        = "/scyna/auth/create"
