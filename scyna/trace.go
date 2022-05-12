@@ -2,6 +2,8 @@ package scyna
 
 import (
 	"time"
+
+	"github.com/gocql/gocql"
 )
 
 type TraceType uint32
@@ -37,4 +39,29 @@ func (trace *Trace) Save() {
 		SessionID: trace.SessionID,
 		Status:    trace.Status,
 	})
+}
+
+func (trace *Trace) Write() {
+	day := GetDayByTime(time.Now())
+	trace.Duration = uint64(time.Now().UnixNano() - trace.Time.UnixNano())
+	qBatch := DB.NewBatch(gocql.LoggedBatch)
+	qBatch.Query("INSERT INTO scyna.trace(type, path, day, id, time, duration, session_id, source, status) VALUES (?,?,?,?,?,?,?,?,?)",
+		trace.Type,
+		trace.Path,
+		day,
+		trace.ID,
+		trace.Time,
+		trace.Duration,
+		trace.SessionID,
+		trace.Source,
+		trace.Status,
+	)
+	qBatch.Query("INSERT INTO scyna.app_has_trace(app_code, trace_id, day) VALUES (?,?,?)",
+		trace.Source,
+		trace.ID,
+		day,
+	)
+	if err := DB.ExecuteBatch(qBatch); err != nil {
+		LOG.Error("Can not save trace - " + err.Error())
+	}
 }

@@ -54,7 +54,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		Type:     scyna.TRACE_SERVICE,
 		Source:   app.Code,
 	}
-	defer gateway.saveTrace(&trace)
+	defer trace.Write()
 
 	/*headers*/
 	rw.Header().Set("Access-Control-Allow-Origin", req.Header.Get("Origin"))
