@@ -6,7 +6,7 @@ import (
 )
 
 func Add(c *scyna.Service, request *proto.AddRequest) {
-	c.LOG.Info("Receive AddRequest")
+	c.Logger.Info("Receive AddRequest")
 
 	sum := request.A + request.B
 	if sum > 100 {

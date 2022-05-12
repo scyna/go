@@ -17,7 +17,7 @@ func Get(s *scyna.Service, request *scyna.GetAuthRequest) {
 			Expired: uint64(expired.UnixMicro()),
 		})
 	} else {
-		s.LOG.Warning("Not exists Token, App")
+		s.Logger.Warning("Not exists Token, App")
 		s.Error(scyna.REQUEST_INVALID)
 		return
 	}

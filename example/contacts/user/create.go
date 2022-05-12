@@ -8,20 +8,20 @@ import (
 )
 
 func Create(ctx *scyna.Service, request *proto.CreateUserRequest) {
-	ctx.LOG.Info("Receive CreateUserRequest")
+	ctx.Logger.Info("Receive CreateUserRequest")
 	if err := validateCreateRequest(request.User); err != nil {
 		ctx.Error(scyna.REQUEST_INVALID)
 		return
 	}
 
-	if err, _ := Repository.GetByEmail(ctx.LOG, request.User.Email); err == nil {
+	if err, _ := Repository.GetByEmail(ctx.Logger, request.User.Email); err == nil {
 		ctx.Error(USER_EXISTED)
 		return
 	}
 
 	user := FromDTO(request.User)
 	user.ID = scyna.ID.Next()
-	if err := Repository.Create(ctx.LOG, user); err != nil {
+	if err := Repository.Create(ctx.Logger, user); err != nil {
 		ctx.Error(err)
 		return
 	}

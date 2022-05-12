@@ -7,7 +7,7 @@ import (
 )
 
 func Hello(c *scyna.Service, request *proto.HelloRequest) {
-	c.LOG.Info("Receive HelloRequest")
+	c.Logger.Info("Receive HelloRequest")
 
 	if err := validateHelloRequest(request); err != nil {
 		c.Error(scyna.REQUEST_INVALID)

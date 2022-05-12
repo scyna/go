@@ -34,8 +34,7 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 		trace.ParentID = msg.ParentID
 
 		context := Context{
-			ID:  trace.ID,
-			LOG: &logger{ID: trace.ID, session: false},
+			Logger{ID: trace.ID, session: false},
 		}
 
 		if err := proto.Unmarshal(msg.Body, signal); err == nil {

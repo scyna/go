@@ -19,7 +19,7 @@ func NewSession(id uint64) *session {
 		quit:     make(chan struct{}),
 	}
 
-	LOG = &logger{session: true, ID: id}
+	LOG = &Logger{session: true, ID: id}
 
 	ticker := time.NewTicker(10 * time.Minute)
 	go func() {

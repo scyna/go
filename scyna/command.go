@@ -12,9 +12,7 @@ type CommandHandler func(ctx *Service)
 func RegisterCommand(url string, handler CommandHandler) {
 	log.Println("Register Command:", url)
 	ctx := Service{
-		Context: Context{
-			LOG: &logger{session: false},
-		},
+		Context: Context{Logger{session: false}},
 	}
 
 	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {
@@ -25,7 +23,7 @@ func RegisterCommand(url string, handler CommandHandler) {
 
 		ctx.ID = ctx.Request.TraceID
 		ctx.Reply = m.Reply
-		ctx.LOG.Reset(ctx.ID)
+		ctx.Reset(ctx.ID)
 		handler(&ctx)
 	})
 

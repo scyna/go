@@ -12,7 +12,7 @@ func Logout(s *scyna.Service, request *scyna.LogoutRequest) {
 	log.Println("Receive LogoutRequest")
 
 	if !checkOrg(request.Organization, request.Secret) {
-		s.LOG.Warning("Organization not exist")
+		s.Logger.Warning("Organization not exist")
 		s.Error(scyna.REQUEST_INVALID)
 		return
 	}

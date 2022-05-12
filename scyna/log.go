@@ -10,15 +10,6 @@ import (
 	"github.com/scylladb/gocqlx/v2/qb"
 )
 
-type Logger interface {
-	Info(messsage string)
-	Error(messsage string)
-	Warning(messsage string)
-	Debug(messsage string)
-	Fatal(messsage string)
-	Reset(id uint64)
-}
-
 type LogLevel int
 
 const (
@@ -37,7 +28,7 @@ type LogData struct {
 	Session  bool
 }
 
-type logger struct {
+type Logger struct {
 	session bool
 	ID      uint64
 }
@@ -106,7 +97,7 @@ func releaseLog() {
 	}
 }
 
-func (l *logger) writeLog(level LogLevel, message string) {
+func (l *Logger) writeLog(level LogLevel, message string) {
 	message = formatLog(message)
 	log.Print(message) //FIXME: for debug only
 	if l.ID > 0 {
@@ -120,27 +111,27 @@ func (l *logger) writeLog(level LogLevel, message string) {
 	}
 }
 
-func (l *logger) Reset(id uint64) {
+func (l *Logger) Reset(id uint64) {
 	l.ID = id
 }
 
-func (l *logger) Info(messsage string) {
+func (l *Logger) Info(messsage string) {
 	l.writeLog(LOG_INFO, messsage)
 }
 
-func (l *logger) Error(messsage string) {
+func (l *Logger) Error(messsage string) {
 	l.writeLog(LOG_ERROR, messsage)
 }
 
-func (l *logger) Warning(messsage string) {
+func (l *Logger) Warning(messsage string) {
 	l.writeLog(LOG_WARNING, messsage)
 }
 
-func (l *logger) Debug(messsage string) {
+func (l *Logger) Debug(messsage string) {
 	l.writeLog(LOG_DEBUG, messsage)
 }
 
-func (l *logger) Fatal(messsage string) {
+func (l *Logger) Fatal(messsage string) {
 	l.writeLog(LOG_FATAL, messsage)
 }
 

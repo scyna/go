@@ -23,7 +23,7 @@ var Settings settings
 
 var httpClient *http.Client
 var module string
-var LOG Logger
+var LOG *Logger
 
 func Release() {
 	releaseLog()

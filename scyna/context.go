@@ -7,8 +7,7 @@ import (
 )
 
 type Context struct {
-	ID  uint64 `db:"id"`
-	LOG Logger
+	Logger
 }
 
 func (ctx *Context) EmitSignal(channel string, data proto.Message) {

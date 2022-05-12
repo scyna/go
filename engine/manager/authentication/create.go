@@ -15,7 +15,7 @@ func Create(s *scyna.Service, request *scyna.CreateAuthRequest) {
 	log.Println("Receive CreateAuthRequest")
 
 	if !checkOrg(request.Organization, request.Secret) {
-		s.LOG.Warning("Organization not exist")
+		s.Logger.Warning("Organization not exist")
 		s.Error(scyna.REQUEST_INVALID)
 		return
 	}

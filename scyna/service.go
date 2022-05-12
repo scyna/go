@@ -30,9 +30,7 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	request = ref.Interface().(R)
 
 	ctx := Service{
-		Context: Context{
-			LOG: &logger{session: false},
-		},
+		Context: Context{Logger{session: false}},
 		request: request,
 	}
 
@@ -44,7 +42,7 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 
 		ctx.ID = ctx.Request.TraceID
 		ctx.Reply = m.Reply
-		ctx.LOG.Reset(ctx.ID)
+		ctx.Reset(ctx.ID)
 
 		if ctx.Request.JSON {
 			if err := json.Unmarshal(ctx.Request.Body, request); err != nil {

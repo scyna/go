@@ -15,7 +15,7 @@ func Write(s *scyna.Service, request *scyna.WriteSettingRequest) {
 		Query(scyna.DB).
 		Bind(request.Module, request.Key, request.Value).
 		ExecRelease(); err != nil {
-		s.LOG.Error("WriteSetting: " + err.Error())
+		s.Logger.Error("WriteSetting: " + err.Error())
 		s.Error(scyna.REQUEST_INVALID)
 		return
 	}
