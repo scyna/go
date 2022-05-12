@@ -2,8 +2,6 @@ package scyna
 
 import (
 	"time"
-
-	"google.golang.org/protobuf/proto"
 )
 
 type TraceType uint32
@@ -14,7 +12,7 @@ const (
 	TRACE_SIGNAL  TraceType = 3
 )
 
-type Context struct {
+type Trace struct {
 	ParentID  uint64    `db:"parent_id"`
 	ID        uint64    `db:"id"`
 	Type      TraceType `db:"type"`
@@ -23,70 +21,20 @@ type Context struct {
 	Path      string    `db:"path"`
 	Source    string    `db:"source"`
 	SessionID uint64    `db:"session_id"`
-	Status    int32
-	LOG       Logger
+	Status    int32     `db:"status"`
 }
 
-func (ctx *Context) EmitSignal(channel string, data proto.Message) {
-	msg := EventOrSignal{ParentID: ctx.ID}
-	if data, err := proto.Marshal(data); err == nil {
-		msg.Body = data
-	}
-
-	if data, err := proto.Marshal(&msg); err == nil {
-		Connection.Publish(channel, data)
-	}
-}
-
-func (ctx *Context) PostEvent(channel string, data proto.Message) {
-	msg := EventOrSignal{ParentID: ctx.ID}
-	if data, err := proto.Marshal(data); err == nil {
-		msg.Body = data
-	}
-
-	if data, err := proto.Marshal(&msg); err == nil {
-		JetStream.Publish(channel, data)
-	}
-}
-
-func (ctx *Context) SendCommand(url string, response proto.Message) *Error {
-	return ctx.CallService(url, nil, response)
-}
-
-func (ctx *Context) CallService(url string, request proto.Message, response proto.Message) *Error {
-	context := Context{
-		ID:       ID.Next(),
-		ParentID: ctx.ID,
-		Time:     time.Now(),
-		Path:     url,
-		Type:     TRACE_SERVICE,
-		Source:   module,
-	}
-	return callService_(&context, url, request, response)
-}
-
-func (ctx *Context) Tag(key string, value string) {
-	if ctx.ID == 0 {
-		return
-	}
-	EmitSignalLite(TAG_CREATED_CHANNEL, &TagCreatedSignal{
-		TraceID: ctx.ID,
-		Key:     key,
-		Value:   value,
-	})
-}
-
-func (ctx *Context) Save() {
-	ctx.Duration = uint64(time.Now().UnixNano() - ctx.Time.UnixNano())
+func (t *Trace) Save() {
+	t.Duration = uint64(time.Now().UnixNano() - t.Time.UnixNano())
 	EmitSignalLite(TRACE_CREATED_CHANNEL, &TraceCreatedSignal{
-		ID:        ctx.ID,
-		ParentID:  ctx.ParentID,
-		Type:      uint32(ctx.Type),
-		Time:      uint64(ctx.Time.UnixMicro()),
-		Duration:  ctx.Duration,
-		Path:      ctx.Path,
-		Source:    ctx.Source,
-		SessionID: ctx.SessionID,
-		Status:    ctx.Status,
+		ID:        t.ID,
+		ParentID:  t.ParentID,
+		Type:      uint32(t.Type),
+		Time:      uint64(t.Time.UnixMicro()),
+		Duration:  t.Duration,
+		Path:      t.Path,
+		Source:    t.Source,
+		SessionID: t.SessionID,
+		Status:    t.Status,
 	})
 }

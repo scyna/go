@@ -13,14 +13,14 @@ import (
 type ServiceHandler[R proto.Message] func(ctx *Service, request R)
 
 func callService(url string, request proto.Message, response proto.Message) *Error {
-	context := Context{
+	trace := Trace{
 		ID:       ID.Next(),
 		ParentID: 0,
 		Time:     time.Now(),
 		Path:     url,
 		Type:     TRACE_SERVICE,
 	}
-	return callService_(&context, url, request, response)
+	return callService_(&trace, url, request, response)
 }
 
 func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
@@ -28,11 +28,10 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	var request R
 	ref := reflect.New(reflect.TypeOf(request).Elem())
 	request = ref.Interface().(R)
+
 	ctx := Service{
 		Context: Context{
-			Path: url,
-			Type: TRACE_SERVICE,
-			LOG:  &logger{session: false},
+			LOG: &logger{session: false},
 		},
 		request: request,
 	}
@@ -70,10 +69,10 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	}
 }
 
-func callService_(context *Context, url string, request proto.Message, response proto.Message) *Error {
-	defer context.Save()
+func callService_(trace *Trace, url string, request proto.Message, response proto.Message) *Error {
+	defer trace.Save()
 
-	req := Request{TraceID: context.ID, JSON: false}
+	req := Request{TraceID: trace.ID, JSON: false}
 	res := Response{}
 
 	if request != nil {
@@ -95,8 +94,8 @@ func callService_(context *Context, url string, request proto.Message, response 
 		return BAD_REQUEST
 	}
 
-	context.SessionID = res.SessionID
-	context.Status = res.Code
+	trace.SessionID = res.SessionID
+	trace.Status = res.Code
 	if res.Code == 200 {
 		if err := proto.Unmarshal(res.Body, response); err == nil {
 			return OK

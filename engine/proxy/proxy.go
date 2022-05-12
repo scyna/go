@@ -3,11 +3,12 @@ package proxy
 import (
 	"bytes"
 	"fmt"
-	"github.com/scyna/go/scyna"
-	"google.golang.org/protobuf/proto"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/scyna/go/scyna"
+	"google.golang.org/protobuf/proto"
 )
 
 type Proxy struct {
@@ -49,7 +50,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	context := scyna.Context{
+	trace := scyna.Trace{
 		ID:       callID,
 		ParentID: 0,
 		Time:     time.Now(),
@@ -57,7 +58,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		Type:     scyna.TRACE_SERVICE,
 		Source:   clientID,
 	}
-	defer proxy.saveContext(&context)
+	defer proxy.saveContext(&trace)
 
 	query := proxy.Queries.GetQuery()
 	defer proxy.Queries.Put(query)
@@ -67,8 +68,8 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if !ok || clientSecret != client.Secret {
 		http.Error(rw, "Unauthorized", http.StatusUnauthorized)
 		scyna.LOG.Info("Wrong client id or secret: " + clientID)
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusUnauthorized
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusUnauthorized
 		return
 	}
 
@@ -82,8 +83,8 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if err := query.Authenticate.Bind(clientID, url).Get(&url); err != nil {
 		http.Error(rw, "Unauthorized", http.StatusUnauthorized)
 		scyna.LOG.Info(fmt.Sprintf("Wrong url: %s, error = %s\n", url, err.Error()))
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusUnauthorized
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusUnauthorized
 		return
 	}
 
@@ -93,8 +94,8 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		ctx.Request.JSON = false
 	} else {
 		http.Error(rw, "Content-Type must be JSON or PROTOBUF ", http.StatusNotAcceptable)
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusNotAcceptable
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusNotAcceptable
 		return
 	}
 
@@ -102,8 +103,8 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	err := ctx.Request.Build(req)
 	if err != nil {
 		http.Error(rw, "Cannot process request", http.StatusInternalServerError)
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusInternalServerError
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -114,8 +115,8 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	reqBytes, err := proto.Marshal(&ctx.Request)
 	if err != nil {
 		http.Error(rw, "Cannot process request", http.StatusInternalServerError)
-		context.Status = http.StatusInternalServerError
-		context.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusInternalServerError
+		trace.SessionID = scyna.Session.ID()
 		return
 	}
 
@@ -123,8 +124,8 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	msg, respErr := scyna.Connection.Request(scyna.PublishURL(url), reqBytes, 10*time.Second)
 	if respErr != nil {
 		http.Error(rw, "No response", http.StatusInternalServerError)
-		context.Status = http.StatusInternalServerError
-		context.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusInternalServerError
+		trace.SessionID = scyna.Session.ID()
 		scyna.LOG.Error("ServeHTTP: Nats: " + respErr.Error())
 		return
 	}
@@ -133,8 +134,8 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if err := proto.Unmarshal(msg.Data, &ctx.Response); err != nil {
 		http.Error(rw, "Cannot deserialize response", http.StatusInternalServerError)
 		scyna.LOG.Error("nats-proxy:" + err.Error())
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusInternalServerError
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -142,8 +143,8 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	_, err = bytes.NewBuffer(ctx.Response.Body).WriteTo(rw)
 	if err != nil {
 		scyna.LOG.Error("Proxy write data error: " + err.Error())
-		context.SessionID = scyna.Session.ID()
-		context.Status = 0
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = 0
 
 	}
 

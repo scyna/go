@@ -13,9 +13,7 @@ func RegisterCommand(url string, handler CommandHandler) {
 	log.Println("Register Command:", url)
 	ctx := Service{
 		Context: Context{
-			Path: url,
-			Type: TRACE_SERVICE,
-			LOG:  &logger{session: false},
+			LOG: &logger{session: false},
 		},
 	}
 

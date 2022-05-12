@@ -46,7 +46,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	ctx := gateway.Contexts.GetContext()
 	defer gateway.Contexts.PutContext(ctx)
 
-	context := scyna.Context{
+	trace := scyna.Trace{
 		ID:       callID,
 		ParentID: 0,
 		Time:     time.Now(),
@@ -54,7 +54,7 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		Type:     scyna.TRACE_SERVICE,
 		Source:   app.Code,
 	}
-	defer gateway.saveContext(&context)
+	defer gateway.saveContext(&trace)
 
 	/*headers*/
 	rw.Header().Set("Access-Control-Allow-Origin", req.Header.Get("Origin"))
@@ -72,8 +72,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	if a, ok := gateway.Applications[appID]; !ok {
 		http.Error(rw, "Forbidden", http.StatusForbidden)
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusForbidden
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusForbidden
 		return
 	} else {
 		app = a
@@ -89,8 +89,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			ctx.Request.Data = token
 			if exp := checkService(token, appID, url); exp == nil {
 				http.Error(rw, "Unauthorized", http.StatusUnauthorized)
-				context.SessionID = scyna.Session.ID()
-				context.Status = http.StatusUnauthorized
+				trace.SessionID = scyna.Session.ID()
+				trace.Status = http.StatusUnauthorized
 				return
 			} else {
 				//log.Print(exp)
@@ -98,8 +98,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 				if exp.Before(now) {
 					http.Error(rw, "Unauthorized", http.StatusUnauthorized)
 					scyna.LOG.Info("Session expired")
-					context.SessionID = scyna.Session.ID()
-					context.Status = http.StatusUnauthorized
+					trace.SessionID = scyna.Session.ID()
+					trace.Status = http.StatusUnauthorized
 					return
 				} else {
 					if exp.After(now.Add(time.Minute * 10)) {
@@ -114,8 +114,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		} else {
 			http.Error(rw, "Unauthorized", http.StatusUnauthorized)
 			scyna.LOG.Info("Can not get cookie")
-			context.SessionID = scyna.Session.ID()
-			context.Status = http.StatusUnauthorized
+			trace.SessionID = scyna.Session.ID()
+			trace.Status = http.StatusUnauthorized
 			return
 		}
 	}
@@ -124,8 +124,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	err := ctx.Request.Build(req)
 	if err != nil {
 		http.Error(rw, "Cannot process request", http.StatusInternalServerError)
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusInternalServerError
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -133,8 +133,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	reqBytes, err := proto.Marshal(&ctx.Request)
 	if err != nil {
 		http.Error(rw, "Cannot process request", http.StatusInternalServerError)
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusInternalServerError
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -143,8 +143,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if respErr != nil {
 		http.Error(rw, "No response", http.StatusInternalServerError)
 		scyna.LOG.Error("ServeHTTP: Nats: " + respErr.Error())
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusInternalServerError
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -153,8 +153,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		log.Println()
 		http.Error(rw, "Cannot deserialize response", http.StatusInternalServerError)
 		scyna.LOG.Error("nats-proxy:" + err.Error())
-		context.SessionID = scyna.Session.ID()
-		context.Status = http.StatusInternalServerError
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = http.StatusInternalServerError
 		return
 	}
 
@@ -190,8 +190,8 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	_, err = bytes.NewBuffer(ctx.Response.Body).WriteTo(rw)
 	if err != nil {
 		scyna.LOG.Error("Proxy write data error: " + err.Error())
-		context.SessionID = scyna.Session.ID()
-		context.Status = 0
+		trace.SessionID = scyna.Session.ID()
+		trace.Status = 0
 	}
 
 	if f, ok := rw.(http.Flusher); ok {

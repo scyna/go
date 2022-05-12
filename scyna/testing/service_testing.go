@@ -68,7 +68,7 @@ func (st *serviceTest) Run(t *testing.T, response ...proto.Message) {
 }
 
 func (st *serviceTest) callService(t *testing.T) *scyna.Response {
-	context := scyna.Context{
+	context := scyna.Trace{
 		ID:       scyna.ID.Next(),
 		ParentID: 0,
 		Time:     time.Now(),

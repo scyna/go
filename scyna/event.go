@@ -16,11 +16,10 @@ func RegisterEvent[R proto.Message](channel string, consumer string, handler Eve
 	ref := reflect.New(reflect.TypeOf(event).Elem())
 	event = ref.Interface().(R)
 
-	context := Context{
+	trace := Trace{
 		Path:      channel,
 		SessionID: Session.ID(),
 		Type:      TRACE_SIGNAL,
-		LOG:       &logger{session: false},
 	}
 
 	if _, err := JetStream.QueueSubscribe(channel, module, func(m *nats.Msg) {
@@ -29,10 +28,14 @@ func RegisterEvent[R proto.Message](channel string, consumer string, handler Eve
 			log.Print("Register unmarshal error response data:", err.Error())
 			return
 		}
-		context.Time = time.Now()
-		context.ID = ID.Next()
-		context.ParentID = msg.ParentID
-		context.LOG.Reset(context.ID)
+		trace.Time = time.Now()
+		trace.ID = ID.Next()
+		trace.ParentID = msg.ParentID
+
+		context := Context{
+			ID:  trace.ID,
+			LOG: &logger{ID: trace.ID, session: false},
+		}
 
 		if err := proto.Unmarshal(m.Data, event); err == nil {
 			handler(&context, event)
@@ -40,6 +43,7 @@ func RegisterEvent[R proto.Message](channel string, consumer string, handler Eve
 			log.Print("Error in parsing data:", err)
 		}
 
+		trace.Save()
 	}, nats.Durable(consumer)); err != nil {
 		log.Fatal("Error in registering Event: ", err)
 	}
