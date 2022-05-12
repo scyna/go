@@ -2,6 +2,7 @@ package trace
 
 import (
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/gocql/gocql"
@@ -31,27 +32,26 @@ func TraceCreated(signal *scyna.TraceCreatedSignal) {
 				source,
 				signal.Status).
 			ExecRelease(); err != nil {
-			log.Print(err)
+			log.Print("Can not save trace created " + strconv.FormatUint(signal.ID, 10) + " / " + err.Error())
 		}
 	} else {
 		qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
 		qBatch.Query("INSERT INTO scyna.trace(type, path, day, id, time, duration, session_id, parent_id, source, status)"+
-			" VALUES (?,?,?,?,?,?,?,?)",
+			" VALUES (?,?,?,?,?,?,?,?,?,?)",
 			signal.Type,
 			signal.Path,
-			signal.ID,
 			day,
+			signal.ID,
 			time.UnixMicro(int64(signal.Time)),
 			signal.Duration,
 			signal.SessionID,
 			signal.ParentID,
 			source,
 			signal.Status)
-		qBatch.Query("INSERT INTO scyna.span(parent_id, child_id) VALUES (?,?)",
-			signal.ParentID, signal.ID)
+		qBatch.Query("INSERT INTO scyna.span(parent_id, child_id) VALUES (?,?)", signal.ParentID, signal.ID)
 
 		if err := scyna.DB.ExecuteBatch(qBatch); err != nil {
-			log.Print(err)
+			log.Print("Can not save trace created " + strconv.FormatUint(signal.ID, 10) + " / " + strconv.FormatUint(signal.ParentID, 10) + " / " + err.Error())
 		}
 	}
 

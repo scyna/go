@@ -58,7 +58,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		Type:     scyna.TRACE_SERVICE,
 		Source:   clientID,
 	}
-	defer proxy.saveContext(&trace)
+	defer proxy.saveTrace(&trace)
 
 	query := proxy.Queries.GetQuery()
 	defer proxy.Queries.Put(query)
@@ -140,6 +140,8 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	rw.WriteHeader(int(ctx.Response.Code))
+	trace.SessionID = ctx.Response.SessionID
+	trace.Status = ctx.Response.Code
 	_, err = bytes.NewBuffer(ctx.Response.Body).WriteTo(rw)
 	if err != nil {
 		scyna.LOG.Error("Proxy write data error: " + err.Error())
