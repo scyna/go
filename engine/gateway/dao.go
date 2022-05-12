@@ -12,7 +12,16 @@ import (
 
 func (gateway *Gateway) saveContext(ctx *scyna.Context) {
 	ctx.Save() //FIXME: direct save
-	/*todo: make relation app_has_trace*/
+	if len(ctx.Source) > 0 {
+		if err := qb.Insert("scyna.app_has_trace").
+			Columns("app_code", "trace_id").
+			Unique().
+			Query(scyna.DB).
+			Bind(&ctx.Source, ctx.ID).
+			ExecRelease(); err != nil {
+			scyna.LOG.Info("Can not save app_has_trace bc " + err.Error())
+		}
+	}
 }
 
 func updateSession(token string, exp time.Time) bool {
