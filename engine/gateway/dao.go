@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"github.com/gocql/gocql"
 	"log"
 
 	"github.com/scyna/go/scyna"
@@ -11,16 +12,14 @@ import (
 )
 
 func (gateway *Gateway) saveContext(ctx *scyna.Context) {
-	ctx.Save() //FIXME: direct save
-	if len(ctx.Source) > 0 {
-		if err := qb.Insert("scyna.app_has_trace").
-			Columns("app_code", "trace_id").
-			Unique().
-			Query(scyna.DB).
-			Bind(&ctx.Source, ctx.ID).
-			ExecRelease(); err != nil {
-			scyna.LOG.Info("Can not save app_has_trace bc " + err.Error())
-		}
+	day := scyna.GetDayByTime(time.Now())
+	ctx.Duration = uint64(time.Now().UnixNano() - ctx.Time.UnixNano())
+	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
+	qBatch.Query("INSERT INTO scyna.trace(type, path, day, id, time, duration, session_id, source, status) "+
+		" VALUES (?,?,?,?,?,?,?,?,?)", ctx.Type, ctx.Path, day, ctx.ID, ctx.Time, ctx.Duration, ctx.SessionID, ctx.Source, ctx.Status)
+	qBatch.Query("INSERT INTO scyna.app_has_trace(app_code, trace_id, day) VALUES (?,?,?)", ctx.Source, ctx.ID, day)
+	if err := scyna.DB.ExecuteBatch(qBatch); err != nil {
+		scyna.LOG.Error("Can not save trace - " + err.Error())
 	}
 }
 

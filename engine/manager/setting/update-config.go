@@ -4,7 +4,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func UpdateDefautConfig(config *scyna.Configuration) {
+func UpdateDefaultConfig(config *scyna.Configuration) {
 	// log.Printf("Update config: %+v\n", config)
 	// manager.DefaultConfig = config
 

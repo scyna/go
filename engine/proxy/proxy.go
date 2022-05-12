@@ -139,12 +139,13 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	rw.WriteHeader(int(ctx.Response.Code))
+	context.SessionID = ctx.Response.SessionID
+	context.Status = ctx.Response.Code
 	_, err = bytes.NewBuffer(ctx.Response.Body).WriteTo(rw)
 	if err != nil {
 		scyna.LOG.Error("Proxy write data error: " + err.Error())
 		context.SessionID = scyna.Session.ID()
 		context.Status = 0
-
 	}
 
 	if f, ok := rw.(http.Flusher); ok {

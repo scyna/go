@@ -18,7 +18,7 @@ func Read(s *scyna.Service, request *scyna.ReadSettingRequest) {
 		Query(scyna.DB).
 		BindStruct(&request).
 		GetRelease(&value); err != nil {
-		log.Println(err.Error())
+		s.LOG.Info("Can not read setting - " + err.Error())
 		s.Error(scyna.REQUEST_INVALID)
 		return
 	}

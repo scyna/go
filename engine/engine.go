@@ -73,7 +73,7 @@ func main() {
 	scyna.RegisterService(scyna.AUTH_LOGOUT_URL, authentication.Logout)
 
 	/* Update config */
-	setting.UpdateDefautConfig(&config)
+	setting.UpdateDefaultConfig(&config)
 
 	go func() {
 		gateway_ := gateway.NewGateway()
