@@ -6,15 +6,15 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Hello(c *scyna.Service, request *proto.HelloRequest) {
-	c.Logger.Info("Receive HelloRequest")
+func Hello(s *scyna.Service, request *proto.HelloRequest) {
+	s.Logger.Info("Receive HelloRequest")
 
 	if err := validateHelloRequest(request); err != nil {
-		c.Error(scyna.REQUEST_INVALID)
+		s.Error(scyna.REQUEST_INVALID)
 		return
 	}
 
-	c.Done(&proto.HelloResponse{Content: "Hello " + request.Name})
+	s.Done(&proto.HelloResponse{Content: "Hello " + request.Name})
 }
 
 func validateHelloRequest(request *proto.HelloRequest) error {

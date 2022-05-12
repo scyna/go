@@ -7,25 +7,25 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Create(ctx *scyna.Service, request *proto.CreateUserRequest) {
-	ctx.Logger.Info("Receive CreateUserRequest")
+func Create(s *scyna.Service, request *proto.CreateUserRequest) {
+	s.Logger.Info("Receive CreateUserRequest")
 	if err := validateCreateRequest(request.User); err != nil {
-		ctx.Error(scyna.REQUEST_INVALID)
+		s.Error(scyna.REQUEST_INVALID)
 		return
 	}
 
-	if err, _ := Repository.GetByEmail(ctx.Logger, request.User.Email); err == nil {
-		ctx.Error(USER_EXISTED)
+	if err, _ := Repository.GetByEmail(s.Logger, request.User.Email); err == nil {
+		s.Error(USER_EXISTED)
 		return
 	}
 
 	user := FromDTO(request.User)
 	user.ID = scyna.ID.Next()
-	if err := Repository.Create(ctx.Logger, user); err != nil {
-		ctx.Error(err)
+	if err := Repository.Create(s.Logger, user); err != nil {
+		s.Error(err)
 		return
 	}
-	ctx.Done(&proto.CreateUserResponse{Id: user.ID})
+	s.Done(&proto.CreateUserResponse{Id: user.ID})
 }
 
 func validateCreateRequest(user *proto.User) error {
