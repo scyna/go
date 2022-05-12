@@ -3,22 +3,33 @@ package gateway
 import (
 	"log"
 
-	"github.com/gocql/gocql"
-
-	"github.com/scyna/go/scyna"
-
 	"time"
 
+	"github.com/gocql/gocql"
 	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/scyna/go/scyna"
 )
 
 func (gateway *Gateway) saveTrace(trace *scyna.Trace) {
 	day := scyna.GetDayByTime(time.Now())
 	trace.Duration = uint64(time.Now().UnixNano() - trace.Time.UnixNano())
 	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
-	qBatch.Query("INSERT INTO scyna.trace(type, path, day, id, time, duration, session_id, source, status) "+
-		" VALUES (?,?,?,?,?,?,?,?,?)", trace.Type, trace.Path, day, trace.ID, trace.Time, trace.Duration, trace.SessionID, trace.Source, trace.Status)
-	qBatch.Query("INSERT INTO scyna.app_has_trace(app_code, trace_id, day) VALUES (?,?,?)", trace.Source, trace.ID, day)
+	qBatch.Query("INSERT INTO scyna.trace(type, path, day, id, time, duration, session_id, source, status) VALUES (?,?,?,?,?,?,?,?,?)",
+		trace.Type,
+		trace.Path,
+		day,
+		trace.ID,
+		trace.Time,
+		trace.Duration,
+		trace.SessionID,
+		trace.Source,
+		trace.Status,
+	)
+	qBatch.Query("INSERT INTO scyna.app_has_trace(app_code, trace_id, day) VALUES (?,?,?)",
+		trace.Source,
+		trace.ID,
+		day,
+	)
 	if err := scyna.DB.ExecuteBatch(qBatch); err != nil {
 		scyna.LOG.Error("Can not save trace - " + err.Error())
 	}
