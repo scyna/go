@@ -77,17 +77,17 @@ func main() {
 
 	go func() {
 		gateway_ := gateway.NewGateway()
-		log.Println("Scyna Gateway Started")
+		log.Println("Scyna Gateway Start with port " + *gatewayPort)
 		if err := http.ListenAndServe(":"+*gatewayPort, gateway_); err != nil {
-			log.Println("Gateway:" + err.Error())
+			log.Println("Gateway: " + err.Error())
 		}
 	}()
 
 	go func() {
 		proxy_ := proxy.NewProxy()
-		log.Println("Scyna Proxy Started")
+		log.Println("Scyna Proxy Start with port " + *proxyPort)
 		if err := http.ListenAndServe(":"+*proxyPort, proxy_); err != nil {
-			log.Println("Proxy:" + err.Error())
+			log.Println("Proxy: " + err.Error())
 		}
 	}()
 
@@ -95,6 +95,6 @@ func main() {
 	scyna.RegisterSignalLite(scyna.SESSION_END_CHANNEL, session.End)
 	scyna.RegisterSignalLite(scyna.SESSION_UPDATE_CHANNEL, session.Update)
 	http.HandleFunc(scyna.SESSION_CREATE_URL, session.Create)
-	log.Println("Scyna Manager Started")
+	log.Println("Scyna Manager Start with port " + *managerPort)
 	log.Fatal(http.ListenAndServe(":"+*managerPort, nil))
 }
