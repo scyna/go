@@ -1,10 +1,11 @@
 package scyna
 
 import (
-	"github.com/scylladb/gocqlx/v2"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/scylladb/gocqlx/v2"
 
 	"github.com/scylladb/gocqlx/v2/qb"
 	"google.golang.org/protobuf/proto"
@@ -20,10 +21,10 @@ type ActivityStream struct {
 }
 
 type Activity struct {
-	EntityID uint64 `db:"entity_id"`
-	Type     int32  `db:"type"`
-	Time     int64  `db:"time"`
-	Data     []byte `db:"data"`
+	EntityID uint64    `db:"entity_id"`
+	Type     int32     `db:"type"`
+	Time     time.Time `db:"time"`
+	Data     []byte    `db:"data"`
 }
 
 func InitActivityStream(entity string, stream string) *ActivityStream {
