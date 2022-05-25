@@ -52,8 +52,9 @@ func Create(w http.ResponseWriter, r *http.Request) {
 			err := protojson.Unmarshal([]byte(value), &config)
 			if err != nil {
 				response.Config = manager.DefaultConfig
+			} else {
+				response.Config = &config
 			}
-			response.Config = &config
 		} else {
 			response.Config = manager.DefaultConfig
 		}
