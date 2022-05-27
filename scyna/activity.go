@@ -4,8 +4,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/scylladb/gocqlx/v2"
-
 	"github.com/scylladb/gocqlx/v2/qb"
 	"google.golang.org/protobuf/proto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -64,21 +62,15 @@ func (stream *ActivityStream) Add(entity uint64, Type int, activity protoreflect
 	}
 }
 
-func GetActivityQuery(name string, entity uint64) *gocqlx.Queryx {
-	return qb.Select(name).
+func (stream *ActivityStream) List(entity uint64) []Activity {
+	tName := stream.keyspace + ".activity"
+	var ret []Activity
+	if err := qb.Select(tName).
 		Columns("entity_id", "type", "time", "data").
 		Where(qb.Eq("entity_id")).
 		Query(DB).
-		Bind(entity)
-}
-
-func (stream *ActivityStream) List(entity uint64) []Activity {
-	tName := stream.keyspace + ".activity"
-	qSelect := GetActivityQuery(tName, entity)
-	var event []Activity
-	if err := qSelect.Select(&event); err != nil {
+		Bind(entity).SelectRelease(&ret); err != nil {
 		LOG.Error("Can not get event: " + err.Error())
 	}
-
-	return event
+	return ret
 }
