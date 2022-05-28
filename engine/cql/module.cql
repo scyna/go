@@ -31,3 +31,11 @@ CREATE TABLE scyna.service
     PRIMARY KEY (module_code, url)
 );
 CREATE INDEX ON scyna.service (url);
+
+DROP TABLE IF EXISTS scyna.module_has_service;
+CREATE TABLE scyna.module_has_service
+(
+    module_code text,
+    service_url      text,
+    PRIMARY KEY (module_code, service_url)
+);

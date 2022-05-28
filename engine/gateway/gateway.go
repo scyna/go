@@ -139,7 +139,13 @@ func (gateway *Gateway) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	/*post request to message queue*/
-	msg, respErr := scyna.Connection.Request(scyna.PublishURL(url), reqBytes, 10*time.Second)
+	var _url string
+	if url != app.AuthURL {
+		_url = "/" + appID + url
+	} else {
+		_url = url
+	}
+	msg, respErr := scyna.Connection.Request(scyna.PublishURL(_url), reqBytes, 10*time.Second)
 	if respErr != nil {
 		http.Error(rw, "No response", http.StatusInternalServerError)
 		scyna.LOG.Error("ServeHTTP: Nats: " + respErr.Error())
