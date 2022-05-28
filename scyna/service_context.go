@@ -95,20 +95,3 @@ func (ctx *Service) tag(code uint32, response proto.Message) {
 		Response: string(res),
 	})
 }
-
-// func (s *Context) Auth(org string, secret string, apps []string, userID string) (bool, string) {
-// 	request := CreateAuthRequest{
-// 		Organization: org,
-// 		Secret:       secret,
-// 		Apps:         apps,
-// 		UserID:       userID,
-// 	}
-
-// 	var response CreateAuthResponse
-// 	if err := CallService(AUTH_CREATE_URL, &request, &response); err != OK {
-// 		return false, ""
-// 	}
-// 	s.Response.Token = response.Token
-// 	s.Response.Expired = response.Expired
-// 	return true, response.Token
-// }
