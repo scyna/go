@@ -10,10 +10,10 @@ type QueryPool struct {
 	sync.Pool
 }
 
-type NewQuery func() *gocqlx.Queryx
+type QueryCreator func() *gocqlx.Queryx
 
-func NewQueryPool(newQuery NewQuery) *QueryPool {
-	return &QueryPool{sync.Pool{New: func() interface{} { return newQuery() }}}
+func NewQueryPool(creator QueryCreator) *QueryPool {
+	return &QueryPool{sync.Pool{New: func() interface{} { return creator() }}}
 }
 
 func (q *QueryPool) GetQuery() *gocqlx.Queryx {
