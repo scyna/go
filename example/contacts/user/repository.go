@@ -1,8 +1,6 @@
 package user
 
 import (
-	"sync"
-
 	"github.com/scylladb/gocqlx/v2"
 	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/scyna/go/scyna"
@@ -12,13 +10,7 @@ type repository struct {
 	GetQueries *scyna.QueryPool /*for high frequence queries*/
 }
 
-var Repository *repository
-
-func InitRepository() {
-	Repository = &repository{
-		GetQueries: &scyna.QueryPool{sync.Pool{New: func() interface{} { return newGetQuery() }}},
-	}
-}
+var Repository *repository = &repository{GetQueries: scyna.NewQueryPool(newGetQuery)}
 
 func (r *repository) Create(LOG scyna.Logger, user *User) *scyna.Error {
 	if err := qb.Insert("ex.user").
