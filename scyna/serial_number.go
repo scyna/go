@@ -14,7 +14,7 @@ type serialNumber struct {
 	next   uint64
 }
 
-func InitSN(key string) *serialNumber {
+func InitSerialNumber(key string) *serialNumber {
 	return &serialNumber{
 		key:    key,
 		prefix: 0,
