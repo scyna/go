@@ -14,7 +14,7 @@ import (
 type Proxy struct {
 	Queries  QueryPool
 	Clients  map[string]Client
-	Contexts scyna.ContextPool
+	Contexts scyna.HttpContextPool
 }
 
 func NewProxy() *Proxy {

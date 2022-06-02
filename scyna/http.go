@@ -13,7 +13,7 @@ type HttpContext struct {
 	Response Response
 }
 
-type ContextPool struct {
+type HttpContextPool struct {
 	sync.Pool
 }
 
@@ -39,18 +39,18 @@ func newHttpContext() *HttpContext {
 	}
 }
 
-func (p *ContextPool) GetContext() *HttpContext {
+func (p *HttpContextPool) GetContext() *HttpContext {
 	service, _ := p.Get().(*HttpContext)
 	return service
 }
 
-func (p *ContextPool) PutContext(service *HttpContext) {
+func (p *HttpContextPool) PutContext(service *HttpContext) {
 	service.reset()
 	p.Put(service)
 }
 
-func NewContextPool() ContextPool {
-	return ContextPool{
+func NewContextPool() HttpContextPool {
+	return HttpContextPool{
 		sync.Pool{
 			New: func() interface{} { return newHttpContext() },
 		}}
