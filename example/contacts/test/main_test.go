@@ -14,8 +14,8 @@ func TestMain(m *testing.M) {
 	user.InitRepository()
 
 	/*register services*/
-	scyna.RegisterService(user.CREATE_USER_URL, user.Create)
-	scyna.RegisterService(user.GET_USER_URL, user.Get)
+	scyna.RegisterService(user.CREATE_USER_URL, user.CreateUser)
+	scyna.RegisterService(user.GET_USER_URL, user.GetUserByEmail)
 
 	exitVal := m.Run()
 	cleanup()

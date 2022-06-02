@@ -1,19 +1,6 @@
 package user
 
-import (
-	"github.com/scyna/go/example/contacts/proto"
-	"github.com/scyna/go/scyna"
-)
-
-var (
-	USER_EXISTED     = &scyna.Error{Code: 100, Message: "User Existed"}
-	USER_NOT_EXISTED = &scyna.Error{Code: 101, Message: "User NOT Existed"}
-)
-
-const (
-	CREATE_USER_URL = "/example/user/create"
-	GET_USER_URL    = "/example/user/get"
-)
+import "github.com/scyna/go/example/contacts/proto"
 
 type User struct {
 	ID       uint64 `db:"id"`
