@@ -8,19 +8,19 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-type ScyllaRepository struct {
+type repository struct {
 	GetQueries *scyna.QueryPool /*for high frequence queries*/
 }
 
-var Repository IRepository
+var Repository *repository
 
-func InitScyllaRepository() {
-	Repository = &ScyllaRepository{
+func InitRepository() {
+	Repository = &repository{
 		GetQueries: &scyna.QueryPool{sync.Pool{New: func() interface{} { return newGetQuery() }}},
 	}
 }
 
-func (r *ScyllaRepository) Create(LOG scyna.Logger, user *User) *scyna.Error {
+func (r *repository) Create(LOG scyna.Logger, user *User) *scyna.Error {
 	if err := qb.Insert("ex.user").
 		Columns("id", "name", "email", "password").
 		Query(scyna.DB).
@@ -40,7 +40,7 @@ func newGetQuery() *gocqlx.Queryx {
 		Query(scyna.DB)
 }
 
-func (r *ScyllaRepository) GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User) {
+func (r *repository) GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User) {
 	var query = r.GetQueries.GetQuery()
 	defer r.GetQueries.PutQuery(query)
 
@@ -52,7 +52,7 @@ func (r *ScyllaRepository) GetByEmail(LOG scyna.Logger, email string) (*scyna.Er
 	return nil, &user
 }
 
-func (r *ScyllaRepository) ListFriend(LOG scyna.Logger, uid uint64) (*scyna.Error, []*User) {
+func (r *repository) ListFriend(LOG scyna.Logger, uid uint64) (*scyna.Error, []*User) {
 	var friends []uint64
 	var ret []*User
 

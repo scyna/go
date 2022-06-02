@@ -11,7 +11,7 @@ import (
 
 func TestMain(m *testing.M) {
 	scyna_test.Init()
-	user.InitScyllaRepository()
+	user.InitRepository()
 
 	/*register services*/
 	scyna.RegisterService(user.CREATE_USER_URL, user.Create)
