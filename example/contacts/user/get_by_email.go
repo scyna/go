@@ -5,12 +5,12 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Get(s *scyna.Service, request *proto.GetUserRequest) {
+func GetUserByEmail(s *scyna.Service, request *proto.GetUserByEmailRequest) {
 	s.Logger.Info("Receive GetUserRequest")
 	if err, user := Repository.GetByEmail(s.Logger, request.Email); err != nil {
 		s.Error(err)
 		return
 	} else {
-		s.Done(&proto.GetUserResponse{User: user.ToDTO()})
+		s.Done(user.ToDTO())
 	}
 }
