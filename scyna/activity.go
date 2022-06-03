@@ -37,7 +37,7 @@ func InitActivityStream(keyspace string) *ActivityStream {
 	}
 }
 
-func (stream *ActivityStream) Add(entity uint64, Type int, activity protoreflect.ProtoMessage) {
+func (stream *ActivityStream) Add(entity uint64, Type int32, activity protoreflect.ProtoMessage) {
 	t := uint64(time.Now().UnixMicro())
 
 	var data []byte
