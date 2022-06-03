@@ -78,8 +78,8 @@ func main() {
 	/* Update config */
 	setting.UpdateDefaultConfig(&config)
 
-	const DEFAULT_CERT_FILE = "proxy/cert/localhost.crt"
-	const DEFAULT_CERT_KEY = "proxy/cert/localhost.key"
+	const DEFAULT_CERT_FILE = ".cert/localhost.crt"
+	const DEFAULT_CERT_KEY = ".cert/localhost.key"
 
 	if *certificateFile == "" || *certificateKey == "" {
 		*certificateFile = DEFAULT_CERT_FILE
