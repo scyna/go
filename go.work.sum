@@ -7,6 +7,7 @@ github.com/golang/protobuf v1.4.2/go.mod h1:oDoupMAO8OvCJWAcko0GGGIgR6R6ocIYbsSw
 github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+github.com/nats-io/nats-server/v2 v2.8.2/go.mod h1:vIdpKz3OG+DCg4q/xVPdXHoztEyKDWRtykQ4N7hd7C4=
 github.com/scyna/go v0.2.9 h1:s1ryq2LobHBLUW6F/waKe/GrKc+Cis2xLcE4yt5usyI=
 github.com/scyna/go v0.2.9/go.mod h1:tmKYbfOZZzviSZg5M9SH8AaZ+8QOQEhTFD8cwlc1PIs=
 github.com/scyna/go/scyna v0.0.0-20220512030619-99a437576b42/go.mod h1:YxK43DDoBgvtiKISUJRSx6HlqCZQxbgzI2cMufhIp0c=
