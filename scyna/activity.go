@@ -11,7 +11,7 @@ import (
 
 const tryCount = 10
 
-type ActivityStream struct {
+type activityStream struct {
 	keyspace string
 	Queries  *QueryPool
 }
@@ -23,9 +23,9 @@ type Activity struct {
 	Data     []byte    `db:"data"`
 }
 
-func InitActivityStream(keyspace string) *ActivityStream {
+func InitActivities(keyspace string) {
 	tName := keyspace + ".activity"
-	return &ActivityStream{
+	Activities = &activityStream{
 		keyspace: keyspace,
 		Queries: &QueryPool{
 			sync.Pool{
@@ -37,7 +37,7 @@ func InitActivityStream(keyspace string) *ActivityStream {
 	}
 }
 
-func (stream *ActivityStream) Add(entity uint64, Type int, activity protoreflect.ProtoMessage) {
+func (stream *activityStream) Add(entity uint64, Type int, activity protoreflect.ProtoMessage) {
 	t := uint64(time.Now().UnixMicro())
 
 	var data []byte
@@ -62,7 +62,7 @@ func (stream *ActivityStream) Add(entity uint64, Type int, activity protoreflect
 	}
 }
 
-func (stream *ActivityStream) List(entity uint64) []Activity {
+func (stream *activityStream) List(entity uint64) []Activity {
 	tName := stream.keyspace + ".activity"
 	var ret []Activity
 	if err := qb.Select(tName).
