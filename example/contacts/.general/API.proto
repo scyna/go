@@ -3,8 +3,7 @@ option java_multiple_files = true;
 option csharp_namespace = "proto";
 option  go_package = ".;proto";
 
-message User
-{
+message User {
   uint64 id = 1;
   string email = 2;
   string name = 3;
@@ -12,45 +11,31 @@ message User
 }
 
 /*CREATE*/
-message CreateUserRequest 
-{
-  User user = 1;
-}
-
-message CreateUserResponse
-{
+//message CreateUserRequest = User
+message CreateUserResponse {
   uint64 id = 1;
 }
 
 /*UPDATE*/
-message UpdateUserRequest
-{
-  User user = 1;
-}
+//message UpdateUserRequest = User
+//message UpdateUserResponse = Nothing
 
 /*GET*/
-message GetUserRequest 
-{
+message GetUserByEmailRequest {
   string email = 1;
 }
+//message GetUserByEmailResponse = User
 
-message GetUserByIDRequest 
-{
+message GetUserByIDRequest {
   uint64 id = 1;
 }
-
-message GetUserResponse
-{
-  User user = 1;
-}
+//message GetUserByIDResponse = User
 
 /*LIST*/
-message ListFriendRequest
-{
+message ListFriendRequest {
   string email = 1;
 }
 
-message ListFriendResponse
-{
-  repeated User friends = 1;
+message ListFriendResponse {
+  repeated User items = 1;
 }

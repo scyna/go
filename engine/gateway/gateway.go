@@ -13,7 +13,7 @@ import (
 type Gateway struct {
 	Queries      QueryPool
 	Applications map[string]Application
-	Contexts     scyna.ContextPool
+	Contexts     scyna.HttpContextPool
 }
 
 func NewGateway() *Gateway {

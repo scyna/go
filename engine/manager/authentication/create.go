@@ -9,7 +9,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-var serialNumber = scyna.InitSN("scyna.auth")
+var serialNumber = scyna.InitSerialNumber("scyna.auth")
 
 func Create(s *scyna.Service, request *scyna.CreateAuthRequest) {
 	log.Println("Receive CreateAuthRequest")

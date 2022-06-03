@@ -26,7 +26,7 @@ func ListFriend(c *scyna.Service, request *proto.ListFriendRequest) {
 				result[i] = u.ToDTO()
 			}
 			c.Done(&proto.ListFriendResponse{
-				Friends: result,
+				Items: result,
 			})
 		}
 	}

@@ -32,6 +32,9 @@ func main() {
 	dbLocation := flag.String("db_location", "", "DB Location")
 	secret := flag.String("secret", "123456", "scyna Manager Secret")
 
+	certificateFile := flag.String("certificateFile", "", "Certificate Key")
+	certificateKey := flag.String("certificateKey", "", "Certificate File")
+
 	flag.Parse()
 	config := scyna.Configuration{
 		NatsUrl:      *natsUrl,
@@ -75,10 +78,18 @@ func main() {
 	/* Update config */
 	setting.UpdateDefaultConfig(&config)
 
+	const DEFAULT_CERT_FILE = ".cert/localhost.crt"
+	const DEFAULT_CERT_KEY = ".cert/localhost.key"
+
+	if *certificateFile == "" || *certificateKey == "" {
+		*certificateFile = DEFAULT_CERT_FILE
+		*certificateKey = DEFAULT_CERT_KEY
+	}
+
 	go func() {
 		gateway_ := gateway.NewGateway()
 		log.Println("Scyna Gateway Start with port " + *gatewayPort)
-		if err := http.ListenAndServe(":"+*gatewayPort, gateway_); err != nil {
+		if err := http.ListenAndServeTLS(":"+*gatewayPort, *certificateFile, *certificateKey, gateway_); err != nil {
 			log.Println("Gateway: " + err.Error())
 		}
 	}()
@@ -86,7 +97,7 @@ func main() {
 	go func() {
 		proxy_ := proxy.NewProxy()
 		log.Println("Scyna Proxy Start with port " + *proxyPort)
-		if err := http.ListenAndServe(":"+*proxyPort, proxy_); err != nil {
+		if err := http.ListenAndServeTLS(":"+*proxyPort, *certificateFile, *certificateKey, proxy_); err != nil {
 			log.Println("Proxy: " + err.Error())
 		}
 	}()
@@ -96,5 +107,5 @@ func main() {
 	scyna.RegisterSignalLite(scyna.SESSION_UPDATE_CHANNEL, session.Update)
 	http.HandleFunc(scyna.SESSION_CREATE_URL, session.Create)
 	log.Println("Scyna Manager Start with port " + *managerPort)
-	log.Fatal(http.ListenAndServe(":"+*managerPort, nil))
+	log.Fatal(http.ListenAndServeTLS(":"+*managerPort, *certificateFile, *certificateKey, nil))
 }
