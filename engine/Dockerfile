@@ -4,7 +4,7 @@ ENV GO111MODULE=on
 
 WORKDIR /workspace/engine
 
-COPY ./.cert/ ./.cert
+COPY ./.cert/ ./cert
 COPY ./gateway/ ./gateway
 COPY ./proxy/ ./proxy
 COPY ./manager/ ./manager
@@ -19,7 +19,7 @@ FROM alpine:3.15
 WORKDIR /app
 
 COPY --from=build-env /workspace/engine/application /engine
-COPY --from=build-env /workspace/engine/.cert/ /.cert
+COPY --from=build-env /workspace/engine/cert/ /cert
 
 ENV MANAGER_PORT=8081
 ENV PROXY_PORT=8080
@@ -33,8 +33,8 @@ ENV DB_HOST=""
 ENV DB_USERNAME=""
 ENV DB_PASSWORD=""
 ENV DB_LOCATION=""
-ENV CERTIFICATE_FILE=""
-ENV CERTIFICATE_KEY=""
+ENV CERTIFICATE_FILE="/cert/localhost.crt"
+ENV CERTIFICATE_KEY="/cert/localhost.key"
 
 EXPOSE ${MANAGER_PORT}
 EXPOSE ${PROXY_PORT}
