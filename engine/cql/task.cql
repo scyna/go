@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS scyna.assigned_task;
 CREATE TABLE scyna.assigned_task
 (
     time        bigint PRIMARY KEY,
-    createdat   timestamp,    
+    createdat   timestamp, 
 );
 
 DROP TABLE IF EXISTS scyna.recurring_task;
