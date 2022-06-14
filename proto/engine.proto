@@ -1,11 +1,11 @@
 syntax = "proto3";
 
 package scyna;
-option java_package = "io.scyna.proto";
-option java_multiple_files = true;
-option csharp_namespace = "scyna.proto";
-option optimize_for = CODE_SIZE;
-option go_package = ".;scyna";
+option  java_package = "io.scyna.proto";
+option  java_multiple_files = true;
+option  csharp_namespace = "scyna.proto";
+option  optimize_for = CODE_SIZE;
+option  go_package = "./;scyna";
 
 message Configuration {
   string NatsUrl = 1;
@@ -138,9 +138,9 @@ message WriteCallSignal {
 
 /*Authentication*/
 message CreateAuthRequest {
-  string Organization = 1;
-  string Secret = 2;
-  string UserID = 3;
+  string          Organization = 1;
+  string          Secret = 2;
+  string          UserID = 3;
   repeated string Apps = 4;
 }
 
@@ -165,4 +165,23 @@ message LogoutRequest {
   string Secret = 2;
   string UserID = 3;
   string Token = 4;
+}
+
+message AddTaskRequest {
+  int64  Time = 1;
+  string Type = 2;
+  bytes  Context = 3;
+  /* TODO */
+}
+
+message AddRecurringTaskRequest {
+  int64 Time = 1;
+  int64 Interval = 2;
+  /* TODO */
+}
+
+message CancelTaskRequest {
+  int64 Period = 1;
+  int64 Time = 2;
+  /* TODO */
 }
