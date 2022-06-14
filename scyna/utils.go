@@ -13,6 +13,14 @@ func GetDayByTime(time time.Time) int {
 	return int(time.UnixMicro() / microSecondPerDay)
 }
 
+func GetMinuteByTime(time time.Time) int64 {
+	return time.Unix() / 60
+}
+
+func GetHourByTime(time time.Time) int64 {
+	return time.Unix() / (60 * 60)
+}
+
 var pathrgxp = regexp.MustCompile(`:[A-z,0-9,$,-,_,.,+,!,*,',(,),\\,]{1,}`)
 
 func PublishURL(urlPath string) string {
