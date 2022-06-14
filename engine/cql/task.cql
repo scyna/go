@@ -3,8 +3,10 @@ CREATE TABLE scyna.task
 (
     period      bigint,
     time        bigint,
+    repeat      boolean,
+    send_to     text,
     type        text,
-    context     blob,
+    data        blob,
     PRIMARY KEY (period, time)
 ) WITH CLUSTERING ORDER BY (time ASC);
 
@@ -21,6 +23,8 @@ CREATE TABLE scyna.recurring_task
     period          bigint,
     time            bigint,
     interval        bigint,
-    context         blob,
+    send_to         text,
+    type            text,
+    data            blob,
     PRIMARY KEY (period, time),
 ) WITH CLUSTERING ORDER BY (time ASC);
