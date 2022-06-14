@@ -6,7 +6,7 @@ CREATE TABLE scyna.task
     type        text,
     context     blob,
     PRIMARY KEY (period, time)
-) WITH CLUSTERING ORDER BY (done ASC, time ASC);
+) WITH CLUSTERING ORDER BY (time ASC);
 
 DROP TABLE IF EXISTS scyna.task_assigned;
 CREATE TABLE scyna.task_assigned
@@ -15,10 +15,12 @@ CREATE TABLE scyna.task_assigned
     createdat   timestamp,    
 );
 
-DROP TABLE IF EXISTS scyna.repeat_task;
-CREATE TABLE scyna.repeat_task
+DROP TABLE IF EXISTS scyna.recurring_task;
+CREATE TABLE scyna.recurring_task
 (
+    period          bigint,
     time            bigint,
     interval        bigint,
     context         blob,
-);
+    PRIMARY KEY (period, time),
+) WITH CLUSTERING ORDER BY (time ASC);
