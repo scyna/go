@@ -8,8 +8,8 @@ CREATE TABLE scyna.task
     PRIMARY KEY (period, time)
 ) WITH CLUSTERING ORDER BY (time ASC);
 
-DROP TABLE IF EXISTS scyna.task_assigned;
-CREATE TABLE scyna.task_assigned
+DROP TABLE IF EXISTS scyna.assigned_task;
+CREATE TABLE scyna.assigned_task
 (
     time        bigint PRIMARY KEY,
     createdat   timestamp,    

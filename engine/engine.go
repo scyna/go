@@ -11,6 +11,7 @@ import (
 	"github.com/scyna/go/engine/manager/logging"
 	"github.com/scyna/go/engine/manager/session"
 	"github.com/scyna/go/engine/manager/setting"
+	"github.com/scyna/go/engine/manager/task"
 	"github.com/scyna/go/engine/manager/trace"
 	"github.com/scyna/go/engine/proxy"
 	"github.com/scyna/go/scyna"
@@ -74,6 +75,11 @@ func main() {
 	scyna.RegisterService(scyna.AUTH_CREATE_URL, authentication.Create)
 	scyna.RegisterService(scyna.AUTH_GET_URL, authentication.Get)
 	scyna.RegisterService(scyna.AUTH_LOGOUT_URL, authentication.Logout)
+
+	/* task */
+	scyna.RegisterService(scyna.ADD_TASK_URL, task.AddTask)
+	scyna.RegisterService(scyna.CANCEL_TASK_URL, task.CancelTask)
+	scyna.RegisterService(scyna.ADD_RECURRING_TASK_URL, task.AddRecurringTask)
 
 	/* Update config */
 	setting.UpdateDefaultConfig(&config)
