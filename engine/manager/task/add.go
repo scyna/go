@@ -21,20 +21,21 @@ func AddTask(s *scyna.Service, request *scyna.AddTaskRequest) {
 	}
 	// Generate period id
 	// A group task contain all task must execute in a block 1 minute
-	period := scyna.GetMinuteByTime(time.Unix(0, request.Time))
+	bucket := scyna.GetMinuteByTime(time.Unix(0, request.Time))
 	// Insert new task to scyna.task table
 	var task = Task{
-		Period: period,
-		Time:   request.Time,
-		Repeat: request.Repeat,
-		SendTo: request.To,
-		Type:   request.Type,
-		Data:   request.Data,
+		ID:              scyna.ID.Next(),
+		Bucket:          bucket,
+		Time:            time.Unix(0, request.Time),
+		RecurringTaskID: request.RecurringTaskID,
+		SendTo:          request.SendTo,
+		Type:            request.Type,
+		Data:            request.Data,
 	}
 
 	for i := 0; i < MAX_TRY_ADD_TASK; i++ {
 		if applied, err := qb.Insert("scyna.task").
-			Columns("period", "time", "repeat", "send_to", "type", "data").
+			Columns("bucket", "id", "recurring_task_id", "send_to", "type", "time", "data").
 			Unique().
 			Query(scyna.DB).
 			BindStruct(task).
@@ -44,7 +45,7 @@ func AddTask(s *scyna.Service, request *scyna.AddTaskRequest) {
 				scyna.LOG.Error(err.Error())
 				return
 			} else {
-				task.Time += random.Int63n(100000000)
+				task.ID += scyna.ID.Next()
 				continue
 			}
 		} else {
@@ -56,7 +57,7 @@ func AddTask(s *scyna.Service, request *scyna.AddTaskRequest) {
 	}
 
 	var response = scyna.AddTaskResponse{
-		TaskID: fmt.Sprintf("%08d%019d", period, task.Time),
+		TaskID: fmt.Sprintf("%08d%019d", bucket, task.ID),
 	}
 	s.Done(&response)
 }

@@ -1,13 +1,13 @@
 DROP TABLE IF EXISTS scyna.task;
 CREATE TABLE scyna.task
 (
-    bucket      bigint,
-    id          bigint,
-    repeat      boolean,
-    send_to     text,
-    type        text,
-    time        timestamp,
-    data        blob,
+    bucket              bigint,
+    id                  bigint,
+    recurring_task_id   bigint,
+    send_to             text,
+    type                text,
+    time                timestamp,
+    data                blob,
     PRIMARY KEY (bucket, time)
 ) WITH CLUSTERING ORDER BY (time ASC);
 

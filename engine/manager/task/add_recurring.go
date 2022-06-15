@@ -2,6 +2,7 @@ package task
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/scyna/go/scyna"
@@ -15,31 +16,45 @@ func AddRecurringTask(s *scyna.Service, request *scyna.AddRecurringTaskRequest) 
 	}
 
 	var task = RecurringTask{
-		Time:     request.Time,
+		Time:     time.Unix(0, request.Time),
 		Interval: request.Interval,
-		SendTo:   request.To,
+		SendTo:   request.SendTo,
 		Type:     request.Type,
 		Data:     request.Data,
-	}
-	// Insert task to scyna.recurring_task table
-	for i := 0; i < MAX_TRY_ADD_TASK; i++ {
-		if applied, err := qb.Insert("scyna.recurring_task").
-			Columns("period", "time", "interval", "send_to", "type", "data").
-			Unique().
-			Query(scyna.DB).
-			BindStruct(task).
-			ExecCASRelease(); !applied {
-			if err != nil {
-				s.Error(scyna.SERVER_ERROR)
-				scyna.LOG.Error(err.Error())
-				return
-			} else {
-				task.Time += random.Int63n(1000000000)
-			}
-		}
+		Count:    request.Count,
+		ID:       scyna.ID.Next(),
 	}
 
-	// TODO: Insert task to scyna.task table
+	// Insert task to scyna.recurring_task table
+	if applied, err := qb.Insert("scyna.recurring_task").
+		Columns("period", "time", "interval", "send_to", "type", "data").
+		Unique().
+		Query(scyna.DB).
+		BindStruct(task).
+		ExecCASRelease(); !applied {
+		if err != nil {
+			scyna.LOG.Error(err.Error())
+		} else {
+			scyna.LOG.Error(fmt.Sprintf("Insert recurring task not applied: %+v", request))
+		}
+		s.Error(scyna.SERVER_ERROR)
+		return
+	}
+
+	// Insert task to scyna.task table
+	var addTaskResponse scyna.AddTaskResponse
+	if err := s.CallService(scyna.ADD_TASK_URL, &scyna.AddTaskRequest{
+		Time:            request.Time,
+		RecurringTaskID: int64(task.ID),
+		Type:            task.Type,
+		SendTo:          task.SendTo,
+		Data:            task.Data,
+	}, &addTaskResponse); err.Code != scyna.OK.Code {
+		s.Error(scyna.SERVER_ERROR)
+		// TODO: roll back in scyna.recurring_task table
+		return
+	}
+
 	var response = scyna.AddRecurringTaskResponse{
 		TaskID: fmt.Sprintf("%015d", request.Time),
 	}
