@@ -168,11 +168,11 @@ message LogoutRequest {
 }
 
 message AddTaskRequest {
-  int64  Time = 1;    // Nano-second time that task will be executed
-  bool   Repeat = 2;  // One-time task or recurring task
-  string Type = 3;    // Send email, send otp, expire transfer, .v.v..
-  string To = 4;      // Where send task to? topic of jetstream, url. depend on task type
-  bytes  Data = 5;    // Data of task (unmarshal in bussiness logic layer)
+  int64  Time = 1;             // Nano-second time that task will be executed
+  int64  RecurringTaskID = 2;  // Recurring Task ID:
+  string Type = 3;             // Send email, send otp, expire transfer, .v.v..
+  string SendTo = 4;           // Where send task to? topic of jetstream, url. depend on task type
+  bytes  Data = 5;             // Data of task (unmarshal in bussiness logic layer)
   /* TODO */
 }
 
@@ -182,9 +182,12 @@ message AddTaskResponse {
 }
 
 message AddRecurringTaskRequest {
-  int64 Time = 1;  // Nano-second time that task will be executed
-  int64 Interval = 2;
-  /* TODO */
+  int64  Time = 1;      // Nano-second time that task will be executed
+  int64  Interval = 2;  // Task is executed every Interval
+  string Type = 3;      // Send email, send otp, expire transfer, .v.v..
+  string SendTo = 4;    // Where send task to? topic of jetstream, url. depend on task type
+  bytes  Data = 5;      // Data of task (unmarshal in bussiness logic layer)
+  int64  Count = 6;     // Number of loop in task
 }
 
 message AddRecurringTaskResponse {

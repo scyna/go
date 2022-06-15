@@ -1,30 +1,32 @@
 DROP TABLE IF EXISTS scyna.task;
 CREATE TABLE scyna.task
 (
-    period      bigint,
-    time        bigint,
+    bucket      bigint,
+    id          bigint,
     repeat      boolean,
     send_to     text,
     type        text,
+    time        timestamp,
     data        blob,
-    PRIMARY KEY (period, time)
+    PRIMARY KEY (bucket, time)
 ) WITH CLUSTERING ORDER BY (time ASC);
 
 DROP TABLE IF EXISTS scyna.assigned_task;
 CREATE TABLE scyna.assigned_task
 (
-    time        bigint PRIMARY KEY,
-    createdat   timestamp, 
+    bucket        bigint,
+    task_id       bigint, 
+    PRIMARY KEY (bucket, id),
 );
 
 DROP TABLE IF EXISTS scyna.recurring_task;
 CREATE TABLE scyna.recurring_task
 (
-    period          bigint,
+    id              bigint PRIMARY KEY,
     time            bigint,
     interval        bigint,
+    count           bigint,
     send_to         text,
     type            text,
     data            blob,
-    PRIMARY KEY (period, time),
-) WITH CLUSTERING ORDER BY (time ASC);
+);

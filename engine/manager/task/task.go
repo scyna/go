@@ -7,5 +7,12 @@ type Task struct {
 	SendTo string `db:"send_to"`
 	Type   string `db:"type"`
 	Data   []byte `db:"data"`
-	// TODO: fill fields of scyna.task table
+}
+
+type RecurringTask struct {
+	Time     int64  `db:"time"`
+	Interval int64  `db:"interval"`
+	SendTo   string `db:"send_to"`
+	Type     string `db:"type"`
+	Data     []byte `db:"data"`
 }
