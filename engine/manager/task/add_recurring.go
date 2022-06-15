@@ -45,7 +45,7 @@ func AddRecurringTask(s *scyna.Service, request *scyna.AddRecurringTaskRequest) 
 	var addTaskResponse scyna.AddTaskResponse
 	if err := s.CallService(scyna.ADD_TASK_URL, &scyna.AddTaskRequest{
 		Time:            request.Time,
-		RecurringTaskID: int64(task.ID),
+		RecurringTaskID: task.ID,
 		Type:            task.Type,
 		SendTo:          task.SendTo,
 		Data:            task.Data,
