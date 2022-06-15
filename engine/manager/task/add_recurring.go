@@ -35,7 +35,7 @@ func AddRecurringTask(s *scyna.Service, request *scyna.AddRecurringTaskRequest) 
 		if err != nil {
 			scyna.LOG.Error(err.Error())
 		} else {
-			scyna.LOG.Error(fmt.Sprintf("Insert recurring task not applied: %+v", request))
+			scyna.LOG.Error(fmt.Sprintf("Insert recurring task not applied: %+v\n", request))
 		}
 		s.Error(scyna.SERVER_ERROR)
 		return

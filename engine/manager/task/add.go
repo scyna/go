@@ -2,7 +2,6 @@ package task
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 
 	"github.com/scylladb/gocqlx/v2/qb"
@@ -10,8 +9,6 @@ import (
 )
 
 const MAX_TRY_ADD_TASK = 3
-
-var random = rand.New(rand.NewSource(time.Now().UnixMicro()))
 
 func AddTask(s *scyna.Service, request *scyna.AddTaskRequest) {
 	// Check validate task request (time > now, ...)
@@ -33,26 +30,19 @@ func AddTask(s *scyna.Service, request *scyna.AddTaskRequest) {
 		Data:            request.Data,
 	}
 
-	for i := 0; i < MAX_TRY_ADD_TASK; i++ {
-		if applied, err := qb.Insert("scyna.task").
-			Columns("bucket", "id", "recurring_task_id", "send_to", "type", "time", "data").
-			Unique().
-			Query(scyna.DB).
-			BindStruct(task).
-			ExecCASRelease(); !applied {
-			if err != nil {
-				s.Error(scyna.SERVER_ERROR)
-				scyna.LOG.Error(err.Error())
-				return
-			} else {
-				task.ID += scyna.ID.Next()
-				continue
-			}
+	if applied, err := qb.Insert("scyna.task").
+		Columns("bucket", "id", "recurring_task_id", "send_to", "type", "time", "data").
+		Unique().
+		Query(scyna.DB).
+		BindStruct(task).
+		ExecCASRelease(); !applied {
+		if err != nil {
+			scyna.LOG.Error(err.Error())
+			return
 		} else {
-			break
+			scyna.LOG.Error(fmt.Sprintf("Insert task is not applied: %+v\n", request))
 		}
 		s.Error(scyna.SERVER_ERROR)
-		scyna.LOG.Error("Exceeding max times insert task")
 		return
 	}
 
