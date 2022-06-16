@@ -44,7 +44,7 @@ func (t *serviceTest) ExpectResponse(response proto.Message) *serviceTest {
 func (st *serviceTest) Run(t *testing.T, response ...proto.Message) {
 	var res = st.callService(t)
 	if st.status != res.Code {
-		t.Fatalf("Expect status %d but actually %d", st.status, res.Code)
+		t.Fatalf("Expect status %d but actually %d with response %s", st.status, res.Code, string(res.Body))
 	}
 
 	if len(response) == 0 {
