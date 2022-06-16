@@ -1,19 +1,16 @@
 version: '3'
 
 services:
-
   engine:
     restart: always
-    image: scyna/engine:0.1.23
-    ports:
-      - "8080:8080"
-      - "8081:8081"
-      - "8443:8443"
+    build:
+      context: ../
+      dockerfile: ./Dockerfile
     environment:
-      - NATS_URL=localhost
+      - NATS_URL=127.0.0.1
       - NATS_USERNAME=""
       - NATS_PASSWORD=""
-      - DB_HOST=localhost
+      - DB_HOST=127.0.0.1
       - DB_USERNAME=""
       - DB_PASSWORD=""
       - DB_LOCATION=""
