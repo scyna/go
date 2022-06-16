@@ -27,7 +27,7 @@ func AddRecurringTask(s *scyna.Service, request *scyna.AddRecurringTaskRequest) 
 
 	// Insert task to scyna.recurring_task table
 	if applied, err := qb.Insert("scyna.recurring_task").
-		Columns("period", "time", "interval", "send_to", "type", "data").
+		Columns("id", "time", "interval", "count", "send_to", "type", "data").
 		Unique().
 		Query(scyna.DB).
 		BindStruct(task).
@@ -35,7 +35,7 @@ func AddRecurringTask(s *scyna.Service, request *scyna.AddRecurringTaskRequest) 
 		if err != nil {
 			scyna.LOG.Error(err.Error())
 		} else {
-			scyna.LOG.Error(fmt.Sprintf("Insert recurring task not applied: %+v\n", request))
+			scyna.LOG.Error(fmt.Sprintf("Insert recurring task not applied: %+v\n", task))
 		}
 		s.Error(scyna.SERVER_ERROR)
 		return
@@ -56,7 +56,7 @@ func AddRecurringTask(s *scyna.Service, request *scyna.AddRecurringTaskRequest) 
 	}
 
 	var response = scyna.AddRecurringTaskResponse{
-		TaskID: fmt.Sprintf("%015d", request.Time),
+		TaskID: fmt.Sprintf("%d", task.ID),
 	}
 
 	s.Done(&response)

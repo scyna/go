@@ -11,6 +11,7 @@ import (
 const MAX_TRY_ADD_TASK = 3
 
 func AddTask(s *scyna.Service, request *scyna.AddTaskRequest) {
+	fmt.Println("Receive AddTask Request")
 	// Check validate task request (time > now, ...)
 	if err := validateAddTaskRequest(request); err != nil {
 		s.Error(scyna.REQUEST_INVALID)
@@ -38,9 +39,8 @@ func AddTask(s *scyna.Service, request *scyna.AddTaskRequest) {
 		ExecCASRelease(); !applied {
 		if err != nil {
 			scyna.LOG.Error(err.Error())
-			return
 		} else {
-			scyna.LOG.Error(fmt.Sprintf("Insert task is not applied: %+v\n", request))
+			scyna.LOG.Error(fmt.Sprintf("Insert task is not applied: %+v\n", task))
 		}
 		s.Error(scyna.SERVER_ERROR)
 		return
