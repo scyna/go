@@ -7,43 +7,19 @@ option  csharp_namespace = "scyna.proto";
 option  optimize_for = CODE_SIZE;
 option  go_package = "./;scyna";
 
-message AddTaskRequest {
+message StartTaskRequest {
     string module = 1;
-    uint64 time = 2;
     string topic = 3;
     bytes data = 4;
-}
-
-message AddTaskResponse {
-    uint64 id = 1;
-}
-
-message RemoveTaskRequest {
-    uint64 id = 1;
-}
-
-message CreateRepeaterRequest {
-    string module = 2;
-    uint64 time = 3;
-    string topic = 4;
-    bytes data = 5;
+    uint64 time = 2;
+    uint64 interval = 5;
     uint64 count = 6;
-    bool auto = 7; /*auto start*/
 }
 
-message CreateRepeaterResponse {
+message StartTaskResponse {
     uint64 id = 1;
 }
 
-message StartRepeaterRequest {
-    uint64 id = 1;
-    uint64 count = 2;
-}
-
-message StopRepeaterRequest {
-    uint64 id = 1;
-}
-
-message DestroyRepeaterRequest {
+message StopTaskResponse {
     uint64 id = 1;
 }
