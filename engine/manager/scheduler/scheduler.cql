@@ -21,7 +21,7 @@ CREATE TABLE scyna.doing
 DROP TABLE IF EXISTS scyna.repeater;
 CREATE TABLE scyna.repeater
 (
-    id              text PRIMARY KEY,
+    id              bigint PRIMARY KEY,
     start           timestamp, /*null: inactive*/
     interval        bigint,
     count           bigint, /*0 = infinitive*/
