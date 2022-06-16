@@ -3,7 +3,7 @@ CREATE TABLE scyna.todo
 (
     bucket              bigint,
     task_id             bigint,
-    repeater_id         bigint,
+    repeat              boolean, /*is repeater or task*/
     time                timestamp,
     topic               text,
     data                blob,
@@ -27,6 +27,7 @@ CREATE TABLE scyna.repeater
     count           bigint, /*0 = infinitive*/
     topic           text,
     data            blob,
+    last_task_id    bigint,
 );
 
 DROP TABLE IF EXISTS scyna.task;
@@ -38,5 +39,5 @@ CREATE TABLE scyna.task
     time                timestamp,
     topic               text,
     data                blob,
-    PRIMARY KEY (bucket, task_id)
+    PRIMARY KEY (module, id)
 );
