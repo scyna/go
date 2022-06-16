@@ -20,9 +20,10 @@ CREATE TABLE scyna.task
     topic        text,
     data         blob,
     time         timestamp,
-    interval     bigint, /*in minute*/
+    interval     bigint,
     count        bigint,
     max          bigint,
+    running      boolean,
     PRIMARY KEY (module, id)
 );
 CREATE INDEX ON scyna.task (id);

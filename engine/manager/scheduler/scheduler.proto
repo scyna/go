@@ -12,14 +12,14 @@ message StartTaskRequest {
     string topic = 3;
     bytes data = 4;
     uint64 time = 2;
-    uint64 interval = 5;
-    uint64 count = 6;
+    uint64 interval = 5; /*in minute*/
+    uint64 count = 6; /*0 ~ infinitive*/ 
 }
 
 message StartTaskResponse {
     uint64 id = 1;
 }
 
-message StopTaskResponse {
+message StopTaskRequest {
     uint64 id = 1;
 }
