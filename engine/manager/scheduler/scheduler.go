@@ -2,11 +2,61 @@ package scheduler
 
 import "time"
 
+const INTERVAL = 1 * time.Minute
+const CLEANUP_FACTOR = 10
+
+var ticker *time.Ticker
+var done = make(chan bool)
+var cleanupCount = 0
+
 func Start() {
+	ticker = time.NewTicker(INTERVAL)
+	go func() {
+		for {
+			select {
+			case <-done:
+				return
+			case <-ticker.C:
+				loop()
+			}
+		}
+	}()
 
 }
 
-func getBucket(time time.Time) uint64 {
+func Stop() {
+	ticker.Stop()
+	done <- true
+}
+
+func loop() {
+	var bucket uint64
+	for {
+		var todos = todos(bucket)
+		if len(todos) == 0 {
+			break
+		}
+		for _, t := range todos {
+			process(t)
+		}
+	}
+
+	cleanupCount++
+	if cleanupCount > CLEANUP_FACTOR {
+		go cleanup()
+		cleanupCount = 0
+	}
+}
+
+func todos(bucket uint64) []uint64 {
 	/*TODO*/
-	return 0
+	return nil
+}
+
+func process(task uint64) {
+	/*TODO*/
+}
+
+func cleanup() {
+	/*TODO*/
 }
