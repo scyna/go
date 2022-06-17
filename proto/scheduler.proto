@@ -9,9 +9,9 @@ option  go_package = "./;scyna";
 
 message StartTaskRequest {
     string module = 1;
-    string topic = 3;
-    bytes data = 4;
-    uint64 time = 2;
+    string topic = 2;
+    bytes data = 3;
+    uint64 time = 4;
     uint64 interval = 5; /*in minute*/
     uint64 loop = 6; /*0 ~ infinitive*/ 
 }
