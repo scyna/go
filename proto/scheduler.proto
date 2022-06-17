@@ -13,7 +13,7 @@ message StartTaskRequest {
     bytes data = 4;
     uint64 time = 2;
     uint64 interval = 5; /*in minute*/
-    uint64 count = 6; /*0 ~ infinitive*/ 
+    uint64 loop = 6; /*0 ~ infinitive*/ 
 }
 
 message StartTaskResponse {

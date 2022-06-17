@@ -21,8 +21,8 @@ CREATE TABLE scyna.task
     data         blob,
     time         timestamp,
     interval     bigint,
-    count        bigint,
-    max          bigint,
+    loop_count   bigint,
+    loop_max     bigint,
     running      boolean,
     PRIMARY KEY (module, id)
 );
