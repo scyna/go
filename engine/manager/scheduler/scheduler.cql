@@ -9,7 +9,9 @@ CREATE TABLE scyna.todo
 DROP TABLE IF EXISTS scyna.doing;
 CREATE TABLE scyna.doing
 (
-    task_id       bigint PRIMARY KEY 
+    bucket        bigint,
+    task_id       bigint, 
+    PRIMARY KEY (bucket, task_id)
 );
 
 DROP TABLE IF EXISTS scyna.task;
@@ -21,9 +23,9 @@ CREATE TABLE scyna.task
     start        timestamp,
     next         timestamp,
     interval     bigint,
+    loop_index   bigint,
     loop_count   bigint,
-    loop_max     bigint,
-    active       boolean,
+    done         boolean,
 );
 
 DROP TABLE IF EXISTS scyna.module_has_task;

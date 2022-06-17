@@ -12,8 +12,8 @@ message StartTaskRequest {
     string topic = 2;
     bytes data = 3;
     uint64 time = 4;
-    uint64 interval = 5; /*in minute*/
-    uint64 loop = 6; /*0 ~ infinitive*/ 
+    uint64 interval = 5; /*in second, must be greater than 60*/
+    uint64 loop = 6;
 }
 
 message StartTaskResponse {
