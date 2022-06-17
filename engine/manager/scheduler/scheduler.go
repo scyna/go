@@ -9,7 +9,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-const INTERVAL = 30 * time.Second
+const INTERVAL = 60 * time.Second
 const CLEANUP_FACTOR = 10
 
 var done = make(chan bool)
