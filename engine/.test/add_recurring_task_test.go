@@ -33,7 +33,7 @@ func TestAddRecurringTask(t *testing.T) {
 		t.Fatalf("Cannot get recurring task: %s\n", response.TaskID)
 	}
 	t.Logf("Recurring Task: %+v\n", rTask)
-	defer qb.Delete("scyna.recurring_task").Where(qb.Eq("id")).Query(scyna.DB).Bind(response.TaskID).ExecRelease()
+	// defer qb.Delete("scyna.recurring_task").Where(qb.Eq("id")).Query(scyna.DB).Bind(response.TaskID).ExecRelease()
 
 	var task task.Task
 	if err := qb.Select("scyna.task").
@@ -46,5 +46,5 @@ func TestAddRecurringTask(t *testing.T) {
 		t.Fatalf("Cannot get task: %s\n", response.TaskID)
 	}
 	t.Logf("Task: %+v\n", task)
-	defer qb.Delete("scyna.task").Where(qb.Eq("bucket"), qb.Eq("id")).Query(scyna.DB).Bind(task.Bucket, task.ID).ExecRelease()
+	// defer qb.Delete("scyna.task").Where(qb.Eq("bucket"), qb.Eq("id")).Query(scyna.DB).Bind(task.Bucket, task.ID).ExecRelease()
 }

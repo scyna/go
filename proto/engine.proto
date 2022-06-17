@@ -197,5 +197,8 @@ message AddRecurringTaskResponse {
 
 message CancelTaskRequest {
   string TaskID = 1;
-  /* TODO */
+}
+
+message CancelRecurringTaskRequest {
+  string TaskID = 1;
 }

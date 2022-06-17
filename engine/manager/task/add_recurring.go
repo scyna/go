@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/scylladb/gocqlx/v2/qb"
+	"github.com/gocql/gocql"
 	"github.com/scyna/go/scyna"
 )
 
@@ -15,7 +15,7 @@ func AddRecurringTask(s *scyna.Service, request *scyna.AddRecurringTaskRequest) 
 		return
 	}
 
-	var task = RecurringTask{
+	var rTask = RecurringTask{
 		Time:     time.Unix(0, request.Time),
 		Interval: request.Interval,
 		SendTo:   request.SendTo,
@@ -24,40 +24,34 @@ func AddRecurringTask(s *scyna.Service, request *scyna.AddRecurringTaskRequest) 
 		Count:    request.Count,
 		ID:       scyna.ID.Next(),
 	}
-
 	// Insert task to scyna.recurring_task table
-	if applied, err := qb.Insert("scyna.recurring_task").
-		Columns("id", "time", "interval", "count", "send_to", "type", "data").
-		Unique().
-		Query(scyna.DB).
-		BindStruct(task).
-		ExecCASRelease(); !applied {
-		if err != nil {
-			scyna.LOG.Error(err.Error())
-		} else {
-			scyna.LOG.Error(fmt.Sprintf("Insert recurring task not applied: %+v\n", task))
-		}
-		s.Error(scyna.SERVER_ERROR)
+	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
+	qBatch.Query("INSERT INTO scyna.recurring_task (id, time, interval, send_to, type, data, count) VALUES (?, ?, ?, ?, ?, ?, ?);",
+		rTask.ID, rTask.Time, rTask.Interval, rTask.SendTo, rTask.Type, rTask.Data, rTask.Count)
+	// A group task contain all task must execute in a block 1 minute
+	bucket := scyna.GetMinuteByTime(time.Unix(0, request.Time))
+	var task = Task{
+		Bucket:          bucket,
+		ID:              scyna.ID.Next(),
+		Time:            rTask.Time,
+		RecurringTaskID: rTask.ID,
+		SendTo:          rTask.SendTo,
+		Type:            rTask.Type,
+		Data:            rTask.Data,
+	}
+	// Insert to scyna.task table
+	qBatch.Query("INSERT INTO scyna.task (bucket, id, time, recurring_task_id, send_to, type, data) VALUES (?, ?, ?, ?, ?, ?, ?);",
+		task.Bucket, task.ID, task.Time, task.RecurringTaskID, task.SendTo, task.Type, task.Data)
+
+	if err := scyna.DB.ExecuteBatch(qBatch); err != nil {
+		s.Error(scyna.REQUEST_INVALID)
+		s.Logger.Error(err.Error())
 		return
 	}
 
-	// Insert task to scyna.task table
-	var addTaskResponse scyna.AddTaskResponse
-	if err := s.CallService(scyna.ADD_TASK_URL, &scyna.AddTaskRequest{
-		Time:            request.Time,
-		RecurringTaskID: task.ID,
-		Type:            task.Type,
-		SendTo:          task.SendTo,
-		Data:            task.Data,
-	}, &addTaskResponse); err.Code != scyna.OK.Code {
-		s.Error(scyna.SERVER_ERROR)
-		// TODO: roll back in scyna.recurring_task table
-		return
-	}
-
+	// Response
 	var response = scyna.AddRecurringTaskResponse{
-		TaskID: fmt.Sprintf("%d", task.ID),
+		TaskID: fmt.Sprintf("%d", rTask.ID),
 	}
-
 	s.Done(&response)
 }

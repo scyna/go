@@ -1883,7 +1883,7 @@ type CancelTaskRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TaskID string `protobuf:"bytes,1,opt,name=TaskID,proto3" json:"TaskID,omitempty"` // TODO
+	TaskID string `protobuf:"bytes,1,opt,name=TaskID,proto3" json:"TaskID,omitempty"`
 }
 
 func (x *CancelTaskRequest) Reset() {
@@ -1919,6 +1919,53 @@ func (*CancelTaskRequest) Descriptor() ([]byte, []int) {
 }
 
 func (x *CancelTaskRequest) GetTaskID() string {
+	if x != nil {
+		return x.TaskID
+	}
+	return ""
+}
+
+type CancelRecurringTaskRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TaskID string `protobuf:"bytes,1,opt,name=TaskID,proto3" json:"TaskID,omitempty"`
+}
+
+func (x *CancelRecurringTaskRequest) Reset() {
+	*x = CancelRecurringTaskRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_engine_proto_msgTypes[29]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CancelRecurringTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelRecurringTaskRequest) ProtoMessage() {}
+
+func (x *CancelRecurringTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_engine_proto_msgTypes[29]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelRecurringTaskRequest.ProtoReflect.Descriptor instead.
+func (*CancelRecurringTaskRequest) Descriptor() ([]byte, []int) {
+	return file_engine_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *CancelRecurringTaskRequest) GetTaskID() string {
 	if x != nil {
 		return x.TaskID
 	}
@@ -2110,11 +2157,14 @@ var file_engine_proto_rawDesc = []byte{
 	0x6b, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49,
 	0x44, 0x22, 0x2b, 0x0a, 0x11, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x54, 0x61, 0x73, 0x6b, 0x52,
 	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49, 0x44,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x42, 0x2c,
-	0x0a, 0x0e, 0x69, 0x6f, 0x2e, 0x73, 0x63, 0x79, 0x6e, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x48, 0x02, 0x50, 0x01, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x73, 0x63, 0x79, 0x6e, 0x61, 0xaa, 0x02,
-	0x0b, 0x73, 0x63, 0x79, 0x6e, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x22, 0x34,
+	0x0a, 0x1a, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x52, 0x65, 0x63, 0x75, 0x72, 0x72, 0x69, 0x6e,
+	0x67, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06,
+	0x54, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x54, 0x61,
+	0x73, 0x6b, 0x49, 0x44, 0x42, 0x2c, 0x0a, 0x0e, 0x69, 0x6f, 0x2e, 0x73, 0x63, 0x79, 0x6e, 0x61,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x48, 0x02, 0x50, 0x01, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x73,
+	0x63, 0x79, 0x6e, 0x61, 0xaa, 0x02, 0x0b, 0x73, 0x63, 0x79, 0x6e, 0x61, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2129,37 +2179,38 @@ func file_engine_proto_rawDescGZIP() []byte {
 	return file_engine_proto_rawDescData
 }
 
-var file_engine_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
+var file_engine_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_engine_proto_goTypes = []interface{}{
-	(*Configuration)(nil),            // 0: scyna.Configuration
-	(*CreateSessionRequest)(nil),     // 1: scyna.CreateSessionRequest
-	(*CreateSessionResponse)(nil),    // 2: scyna.CreateSessionResponse
-	(*EndSessionSignal)(nil),         // 3: scyna.EndSessionSignal
-	(*UpdateSessionSignal)(nil),      // 4: scyna.UpdateSessionSignal
-	(*GetIDResponse)(nil),            // 5: scyna.GetIDResponse
-	(*GetSNRequest)(nil),             // 6: scyna.GetSNRequest
-	(*GetSNResponse)(nil),            // 7: scyna.GetSNResponse
-	(*LogCreatedSignal)(nil),         // 8: scyna.LogCreatedSignal
-	(*TraceCreatedSignal)(nil),       // 9: scyna.TraceCreatedSignal
-	(*TagCreatedSignal)(nil),         // 10: scyna.TagCreatedSignal
-	(*ServiceDoneSignal)(nil),        // 11: scyna.ServiceDoneSignal
-	(*WriteSettingRequest)(nil),      // 12: scyna.WriteSettingRequest
-	(*ReadSettingRequest)(nil),       // 13: scyna.ReadSettingRequest
-	(*ReadSettingResponse)(nil),      // 14: scyna.ReadSettingResponse
-	(*SettingUpdatedSignal)(nil),     // 15: scyna.SettingUpdatedSignal
-	(*SettingRemovedSignal)(nil),     // 16: scyna.SettingRemovedSignal
-	(*RemoveSettingRequest)(nil),     // 17: scyna.RemoveSettingRequest
-	(*WriteCallSignal)(nil),          // 18: scyna.WriteCallSignal
-	(*CreateAuthRequest)(nil),        // 19: scyna.CreateAuthRequest
-	(*CreateAuthResponse)(nil),       // 20: scyna.CreateAuthResponse
-	(*GetAuthRequest)(nil),           // 21: scyna.GetAuthRequest
-	(*GetAuthResponse)(nil),          // 22: scyna.GetAuthResponse
-	(*LogoutRequest)(nil),            // 23: scyna.LogoutRequest
-	(*AddTaskRequest)(nil),           // 24: scyna.AddTaskRequest
-	(*AddTaskResponse)(nil),          // 25: scyna.AddTaskResponse
-	(*AddRecurringTaskRequest)(nil),  // 26: scyna.AddRecurringTaskRequest
-	(*AddRecurringTaskResponse)(nil), // 27: scyna.AddRecurringTaskResponse
-	(*CancelTaskRequest)(nil),        // 28: scyna.CancelTaskRequest
+	(*Configuration)(nil),              // 0: scyna.Configuration
+	(*CreateSessionRequest)(nil),       // 1: scyna.CreateSessionRequest
+	(*CreateSessionResponse)(nil),      // 2: scyna.CreateSessionResponse
+	(*EndSessionSignal)(nil),           // 3: scyna.EndSessionSignal
+	(*UpdateSessionSignal)(nil),        // 4: scyna.UpdateSessionSignal
+	(*GetIDResponse)(nil),              // 5: scyna.GetIDResponse
+	(*GetSNRequest)(nil),               // 6: scyna.GetSNRequest
+	(*GetSNResponse)(nil),              // 7: scyna.GetSNResponse
+	(*LogCreatedSignal)(nil),           // 8: scyna.LogCreatedSignal
+	(*TraceCreatedSignal)(nil),         // 9: scyna.TraceCreatedSignal
+	(*TagCreatedSignal)(nil),           // 10: scyna.TagCreatedSignal
+	(*ServiceDoneSignal)(nil),          // 11: scyna.ServiceDoneSignal
+	(*WriteSettingRequest)(nil),        // 12: scyna.WriteSettingRequest
+	(*ReadSettingRequest)(nil),         // 13: scyna.ReadSettingRequest
+	(*ReadSettingResponse)(nil),        // 14: scyna.ReadSettingResponse
+	(*SettingUpdatedSignal)(nil),       // 15: scyna.SettingUpdatedSignal
+	(*SettingRemovedSignal)(nil),       // 16: scyna.SettingRemovedSignal
+	(*RemoveSettingRequest)(nil),       // 17: scyna.RemoveSettingRequest
+	(*WriteCallSignal)(nil),            // 18: scyna.WriteCallSignal
+	(*CreateAuthRequest)(nil),          // 19: scyna.CreateAuthRequest
+	(*CreateAuthResponse)(nil),         // 20: scyna.CreateAuthResponse
+	(*GetAuthRequest)(nil),             // 21: scyna.GetAuthRequest
+	(*GetAuthResponse)(nil),            // 22: scyna.GetAuthResponse
+	(*LogoutRequest)(nil),              // 23: scyna.LogoutRequest
+	(*AddTaskRequest)(nil),             // 24: scyna.AddTaskRequest
+	(*AddTaskResponse)(nil),            // 25: scyna.AddTaskResponse
+	(*AddRecurringTaskRequest)(nil),    // 26: scyna.AddRecurringTaskRequest
+	(*AddRecurringTaskResponse)(nil),   // 27: scyna.AddRecurringTaskResponse
+	(*CancelTaskRequest)(nil),          // 28: scyna.CancelTaskRequest
+	(*CancelRecurringTaskRequest)(nil), // 29: scyna.CancelRecurringTaskRequest
 }
 var file_engine_proto_depIdxs = []int32{
 	0, // 0: scyna.CreateSessionResponse.Config:type_name -> scyna.Configuration
@@ -2524,6 +2575,18 @@ func file_engine_proto_init() {
 				return nil
 			}
 		}
+		file_engine_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CancelRecurringTaskRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -2531,7 +2594,7 @@ func file_engine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_engine_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   29,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
