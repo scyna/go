@@ -168,12 +168,12 @@ message LogoutRequest {
 }
 
 message AddTaskRequest {
-  int64  Time = 1;             // Nano-second time that task will be executed
-  uint64 RecurringTaskID = 2;  // Recurring Task ID:
-  string Type = 3;             // Send email, send otp, expire transfer, .v.v..
-  string SendTo = 4;           // Where send task to? topic of jetstream, url. depend on task type
-  bytes  Data = 5;             // Data of task (unmarshal in bussiness logic layer)
-  /* TODO */
+  string Module = 1;
+  string Topic = 2;
+  bytes  Data = 3;
+  int64  Start = 4;     // Unit: seconds
+  int64  Interval = 5;  // Unit: seconds
+  int64  LoopMax = 6;
 }
 
 message AddTaskResponse {
@@ -181,24 +181,6 @@ message AddTaskResponse {
   /* TODO */
 }
 
-message AddRecurringTaskRequest {
-  int64  Time = 1;      // Nano-second time that task will be executed
-  int64  Interval = 2;  // Task is executed every Interval
-  string Type = 3;      // Send email, send otp, expire transfer, .v.v..
-  string SendTo = 4;    // Where send task to? topic of jetstream, url. depend on task type
-  bytes  Data = 5;      // Data of task (unmarshal in bussiness logic layer)
-  int64  Count = 6;     // Number of loop in task
-}
-
-message AddRecurringTaskResponse {
-  string TaskID = 1;
-  /* TODO */
-}
-
 message CancelTaskRequest {
-  string TaskID = 1;
-}
-
-message CancelRecurringTaskRequest {
   string TaskID = 1;
 }

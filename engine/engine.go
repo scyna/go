@@ -79,7 +79,6 @@ func main() {
 	/* task */
 	scyna.RegisterService(scyna.ADD_TASK_URL, task.AddTask)
 	scyna.RegisterService(scyna.CANCEL_TASK_URL, task.CancelTask)
-	scyna.RegisterService(scyna.ADD_RECURRING_TASK_URL, task.AddRecurringTask)
 
 	/* Update config */
 	setting.UpdateDefaultConfig(&config)

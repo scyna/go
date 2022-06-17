@@ -4,7 +4,7 @@ CREATE TABLE scyna.todo
     bucket        bigint,
     task_id       bigint,
     PRIMARY KEY (bucket, task_id)
-)
+);
 
 DROP TABLE IF EXISTS scyna.doing;
 CREATE TABLE scyna.doing
@@ -15,8 +15,7 @@ CREATE TABLE scyna.doing
 DROP TABLE IF EXISTS scyna.task;
 CREATE TABLE scyna.task
 (
-    module       text,
-    id           bigint,
+    id           bigint PRIMARY KEY ,
     topic        text,
     data         blob,
     start        timestamp,
@@ -24,7 +23,13 @@ CREATE TABLE scyna.task
     interval     bigint,
     loop_count   bigint,
     loop_max     bigint,
-    running      boolean,
-    PRIMARY KEY (module, id)
+    active       boolean,
 );
-CREATE INDEX ON scyna.task (id);
+
+DROP TABLE IF EXISTS scyna.module_has_task;
+CREATE TABLE scyna.module_has_task
+(
+    module       text,
+    task_id      bigint,
+    PRIMARY KEY (module, task_id)
+);

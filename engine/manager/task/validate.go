@@ -10,28 +10,18 @@ import (
 )
 
 func validateAddTaskRequest(request *scyna.AddTaskRequest) error {
-	if request.Time < time.Now().UnixNano() {
+	if request.Start < time.Now().Unix() {
 		return errors.New("Task time is less than now")
 	}
-	// TODO: check valid each field in request
-	return nil
-}
 
-func validateAddRecurringTaskRequest(request *scyna.AddRecurringTaskRequest) error {
-	if request.Time < time.Now().UnixNano() {
-		return errors.New("Task time is less than now")
-	}
-	// TODO: check valid each field in request
-	return nil
-}
-
-func validateCancelTaskRequest(request *scyna.CancelTaskRequest) error {
 	return validation.ValidateStruct(request,
-		validation.Field(&request.TaskID, validation.Required, validation.Match(regexp.MustCompile("^[0-9]{27}$"))),
+		validation.Field(&request.Topic, validation.Required, validation.Length(1, 100)),
+		validation.Field(&request.Interval, validation.Required, validation.Min(0)),
+		validation.Field(&request.Module, validation.Required, validation.Length(1, 30)),
 	)
 }
 
-func validateCancelRecurringTaskRequest(request *scyna.CancelRecurringTaskRequest) error {
+func validateCancelTaskRequest(request *scyna.CancelTaskRequest) error {
 	return validation.ValidateStruct(request,
 		validation.Field(&request.TaskID, validation.Required, validation.Match(regexp.MustCompile("^[0-9]{10,19}$"))),
 	)

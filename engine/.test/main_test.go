@@ -15,6 +15,8 @@ import (
 )
 
 const MODULE_CODE = "scyna.engine"
+const STREAM_TEST = "TEST_STREAM"
+const SUBJECT_TEST = "SUBJECT"
 
 func TestMain(m *testing.M) {
 	config := scyna.Configuration{
@@ -59,7 +61,6 @@ func TestMain(m *testing.M) {
 	/* task */
 	scyna.RegisterService(scyna.ADD_TASK_URL, task.AddTask)
 	scyna.RegisterService(scyna.CANCEL_TASK_URL, task.CancelTask)
-	scyna.RegisterService(scyna.ADD_RECURRING_TASK_URL, task.AddRecurringTask)
 
 	/* Update config */
 	setting.UpdateDefaultConfig(&config)

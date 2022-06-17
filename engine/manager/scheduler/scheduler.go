@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/gocql/gocql"
 	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/scyna/go/scyna"
 )
@@ -16,14 +17,14 @@ var done = make(chan bool)
 var cleanupCount = 0
 
 type task struct {
-	ID        uint64
-	Topic     string
-	Data      []byte
-	Running   bool
-	LoopCount uint64
-	LoopMax   uint64
-	Next      time.Time
-	Interval  uint64
+	ID        uint64    `db:"id"`
+	Topic     string    `db:"topic"`
+	Data      []byte    `db:"data"`
+	Active    bool      `db:"active"`
+	LoopCount uint64    `db:"loop_count"`
+	LoopMax   uint64    `db:"loop_max"`
+	Next      time.Time `db:"next"`
+	Interval  uint64    `db:"interval"`
 }
 
 func Start() {
@@ -64,8 +65,8 @@ func loop() {
 	}
 }
 
-func todos(bucket uint64) []uint64 {
-	var ret []uint64
+func todos(bucket int64) []int64 {
+	var ret []int64
 	if err := qb.Select("scyna.todo").
 		Columns("id").
 		Where(qb.Eq("bucket")).
@@ -83,7 +84,7 @@ func todos(bucket uint64) []uint64 {
 	return ret
 }
 
-func process(id uint64) {
+func process(id int64) {
 	var t task
 	if err := qb.Select("scyna.task").
 		Columns("id", "topic", "data", "next", "interval", "loop_count", "loop_max", "running").
@@ -95,27 +96,57 @@ func process(id uint64) {
 		log.Print("Can not load task")
 		return
 	}
-	if !t.Running {
-		/*TODO: do nothing, remove task from todo list only*/
+	if !t.Active {
+		/* Do nothing, remove task from todo list only*/
+		bucket := scyna.GetMinuteByTime(t.Next)
+		if err := qb.Delete("scyna.todo").
+			Where(qb.Eq("bucket"), qb.Eq("task_id")).
+			Query(scyna.DB).
+			Bind(bucket, t.ID).
+			ExecRelease(); err != nil {
+			scyna.LOG.Error(err.Error())
+		}
 		return
 	}
 
+	// Mark task is doing
+	if applied, err := qb.Insert("scyna.doing").
+		Columns("task_id").
+		Unique().
+		TTL(60 * time.Second).
+		Query(scyna.DB).
+		Bind(t.ID).
+		ExecCASRelease(); !applied {
+		if err != nil {
+			scyna.LOG.Error(err.Error())
+		} else {
+			scyna.LOG.Error("Task has been doing")
+		}
+		return
+	}
+
+	// SEND signal excute TASK
 	scyna.JetStream.Publish(t.Topic, t.Data)
+
+	oldBucket := bucket(t.Next)
+	// 1. remove old task on todolist
+	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
+	qBatch.Query("DELETE FROM scyna.todo WHERE bucket = ? AND id = ?;", oldBucket, t.ID)
 
 	t.LoopCount++
 	if t.LoopCount < t.LoopMax {
-		/*TODO: calculate next*/
-		/*Batch:
-		1. remove old task on todolist
-		2. add new task to todo list
-		3. update task
-		*/
+		/* calculate next*/
+		t.Next = t.Next.Add(time.Second * time.Duration(t.Interval))
+		nextBucket := scyna.GetMinuteByTime(t.Next)
+		// 2. add new task to todo list
+		qBatch.Query("INSERT INTO scyna.todo (bucket, id) VALUES (?, ?);", nextBucket, t.ID)
 	} else {
-		t.Running = false
-		/*Batch:
-		1. remove old task on todolist
-		3. update task
-		*/
+		t.Active = false
+	}
+	// 3. update task
+	qBatch.Query("UPDATE scyna.task SET next = ?, active = ?, loop_count = ?  WHERE id = ?;", t.Next, t.Active, t.LoopCount, t.ID)
+	if err := scyna.DB.ExecuteBatch(qBatch); err != nil {
+		scyna.LOG.Error(err.Error())
 	}
 }
 
@@ -123,6 +154,6 @@ func cleanup() {
 	/*TODO*/
 }
 
-func bucket(time time.Time) uint64 {
-	return uint64(time.Unix() / 60)
+func bucket(time time.Time) int64 {
+	return time.Unix() / 60
 }
