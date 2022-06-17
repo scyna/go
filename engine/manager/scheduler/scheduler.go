@@ -2,7 +2,7 @@ package scheduler
 
 import "time"
 
-const INTERVAL = 1 * time.Minute
+const INTERVAL = 30 * time.Second
 const CLEANUP_FACTOR = 10
 
 var ticker *time.Ticker
@@ -32,11 +32,11 @@ func Stop() {
 func loop() {
 	var bucket uint64
 	for {
-		var todos = todos(bucket)
-		if len(todos) == 0 {
+		tasks := todos(bucket)
+		if len(tasks) == 0 {
 			break
 		}
-		for _, t := range todos {
+		for _, t := range tasks {
 			process(t)
 		}
 	}
