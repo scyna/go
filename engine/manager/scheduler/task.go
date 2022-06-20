@@ -16,7 +16,7 @@ type Task struct {
 	Next      time.Time `db:"next"`
 	Interval  uint64    `db:"interval"`
 	LoopCount uint64    `db:"loop_count"`
-	LoopMax   uint64    `db:"loop_max"`
+	LoopIndex uint64    `db:"loop_index"`
 	Done      bool      `db:"done"`
 }
 
@@ -71,7 +71,7 @@ func (task *Task) Acquire() error {
 func (task *Task) Deactive() error {
 	// Mark task is doing
 	if err := qb.Update("scyna.task").
-		Set("active").
+		Set("done").
 		Where(qb.Eq("id")).
 		Query(scyna.DB).
 		Bind(false, task.ID).

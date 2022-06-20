@@ -2,7 +2,6 @@ package scheduler
 
 import (
 	"errors"
-	"regexp"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -16,13 +15,13 @@ func validateStartTaskRequest(request *scyna.StartTaskRequest) error {
 
 	return validation.ValidateStruct(request,
 		validation.Field(&request.Topic, validation.Required, validation.Length(1, 100)),
-		validation.Field(&request.Interval, validation.Required, validation.Min(0)),
 		validation.Field(&request.Module, validation.Required, validation.Length(1, 30)),
 	)
 }
 
 func validateStopTaskRequest(request *scyna.StopTaskRequest) error {
-	return validation.ValidateStruct(request,
-		validation.Field(&request.Id, validation.Required, validation.Match(regexp.MustCompile("^[0-9]{10,19}$"))),
-	)
+	if request.Id == 0 {
+		return errors.New("invalid task id")
+	}
+	return nil
 }

@@ -7,9 +7,9 @@ import (
 	"github.com/scyna/go/engine/manager/authentication"
 	"github.com/scyna/go/engine/manager/generator"
 	"github.com/scyna/go/engine/manager/logging"
+	"github.com/scyna/go/engine/manager/scheduler"
 	"github.com/scyna/go/engine/manager/session"
 	"github.com/scyna/go/engine/manager/setting"
-	"github.com/scyna/go/engine/manager/task"
 	"github.com/scyna/go/engine/manager/trace"
 	"github.com/scyna/go/scyna"
 )
@@ -59,8 +59,8 @@ func TestMain(m *testing.M) {
 	scyna.RegisterService(scyna.AUTH_LOGOUT_URL, authentication.Logout)
 
 	/* task */
-	scyna.RegisterService(scyna.ADD_TASK_URL, task.AddTask)
-	scyna.RegisterService(scyna.CANCEL_TASK_URL, task.CancelTask)
+	scyna.RegisterService(scyna.START_TASK_URL, scheduler.StartTask)
+	scyna.RegisterService(scyna.STOP_TASK_URL, scheduler.StopTask)
 
 	/* Update config */
 	setting.UpdateDefaultConfig(&config)

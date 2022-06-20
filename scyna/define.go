@@ -21,8 +21,8 @@ const (
 	AUTH_CREATE_URL        = "/scyna/auth/create"
 	AUTH_GET_URL           = "/scyna/auth/get"
 	AUTH_LOGOUT_URL        = "/scyna/auth/logout"
-	ADD_TASK_URL           = "/scyna/task/add"
-	CANCEL_TASK_URL        = "/scyna/task/cancel"
+	START_TASK_URL         = "/scyna/task/start"
+	STOP_TASK_URL          = "/scyna/task/stop"
 )
 
 var (

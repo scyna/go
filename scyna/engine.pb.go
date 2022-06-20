@@ -1618,187 +1618,6 @@ func (x *LogoutRequest) GetToken() string {
 	return ""
 }
 
-type AddTaskRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Module   string `protobuf:"bytes,1,opt,name=Module,proto3" json:"Module,omitempty"`
-	Topic    string `protobuf:"bytes,2,opt,name=Topic,proto3" json:"Topic,omitempty"`
-	Data     []byte `protobuf:"bytes,3,opt,name=Data,proto3" json:"Data,omitempty"`
-	Start    int64  `protobuf:"varint,4,opt,name=Start,proto3" json:"Start,omitempty"`       // Unit: seconds
-	Interval int64  `protobuf:"varint,5,opt,name=Interval,proto3" json:"Interval,omitempty"` // Unit: seconds
-	LoopMax  int64  `protobuf:"varint,6,opt,name=LoopMax,proto3" json:"LoopMax,omitempty"`
-}
-
-func (x *AddTaskRequest) Reset() {
-	*x = AddTaskRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_engine_proto_msgTypes[24]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *AddTaskRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AddTaskRequest) ProtoMessage() {}
-
-func (x *AddTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_engine_proto_msgTypes[24]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AddTaskRequest.ProtoReflect.Descriptor instead.
-func (*AddTaskRequest) Descriptor() ([]byte, []int) {
-	return file_engine_proto_rawDescGZIP(), []int{24}
-}
-
-func (x *AddTaskRequest) GetModule() string {
-	if x != nil {
-		return x.Module
-	}
-	return ""
-}
-
-func (x *AddTaskRequest) GetTopic() string {
-	if x != nil {
-		return x.Topic
-	}
-	return ""
-}
-
-func (x *AddTaskRequest) GetData() []byte {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-func (x *AddTaskRequest) GetStart() int64 {
-	if x != nil {
-		return x.Start
-	}
-	return 0
-}
-
-func (x *AddTaskRequest) GetInterval() int64 {
-	if x != nil {
-		return x.Interval
-	}
-	return 0
-}
-
-func (x *AddTaskRequest) GetLoopMax() int64 {
-	if x != nil {
-		return x.LoopMax
-	}
-	return 0
-}
-
-type AddTaskResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	TaskID string `protobuf:"bytes,1,opt,name=TaskID,proto3" json:"TaskID,omitempty"` // TODO
-}
-
-func (x *AddTaskResponse) Reset() {
-	*x = AddTaskResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_engine_proto_msgTypes[25]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *AddTaskResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AddTaskResponse) ProtoMessage() {}
-
-func (x *AddTaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_engine_proto_msgTypes[25]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AddTaskResponse.ProtoReflect.Descriptor instead.
-func (*AddTaskResponse) Descriptor() ([]byte, []int) {
-	return file_engine_proto_rawDescGZIP(), []int{25}
-}
-
-func (x *AddTaskResponse) GetTaskID() string {
-	if x != nil {
-		return x.TaskID
-	}
-	return ""
-}
-
-type CancelTaskRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	TaskID string `protobuf:"bytes,1,opt,name=TaskID,proto3" json:"TaskID,omitempty"`
-}
-
-func (x *CancelTaskRequest) Reset() {
-	*x = CancelTaskRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_engine_proto_msgTypes[26]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *CancelTaskRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CancelTaskRequest) ProtoMessage() {}
-
-func (x *CancelTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_engine_proto_msgTypes[26]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CancelTaskRequest.ProtoReflect.Descriptor instead.
-func (*CancelTaskRequest) Descriptor() ([]byte, []int) {
-	return file_engine_proto_rawDescGZIP(), []int{26}
-}
-
-func (x *CancelTaskRequest) GetTaskID() string {
-	if x != nil {
-		return x.TaskID
-	}
-	return ""
-}
-
 var File_engine_proto protoreflect.FileDescriptor
 
 var file_engine_proto_rawDesc = []byte{
@@ -1956,26 +1775,11 @@ var file_engine_proto_rawDesc = []byte{
 	0x72, 0x65, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x53, 0x65, 0x63, 0x72, 0x65,
 	0x74, 0x12, 0x16, 0x0a, 0x06, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44, 0x18, 0x03, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x06, 0x55, 0x73, 0x65, 0x72, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x54, 0x6f, 0x6b,
-	0x65, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x22,
-	0x9e, 0x01, 0x0a, 0x0e, 0x41, 0x64, 0x64, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x4d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x06, 0x4d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x54, 0x6f,
-	0x70, 0x69, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x54, 0x6f, 0x70, 0x69, 0x63,
-	0x12, 0x12, 0x0a, 0x04, 0x44, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04,
-	0x44, 0x61, 0x74, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x53, 0x74, 0x61, 0x72, 0x74, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x03, 0x52, 0x05, 0x53, 0x74, 0x61, 0x72, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x49, 0x6e,
-	0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x49, 0x6e,
-	0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x4c, 0x6f, 0x6f, 0x70, 0x4d, 0x61,
-	0x78, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x4c, 0x6f, 0x6f, 0x70, 0x4d, 0x61, 0x78,
-	0x22, 0x29, 0x0a, 0x0f, 0x41, 0x64, 0x64, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x22, 0x2b, 0x0a, 0x11, 0x43,
-	0x61, 0x6e, 0x63, 0x65, 0x6c, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x16, 0x0a, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x06, 0x54, 0x61, 0x73, 0x6b, 0x49, 0x44, 0x42, 0x2c, 0x0a, 0x0e, 0x69, 0x6f, 0x2e, 0x73,
-	0x63, 0x79, 0x6e, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x48, 0x02, 0x50, 0x01, 0x5a, 0x08,
-	0x2e, 0x2f, 0x3b, 0x73, 0x63, 0x79, 0x6e, 0x61, 0xaa, 0x02, 0x0b, 0x73, 0x63, 0x79, 0x6e, 0x61,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x42,
+	0x2c, 0x0a, 0x0e, 0x69, 0x6f, 0x2e, 0x73, 0x63, 0x79, 0x6e, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x48, 0x02, 0x50, 0x01, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x73, 0x63, 0x79, 0x6e, 0x61, 0xaa,
+	0x02, 0x0b, 0x73, 0x63, 0x79, 0x6e, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1990,7 +1794,7 @@ func file_engine_proto_rawDescGZIP() []byte {
 	return file_engine_proto_rawDescData
 }
 
-var file_engine_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
+var file_engine_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_engine_proto_goTypes = []interface{}{
 	(*Configuration)(nil),         // 0: scyna.Configuration
 	(*CreateSessionRequest)(nil),  // 1: scyna.CreateSessionRequest
@@ -2016,9 +1820,6 @@ var file_engine_proto_goTypes = []interface{}{
 	(*GetAuthRequest)(nil),        // 21: scyna.GetAuthRequest
 	(*GetAuthResponse)(nil),       // 22: scyna.GetAuthResponse
 	(*LogoutRequest)(nil),         // 23: scyna.LogoutRequest
-	(*AddTaskRequest)(nil),        // 24: scyna.AddTaskRequest
-	(*AddTaskResponse)(nil),       // 25: scyna.AddTaskResponse
-	(*CancelTaskRequest)(nil),     // 26: scyna.CancelTaskRequest
 }
 var file_engine_proto_depIdxs = []int32{
 	0, // 0: scyna.CreateSessionResponse.Config:type_name -> scyna.Configuration
@@ -2323,42 +2124,6 @@ func file_engine_proto_init() {
 				return nil
 			}
 		}
-		file_engine_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AddTaskRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_engine_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AddTaskResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_engine_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CancelTaskRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -2366,7 +2131,7 @@ func file_engine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_engine_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   27,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

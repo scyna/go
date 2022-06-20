@@ -1,7 +1,6 @@
 package scheduler
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/gocql/gocql"
@@ -24,14 +23,14 @@ func StartTask(s *scyna.Service, request *scyna.StartTaskRequest) {
 		Interval:  request.Interval,
 		LoopCount: 0,
 		Next:      time.Unix(int64(request.Time), 0),
-		LoopMax:   request.Loop,
+		LoopIndex: request.Loop,
 		Data:      request.Data,
 		Done:      true,
 	}
 
 	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
-	qBatch.Query("INSERT INTO scyna.task(id, topic, data, start, next, interval, loop_count, loop_max, done) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
-		task.ID, task.Topic, task.Data, task.Start, task.Next, task.Interval, task.LoopCount, task.LoopMax, task.Done)
+	qBatch.Query("INSERT INTO scyna.task(id, topic, data, start, next, interval, loop_count, loop_index, done) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+		task.ID, task.Topic, task.Data, task.Start, task.Next, task.Interval, task.LoopCount, task.LoopIndex, task.Done)
 
 	qBatch.Query("INSERT INTO scyna.module_has_task(module, task_id) VALUES (?, ?);", request.Module, task.ID)
 
@@ -45,8 +44,8 @@ func StartTask(s *scyna.Service, request *scyna.StartTaskRequest) {
 		return
 	}
 
-	var response = scyna.AddTaskResponse{
-		TaskID: fmt.Sprintf("%d", task.ID),
+	var response = scyna.StartTaskResponse{
+		Id: task.ID,
 	}
 	s.Done(&response)
 }

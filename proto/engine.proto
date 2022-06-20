@@ -166,21 +166,3 @@ message LogoutRequest {
   string UserID = 3;
   string Token = 4;
 }
-
-message AddTaskRequest {
-  string Module = 1;
-  string Topic = 2;
-  bytes  Data = 3;
-  int64  Start = 4;     // Unit: seconds
-  int64  Interval = 5;  // Unit: seconds
-  int64  LoopMax = 6;
-}
-
-message AddTaskResponse {
-  string TaskID = 1;
-  /* TODO */
-}
-
-message CancelTaskRequest {
-  string TaskID = 1;
-}
