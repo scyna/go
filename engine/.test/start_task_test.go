@@ -22,6 +22,9 @@ func TestStartTask(t *testing.T) {
 	scyna_test.ServiceTest(scyna.START_TASK_URL).WithRequest(&request).ExpectSuccess().Run(t, &response)
 	t.Logf("Response TaskID: %d", response.Id)
 
+	bucket := scyna.GetMinuteByTime(time.Unix(int64(request.Time), 0))
+	defer qb.Delete("scyna.todo").Where(qb.Eq("bucket"), qb.Eq("task_id")).Query(scyna.DB).Bind(bucket, response.Id).ExecRelease()
+	defer qb.Delete("scyna.task").Where(qb.Eq("id")).Query(scyna.DB).Bind(response.Id).ExecRelease()
 	/* Check in db */
 	var task scheduler.Task
 	if err := qb.Select("scyna.task").
@@ -33,8 +36,10 @@ func TestStartTask(t *testing.T) {
 		t.Fatalf("Cannot get task: %s", err.Error())
 	}
 	t.Logf("Task: %+v\n", task)
+	if task.Start != task.Next {
+		t.Fatalf("Wrong value in time")
+	}
 
-	bucket := scyna.GetMinuteByTime(time.Unix(int64(request.Time), 0))
 	var todo scheduler.ToDo
 	if err := qb.Select("scyna.todo").
 		Columns("*").
@@ -45,7 +50,4 @@ func TestStartTask(t *testing.T) {
 		t.Fatalf("Cannot get task: %s", err.Error())
 	}
 	t.Logf("Todo: %+v\n", todo)
-
-	defer qb.Delete("scyna.task").Where(qb.Eq("id")).Query(scyna.DB).Bind(response.Id).ExecRelease()
-	defer qb.Delete("scyna.todo").Where(qb.Eq("bucket"), qb.Eq("task_id")).Query(scyna.DB).Bind(bucket, response.Id).ExecRelease()
 }
