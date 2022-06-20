@@ -23,7 +23,6 @@ const (
 	AUTH_LOGOUT_URL        = "/scyna/auth/logout"
 	ADD_TASK_URL           = "/scyna/task/add"
 	CANCEL_TASK_URL        = "/scyna/task/cancel"
-	ADD_RECURRING_TASK_URL = "/scyna/task/add-recurring"
 )
 
 var (

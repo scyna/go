@@ -1626,8 +1626,8 @@ type AddTaskRequest struct {
 	Module   string `protobuf:"bytes,1,opt,name=Module,proto3" json:"Module,omitempty"`
 	Topic    string `protobuf:"bytes,2,opt,name=Topic,proto3" json:"Topic,omitempty"`
 	Data     []byte `protobuf:"bytes,3,opt,name=Data,proto3" json:"Data,omitempty"`
-	Start    int64  `protobuf:"varint,4,opt,name=Start,proto3" json:"Start,omitempty"`
-	Interval int64  `protobuf:"varint,5,opt,name=Interval,proto3" json:"Interval,omitempty"`
+	Start    int64  `protobuf:"varint,4,opt,name=Start,proto3" json:"Start,omitempty"`       // Unit: seconds
+	Interval int64  `protobuf:"varint,5,opt,name=Interval,proto3" json:"Interval,omitempty"` // Unit: seconds
 	LoopMax  int64  `protobuf:"varint,6,opt,name=LoopMax,proto3" json:"LoopMax,omitempty"`
 }
 
