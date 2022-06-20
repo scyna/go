@@ -53,7 +53,7 @@ func (w *worker) Start(delay time.Duration) {
 }
 
 func (w *worker) execute() {
-	bucket := getBucket(time.Now())
+	bucket := GetBucket(time.Now())
 	for {
 		var tasks []int64
 		if err := w.qTodos.Bind(bucket).Select(tasks); err != nil || len(tasks) == 0 {
@@ -75,7 +75,7 @@ func (w *worker) process(bucket int64, id int64) {
 		return
 	}
 
-	if bucket != getBucket(t.Next) {
+	if bucket != GetBucket(t.Next) {
 		return
 	}
 
@@ -98,7 +98,7 @@ func (w *worker) process(bucket int64, id int64) {
 	t.LoopIndex++
 	if t.LoopIndex < t.LoopCount {
 		t.Next = t.Next.Add(time.Second * time.Duration(t.Interval)) /* calculate next */
-		nextBucket := getBucket(t.Next)
+		nextBucket := GetBucket(t.Next)
 		qBatch.Query("INSERT INTO scyna.todo (bucket, id) VALUES (?, ?);", nextBucket, t.ID) /* add new task to todo list */
 		qBatch.Query("UPDATE scyna.task SET next = ?, loop_index = ?  WHERE id = ?;", t.Next, t.LoopIndex, t.ID)
 	} else {

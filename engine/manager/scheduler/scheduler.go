@@ -35,7 +35,7 @@ func Start() {
 				ticker.Stop()
 				return
 			case <-ticker.C:
-				loop()
+				Loop()
 			}
 		}
 	}()
@@ -45,8 +45,8 @@ func Stop() {
 	done <- true
 }
 
-func loop() {
-	bucket := getBucket(time.Now())
+func Loop() {
+	bucket := GetBucket(time.Now())
 	for {
 		tasks := todos(bucket)
 		if tasks == nil {
@@ -69,15 +69,14 @@ func loop() {
 func todos(bucket int64) []int64 {
 	var ret []int64
 	if err := qb.Select("scyna.todo").
-		Columns("id").
+		Columns("task_id").
 		Where(qb.Eq("bucket")).
 		Limit(20).
 		Query(scyna.DB).
 		Bind(bucket).
-		SelectRelease(ret); err != nil {
+		SelectRelease(&ret); err != nil {
 		return nil
 	}
-
 	if len(ret) == 0 {
 		return nil
 	}
@@ -106,12 +105,11 @@ func process(bucket int64, id int64) {
 		Limit(1).
 		Query(scyna.DB).
 		Bind(id).
-		GetRelease(t); err != nil {
-		log.Print("Can not load task")
+		GetRelease(&t); err != nil {
+		log.Printf("Can not load task: %s\n", err.Error())
 		return
 	}
-
-	if bucket != getBucket(t.Next) {
+	if bucket != GetBucket(t.Next) {
 		return /*task is executed somewhere*/
 	}
 
@@ -125,20 +123,19 @@ func process(bucket int64, id int64) {
 		}
 		return
 	}
-
 	scyna.JetStream.Publish(t.Topic, t.Data) /*activate task handler*/
 
 	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
-	qBatch.Query("DELETE FROM scyna.todo WHERE bucket = ? AND id = ?;", bucket, id) /* remove old task from todolist */
+	qBatch.Query("DELETE FROM scyna.todo WHERE bucket = ? AND task_id = ?;", bucket, id) /* remove old task from todolist */
 
 	t.LoopIndex++
 	if t.LoopIndex < t.LoopCount {
 		t.Next = t.Next.Add(time.Second * time.Duration(t.Interval)) /* calculate next */
-		nextBucket := getBucket(t.Next)
-		qBatch.Query("INSERT INTO scyna.todo (bucket, id) VALUES (?, ?);", nextBucket, t.ID) /* add new task to todo list */
+		nextBucket := GetBucket(t.Next)
+		qBatch.Query("INSERT INTO scyna.todo (bucket, task_id) VALUES (?, ?);", nextBucket, t.ID) /* add new task to todo list */
 		qBatch.Query("UPDATE scyna.task SET next = ?, loop_index = ?  WHERE id = ?;", t.Next, t.LoopIndex, t.ID)
 	} else {
-		qBatch.Query("UPDATE scyna.task SET done = true WHERE id = ?;")
+		qBatch.Query("UPDATE scyna.task SET done = true, loop_index = ? WHERE id = ?;", t.LoopIndex, t.ID)
 	}
 
 	if err := scyna.DB.ExecuteBatch(qBatch); err != nil {
@@ -150,6 +147,6 @@ func cleanup() {
 	/*TODO*/
 }
 
-func getBucket(time time.Time) int64 {
+func GetBucket(time time.Time) int64 {
 	return time.Unix() / 60
 }

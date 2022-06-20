@@ -51,7 +51,7 @@ func (task *Task) Get() error {
 
 func (task *Task) Acquire() error {
 	// Mark task is doing
-	bucket := getBucket(task.Next)
+	bucket := GetBucket(task.Next)
 	if applied, err := qb.Insert("scyna.doing").
 		Columns("bucket", "task_id").
 		Unique().

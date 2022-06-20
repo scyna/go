@@ -16,16 +16,17 @@ func StartTask(s *scyna.Service, request *scyna.StartTaskRequest) {
 	}
 
 	// Insert new task to scyna.task table
+	taskID := scyna.ID.Next()
 	var task = Task{
-		ID:        scyna.ID.Next(),
+		ID:        taskID,
 		Topic:     request.Topic,
 		Start:     time.Unix(int64(request.Time), 0),
 		Interval:  request.Interval,
-		LoopCount: 0,
+		LoopCount: request.Loop,
 		Next:      time.Unix(int64(request.Time), 0),
-		LoopIndex: request.Loop,
+		LoopIndex: 0,
 		Data:      request.Data,
-		Done:      true,
+		Done:      false,
 	}
 
 	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
@@ -36,7 +37,7 @@ func StartTask(s *scyna.Service, request *scyna.StartTaskRequest) {
 
 	// Generate period id
 	// A group task contain all task must execute in a block 1 minute
-	bucket := getBucket(task.Start)
+	bucket := GetBucket(task.Start)
 	qBatch.Query("INSERT INTO scyna.todo(bucket, task_id) VALUES (?, ?);", bucket, task.ID)
 	if err := scyna.DB.ExecuteBatch(qBatch); err != nil {
 		s.Error(scyna.REQUEST_INVALID)
