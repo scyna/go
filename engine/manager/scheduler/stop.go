@@ -13,7 +13,7 @@ func StopTask(s *scyna.Service, request *scyna.StopTaskRequest) {
 	}
 	// Mark active = false
 	var task = Task{
-		ID: request.ID,
+		ID: request.Id,
 	}
 	if err := task.Deactive(); err != nil {
 		s.Error(scyna.REQUEST_INVALID)

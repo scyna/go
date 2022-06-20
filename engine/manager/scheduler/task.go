@@ -17,7 +17,7 @@ type Task struct {
 	Interval  uint64    `db:"interval"`
 	LoopCount uint64    `db:"loop_count"`
 	LoopMax   uint64    `db:"loop_max"`
-	Active    bool      `db:"active"`
+	Done      bool      `db:"done"`
 }
 
 type ModuleHasTask struct {
@@ -31,12 +31,13 @@ type ToDo struct {
 }
 
 type Doing struct {
+	Bucket int64  `db:"bucket"`
 	TaskID uint64 `db:"task_id"`
 }
 
 func (task *Task) Get() error {
 	if err := qb.Select("scyna.task").
-		Columns("id", "topic", "data", "next", "interval", "loop_count", "loop_max", "active").
+		Columns("id", "topic", "data", "next", "interval", "loop_count", "loop_max", "done").
 		Where(qb.Eq("id")).
 		Limit(1).
 		Query(scyna.DB).
@@ -50,12 +51,13 @@ func (task *Task) Get() error {
 
 func (task *Task) Acquire() error {
 	// Mark task is doing
+	bucket := getBucket(task.Next)
 	if applied, err := qb.Insert("scyna.doing").
-		Columns("task_id").
+		Columns("bucket", "task_id").
 		Unique().
-		TTL(60 * time.Second).
+		TTL(60*time.Second).
 		Query(scyna.DB).
-		Bind(task.ID).
+		Bind(bucket, task.ID).
 		ExecCASRelease(); !applied {
 		if err == nil {
 			err = errors.New("Task has been doing")

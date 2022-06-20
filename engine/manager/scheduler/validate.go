@@ -23,6 +23,6 @@ func validateStartTaskRequest(request *scyna.StartTaskRequest) error {
 
 func validateStopTaskRequest(request *scyna.StopTaskRequest) error {
 	return validation.ValidateStruct(request,
-		validation.Field(&request.ID, validation.Required, validation.Match(regexp.MustCompile("^[0-9]{10,19}$"))),
+		validation.Field(&request.Id, validation.Required, validation.Match(regexp.MustCompile("^[0-9]{10,19}$"))),
 	)
 }

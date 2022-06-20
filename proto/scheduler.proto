@@ -8,18 +8,18 @@ option  optimize_for = CODE_SIZE;
 option  go_package = "./;scyna";
 
 message StartTaskRequest {
-    string module = 1;
-    string topic = 2;
-    bytes data = 3;
-    uint64 time = 4;
-    uint64 interval = 5; /*in second, must be greater than 60*/
-    uint64 loop = 6;
+  string Module = 1;
+  string Topic = 2;
+  bytes  Data = 3;
+  uint64 Time = 4;     /* Unit: second */
+  uint64 Interval = 5; /* In second, must be greater than 60 */
+  uint64 Loop = 6;
 }
 
 message StartTaskResponse {
-    uint64 id = 1;
+  uint64 Id = 1;
 }
 
 message StopTaskRequest {
-    uint64 id = 1;
+  uint64 Id = 1;
 }
