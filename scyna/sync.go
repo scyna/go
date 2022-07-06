@@ -5,22 +5,53 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	reflect "reflect"
 	"time"
 
 	"github.com/nats-io/nats.go"
+	"google.golang.org/protobuf/proto"
 )
 
-type SyncHandler func(data []byte) *http.Request
+type SyncHandler[R proto.Message] func(ctx *Context, data R) *http.Request
 
-func RegisterSync(channel string, consumer string, group string, handler SyncHandler) {
+func RegisterSync[R proto.Message](channel string, consumer string, group string, handler SyncHandler[R]) {
 	LOG.Info(fmt.Sprintf("channel %s, consummer: %s, group: %s", channel, consumer, group))
+	var event R
+	ref := reflect.New(reflect.TypeOf(event).Elem())
+	event = ref.Interface().(R)
+
+	trace := Trace{
+		Path:      channel,
+		SessionID: Session.ID(),
+		Type:      TRACE_SIGNAL,
+	}
+
 	_, err := JetStream.QueueSubscribe(channel, group, func(m *nats.Msg) {
-		request := handler(m.Data)
+		var msg EventOrSignal
+		if err := proto.Unmarshal(m.Data, &msg); err != nil {
+			log.Print("Register unmarshal error response data:", err.Error())
+			return
+		}
+		trace.Time = time.Now()
+		trace.ID = ID.Next()
+		trace.ParentID = msg.ParentID
+
+		context := Context{
+			Logger{ID: trace.ID, session: false},
+		}
+
+		if err := proto.Unmarshal(m.Data, event); err != nil {
+			log.Print("Error in parsing data:", err)
+			m.Ack()
+			return
+		}
+
+		request := handler(&context, event)
 		if sendRequest(request) {
 			m.Ack()
 		} else {
 			for i := 0; i < 3; i++ {
-				request := handler(m.Data)
+				request := handler(&context, event)
 				if sendRequest(request) {
 					m.Ack()
 					return
@@ -30,6 +61,7 @@ func RegisterSync(channel string, consumer string, group string, handler SyncHan
 			time.Sleep(time.Minute * 10)
 			m.Nak()
 		}
+		trace.Record()
 	}, nats.Durable(consumer), nats.ManualAck())
 
 	if err != nil {
