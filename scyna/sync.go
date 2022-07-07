@@ -40,7 +40,7 @@ func RegisterSync[R proto.Message](channel string, consumer string, group string
 			Logger{ID: trace.ID, session: false},
 		}
 
-		if err := proto.Unmarshal(m.Data, event); err != nil {
+		if err := proto.Unmarshal(msg.Body, event); err != nil {
 			log.Print("Error in parsing data:", err)
 			m.Ack()
 			return
