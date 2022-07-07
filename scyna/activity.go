@@ -28,7 +28,7 @@ func AddActivity(entity uint64, Type int32, activity protoreflect.ProtoMessage) 
 		return
 	}
 
-	t := uint64(time.Now().UnixMicro())
+	t := time.Now()
 
 	var data []byte
 	if activity != nil {
@@ -48,6 +48,6 @@ func AddActivity(entity uint64, Type int32, activity protoreflect.ProtoMessage) 
 				return
 			}
 		}
-		t++
+		t.Add(time.Millisecond + 1)
 	}
 }
