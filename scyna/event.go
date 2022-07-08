@@ -19,7 +19,7 @@ func RegisterEvent[R proto.Message](channel string, consumer string, handler Eve
 	trace := Trace{
 		Path:      channel,
 		SessionID: Session.ID(),
-		Type:      TRACE_SIGNAL,
+		Type:      TRACE_EVENT,
 	}
 
 	if _, err := JetStream.QueueSubscribe(channel, module, func(m *nats.Msg) {
@@ -36,7 +36,7 @@ func RegisterEvent[R proto.Message](channel string, consumer string, handler Eve
 			Logger{ID: trace.ID, session: false},
 		}
 
-		if err := proto.Unmarshal(m.Data, event); err == nil {
+		if err := proto.Unmarshal(msg.Body, event); err == nil {
 			handler(&context, event)
 		} else {
 			log.Print("Error in parsing data:", err)

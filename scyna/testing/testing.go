@@ -8,7 +8,7 @@ import (
 
 func Init() {
 	scyna.RemoteInit(scyna.RemoteConfig{
-		ManagerUrl: "http://127.0.0.1:8081",
+		ManagerUrl: "https://127.0.0.1:8081",
 		Name:       "scyna.test",
 		Secret:     "123456",
 	})

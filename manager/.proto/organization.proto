@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto;
+option  optimize_for = CODE_SIZE;
+option  go_package = "./;proto";
+
+message Organization{
+    string code = 1;
+    string name = 2;
+    string password = 3;
+}
+
+// CreateOrganizationRequest = Organization
+
+message DestroyOrganizationRequest{
+    string code = 1;
+    string password = 2;
+}

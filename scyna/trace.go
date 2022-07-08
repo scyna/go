@@ -12,6 +12,7 @@ const (
 	TRACE_SERVICE TraceType = 1
 	TRACE_EVENT   TraceType = 2
 	TRACE_SIGNAL  TraceType = 3
+	TRACE_SYNC    TraceType = 2
 )
 
 type Trace struct {
