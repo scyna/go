@@ -29,7 +29,7 @@ func CreateOrganization(s *scyna.Service, request *proto.Organization) {
 
 func validateOrganization(request *proto.Organization) error {
 	return validation.ValidateStruct(request,
-		validation.Field(&request.Code, validation.Required, validation.Length(1, 100)),
+		validation.Field(&request.Code, validation.Required, validation.Length(1, 100)), //FIXME: name rules
 		validation.Field(&request.Name, validation.Required, validation.Length(1, 200)),
 		validation.Field(&request.Password, validation.Required),
 	)

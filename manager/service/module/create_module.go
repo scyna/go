@@ -35,12 +35,12 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 		return
 	}
 
-	if utils.CreateStream(module.Code+".sync") != nil {
+	if utils.CreateStream(module.Code+"_sync") != nil {
 		s.Error(model.CAN_NOT_CREATE_STREAM)
 		return
 	}
 
-	if utils.CreateStream(module.Code+".event") != nil {
+	if utils.CreateStream(module.Code+"_event") != nil {
 		s.Error(model.CAN_NOT_CREATE_STREAM)
 		return
 	}
@@ -51,7 +51,7 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 func validateModule(request *proto.Module) error {
 	return validation.ValidateStruct(request,
 		validation.Field(&request.Organization, validation.Required, validation.Length(1, 100)),
-		validation.Field(&request.Code, validation.Required, validation.Length(1, 100)),
-		validation.Field(&request.Secret, validation.Required, validation.Length(5, 20)),
+		validation.Field(&request.Code, validation.Required, validation.Length(1, 100)),  //FIXME: module name rules
+		validation.Field(&request.Secret, validation.Required, validation.Length(5, 20)), //FIXME: secret rules
 	)
 }
