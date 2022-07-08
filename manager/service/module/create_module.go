@@ -5,6 +5,7 @@ import (
 	proto "github.com/scyna/go/manager/.proto/generated"
 	"github.com/scyna/go/manager/model"
 	"github.com/scyna/go/manager/repository"
+	"github.com/scyna/go/manager/utils"
 	"github.com/scyna/go/scyna"
 )
 
@@ -34,8 +35,15 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 		return
 	}
 
-	/*TODO: create stream on NATS for sync: `module_name.sync.*` */
-	/*TODO: create stream on NATS for event `module_name.event.*` */
+	if utils.CreateStream(module.Code+".sync") != nil {
+		s.Error(model.CAN_NOT_CREATE_STREAM)
+		return
+	}
+
+	if utils.CreateStream(module.Code+".event") != nil {
+		s.Error(model.CAN_NOT_CREATE_STREAM)
+		return
+	}
 
 	s.Done(scyna.OK)
 }
