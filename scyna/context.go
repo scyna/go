@@ -32,7 +32,7 @@ func (ctx *Context) PostEvent(channel string, data proto.Message) {
 	}
 }
 
-func (ctx *Context) StoreEvent(entity uint64, channel string, data proto.Message) {
+func (ctx *Context) StoreAndPostEvent(entity uint64, channel string, data proto.Message) {
 	msg := EventOrSignal{ParentID: ctx.ID}
 	if data, err := proto.Marshal(data); err == nil {
 		msg.Body = data
