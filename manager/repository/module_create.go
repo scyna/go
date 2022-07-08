@@ -5,7 +5,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func CreateOrganization(org *model.Organization) *scyna.Error {
+func CreateModule(module *model.Module) *scyna.Error {
 	/*TODO*/
 	return scyna.OK
 }

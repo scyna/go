@@ -8,11 +8,11 @@ type Organization struct {
 	Password string
 }
 
-func (org *Organization) FromDTO(o *proto.Organization) {
+func (o *Organization) FromDTO(oganizarion *proto.Organization) {
 	/*TODO*/
 }
 
-func (org *Organization) ToDTO() *proto.Organization {
+func (o *Organization) ToDTO() *proto.Organization {
 	/*TODO*/
 	return nil
 }
