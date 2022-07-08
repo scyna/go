@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package proto;
+option  optimize_for = CODE_SIZE;
+option  go_package = "./;proto";
+
+message Module{
+    string organization = 1;
+    string code = 2;
+    string description = 3;
+    string secret = 4;
+}
+
+// CreateModuleRequest = Module

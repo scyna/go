@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package proto;
+option  optimize_for = CODE_SIZE;
+option  go_package = "./;proto";
+
+message Client{
+    string organization = 1;
+    string id = 2;
+    string secret = 3;
+}

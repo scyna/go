@@ -4,4 +4,5 @@ use (
 	./example
 	./engine
 	./scyna
+	./manager
 )
