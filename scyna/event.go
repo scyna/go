@@ -19,7 +19,7 @@ func RegisterEvent[R proto.Message](channel string, consumer string, handler Eve
 	trace := Trace{
 		Path:      channel,
 		SessionID: Session.ID(),
-		Type:      TRACE_SIGNAL,
+		Type:      TRACE_EVENT,
 	}
 
 	if _, err := JetStream.QueueSubscribe(channel, module, func(m *nats.Msg) {

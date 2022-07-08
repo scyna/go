@@ -23,7 +23,7 @@ func RegisterSync[R proto.Message](channel string, consumer string, handler Sync
 	trace := Trace{
 		Path:      channel,
 		SessionID: Session.ID(),
-		Type:      TRACE_SIGNAL,
+		Type:      TRACE_SYNC,
 	}
 
 	_, err := JetStream.QueueSubscribe(channel, module, func(m *nats.Msg) {

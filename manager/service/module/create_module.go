@@ -10,8 +10,8 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 
 	/*TODO: check input*/
 	/*TODO: save module to database */
-	/*TODO: create stream on NATS for sync */
-	/*TODO: create stream on NATS for event */
+	/*TODO: create stream on NATS for sync: `module_name.sync.*` */
+	/*TODO: create stream on NATS for event `module_name.event.*` */
 
 	s.Done(scyna.OK)
 }
