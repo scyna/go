@@ -35,12 +35,7 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 		return
 	}
 
-	if utils.CreateStream(module.Code+"_sync") != nil {
-		s.Error(model.CAN_NOT_CREATE_STREAM)
-		return
-	}
-
-	if utils.CreateStream(module.Code+"_event") != nil {
+	if utils.CreateStream(module.Code) != nil {
 		s.Error(model.CAN_NOT_CREATE_STREAM)
 		return
 	}
