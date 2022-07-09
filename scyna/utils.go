@@ -41,9 +41,17 @@ func ConvertDateByInt(timestamp uint64) string {
 }
 
 func GetSyncConsumer(module string, channel string) string {
-	return module + "_sync_" + channel
+	return module + "_sync_" + channel //ex: user_sync_account
 }
 
 func GetSyncSubject(module string, channel string) string {
-	return module + ".sync_" + channel
+	return module + ".sync_" + channel //ex: user.sync_account
+}
+
+func GetEventConsumer(sender string, channel string, receiver string) string {
+	return sender + "_" + channel + "_" + receiver //ex: user_account_created_product
+}
+
+func GetEventSubject(sender string, channel string) string {
+	return sender + "." + channel //ex: user.account_created
 }

@@ -11,19 +11,22 @@ import (
 
 type EventHandler[R proto.Message] func(ctx *Context, data R)
 
-func RegisterEvent[R proto.Message](channel string, consumer string, handler EventHandler[R]) {
+func RegisterEvent[R proto.Message](sender string, channel string, handler EventHandler[R]) {
+	consumer := GetEventConsumer(sender, channel, module)
+	subject := GetEventSubject(sender, channel)
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
 	event = ref.Interface().(R)
 
 	trace := Trace{
-		Path:      channel,
+		Path:      subject,
 		SessionID: Session.ID(),
 		Type:      TRACE_EVENT,
 	}
 
-	if _, err := JetStream.QueueSubscribe(channel, module, func(m *nats.Msg) {
+	if _, err := JetStream.QueueSubscribe(subject, module, func(m *nats.Msg) {
 		var msg EventOrSignal
+		defer m.Ack() //assure ordering
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
 			return
@@ -43,7 +46,7 @@ func RegisterEvent[R proto.Message](channel string, consumer string, handler Eve
 		}
 
 		trace.Record()
-	}, nats.Durable(consumer)); err != nil {
+	}, nats.Durable(consumer), nats.ManualAck()); err != nil {
 		log.Fatal("Error in registering Event: ", err)
 	}
 }
