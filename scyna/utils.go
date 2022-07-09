@@ -39,3 +39,11 @@ func SubscriberURL(urlPath string) string {
 func ConvertDateByInt(timestamp uint64) string {
 	return time.UnixMicro(int64(timestamp)).Format(time.RFC3339)
 }
+
+func GetSyncConsumer(module string, channel string) string {
+	return module + "_sync_" + channel
+}
+
+func GetSyncSubject(module string, channel string) string {
+	return module + ".sync_" + channel
+}
