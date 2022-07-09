@@ -12,7 +12,3 @@ message Module{
 }
 
 // CreateModuleRequest = Module
-
-message SetupModuleDatabaseRequest{
-    string module = 1;
-}
