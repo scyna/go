@@ -39,10 +39,9 @@ func (ctx *Context) StoreAndPostEvent(entity uint64, channel string, data proto.
 	}
 
 	if data, err := proto.Marshal(&msg); err == nil {
+		/*TODO: Save to EventStore and Entity_Has_Event*/
 		JetStream.Publish(channel, data)
 	}
-
-	/*TODO: Save to EventStore and Entity_Has_Event*/
 }
 
 func (ctx *Context) SendCommand(url string, response proto.Message) *Error {

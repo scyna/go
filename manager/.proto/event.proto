@@ -4,7 +4,8 @@ package proto;
 option  optimize_for = CODE_SIZE;
 option  go_package = "./;proto";
 
-message Event{
-    string module = 1;
-    string channel = 2; /*consumer in NATS*/
+message CreateEventRequest{
+    string SenderModule = 1;
+    string ReceiverModule = 2;
+    string Channel = 3;
 }

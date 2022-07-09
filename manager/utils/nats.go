@@ -5,7 +5,7 @@ func CreateStream(name string) error {
 	return nil
 }
 
-func CreateConsumer(stream string, name string) error {
+func CreateConsumer(stream string, name string, channel string) error {
 	/*TODO*/
 	return nil
 }

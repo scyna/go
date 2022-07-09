@@ -4,12 +4,12 @@ package proto;
 option  optimize_for = CODE_SIZE;
 option  go_package = "./;proto";
 
-message Sync{
-    string module = 1;
-    string channel = 2;
+message CreateSyncRequest{
+    string Module = 1;
+    string Channel = 2;
 }
 
 message DropSyncRequest{
-    string module = 1;
-    string channel = 2;
+    string Module = 1;
+    string Channel = 2;
 }
