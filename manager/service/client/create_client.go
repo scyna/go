@@ -1,4 +1,4 @@
-package organization
+package client
 
 import (
 	validation "github.com/go-ozzo/ozzo-validation"

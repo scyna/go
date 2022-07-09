@@ -1,4 +1,4 @@
-package organization
+package event
 
 import (
 	proto "github.com/scyna/go/manager/.proto/generated"
