@@ -9,11 +9,18 @@ type Application struct {
 	AuthenticatePath string `db:"auth"`
 }
 
-func (c *Application) FromDTO(o *proto.Application) {
-	/*TODO*/
+func (a *Application) FromDTO(o *proto.Application) {
+	a.Code = o.Code
+	a.Name = o.Name
+	a.Organization = o.OrgCode
+	a.AuthenticatePath = o.AuthPath
 }
 
-func (c *Application) ToDTO() *proto.Application {
-	/*TODO*/
-	return nil
+func (a *Application) ToDTO() *proto.Application {
+	return &proto.Application{
+		Code:     a.Code,
+		Name:     a.Name,
+		OrgCode:  a.Organization,
+		AuthPath: a.AuthenticatePath,
+	}
 }
