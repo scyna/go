@@ -1,6 +1,7 @@
 package client
 
 import (
+	validation "github.com/go-ozzo/ozzo-validation"
 	proto "github.com/scyna/go/manager/.proto/generated"
 	"github.com/scyna/go/manager/model"
 	"github.com/scyna/go/manager/repository"
@@ -20,7 +21,7 @@ func AddService(s *scyna.Service, request *proto.ClientAddServiceRequest) {
 		return
 	}
 
-	if !repository.CheckClient(request.Id) {
+	if !repository.CheckClient(request.Organization, request.Id) {
 		s.Error(model.CLIENT_NOT_EXISTED)
 		return
 	}
@@ -35,6 +36,9 @@ func AddService(s *scyna.Service, request *proto.ClientAddServiceRequest) {
 }
 
 func validateAddService(request *proto.ClientAddServiceRequest) error {
-	/*TODO*/
-	return nil
+	return validation.ValidateStruct(request,
+		validation.Field(&request.Id, validation.Required, validation.Length(5, 100)),
+		validation.Field(&request.Service, validation.Required, validation.Length(8, 50)),
+		validation.Field(&request.Organization, validation.Required, validation.Length(8, 50)),
+	)
 }

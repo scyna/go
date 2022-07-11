@@ -4,3 +4,5 @@ INSERT INTO scyna.client_use_service (client_id, service_url) VALUES ('DEV', '/s
 INSERT INTO scyna.client_use_service (client_id, service_url) VALUES ('DEV', '/scyna/manager/module/create');
 INSERT INTO scyna.client_use_service (client_id, service_url) VALUES ('DEV', '/scyna/manager/service/create');
 INSERT INTO scyna.client_use_service (client_id, service_url) VALUES ('DEV', '/scyna/manager/client/create');
+INSERT INTO scyna.client_use_service (client_id, service_url) VALUES ('DEV', '/scyna/manager/client/add-service');
+INSERT INTO scyna.client_use_service (client_id, service_url) VALUES ('DEV', '/scyna/manager/client/remove-service');
