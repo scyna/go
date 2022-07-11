@@ -8,7 +8,5 @@ import (
 func CreateApplication(s *scyna.Service, request *proto.Application) {
 	s.Logger.Info("Receive CreateApplicationRequest")
 
-	/*TODO*/
-
 	s.Done(scyna.OK)
 }

@@ -19,7 +19,7 @@ func CreateOrganization(s *scyna.Service, request *proto.Organization) {
 	var org model.Organization
 	org.FromDTO(request)
 
-	if err := repository.CreateOrganization(&org); err != nil {
+	if err := repository.CreateOrganization(s.Logger, &org); err != nil {
 		s.Error(err)
 		return
 	}
@@ -29,8 +29,8 @@ func CreateOrganization(s *scyna.Service, request *proto.Organization) {
 
 func validateOrganization(request *proto.Organization) error {
 	return validation.ValidateStruct(request,
-		validation.Field(&request.Code, validation.Required, validation.Length(1, 100)), //FIXME: name rules
-		validation.Field(&request.Name, validation.Required, validation.Length(1, 200)),
+		validation.Field(&request.Code, validation.Required, validation.Length(5, 100)), //FIXME: name rules
+		validation.Field(&request.Name, validation.Required, validation.Length(5, 200)),
 		validation.Field(&request.Password, validation.Required),
 	)
 }
