@@ -27,10 +27,17 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 		return
 	}
 
+	if !utils.ValidatePassword(request.Secret) {
+		s.Error(scyna.REQUEST_INVALID)
+		return
+	}
+
 	var module model.Module
 	module.FromDTO(request)
+	hash, _ := utils.HashPassword(module.Secret)
+	module.Secret = hash
 
-	if err := repository.CreateModule(&module); err != nil {
+	if err := repository.CreateModule(s.Logger, &module); err != nil {
 		s.Error(err)
 		return
 	}
@@ -46,7 +53,7 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 func validateModule(request *proto.Module) error {
 	return validation.ValidateStruct(request,
 		validation.Field(&request.Organization, validation.Required, validation.Length(1, 100)),
-		validation.Field(&request.Code, validation.Required, validation.Length(1, 100)),  //FIXME: module name rules
+		validation.Field(&request.Code, validation.Required, validation.Length(5, 100)),  //FIXME: module name rules
 		validation.Field(&request.Secret, validation.Required, validation.Length(5, 20)), //FIXME: secret rules
 	)
 }

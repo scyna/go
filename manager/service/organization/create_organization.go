@@ -24,6 +24,8 @@ func CreateOrganization(s *scyna.Service, request *proto.Organization) {
 
 	var org model.Organization
 	org.FromDTO(request)
+	hash, _ := utils.HashPassword(org.Password)
+	org.Password = hash
 
 	if err := repository.CreateOrganization(s.Logger, &org); err != nil {
 		s.Error(err)
