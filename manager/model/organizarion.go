@@ -8,11 +8,16 @@ type Organization struct {
 	Password string
 }
 
-func (o *Organization) FromDTO(oganizarion *proto.Organization) {
-	/*TODO*/
+func (o *Organization) FromDTO(organization *proto.Organization) {
+	o.Code = organization.Code
+	o.Name = organization.Name
+	o.Password = organization.Password
 }
 
 func (o *Organization) ToDTO() *proto.Organization {
-	/*TODO*/
-	return nil
+	return &proto.Organization{
+		Code:     o.Code,
+		Name:     o.Name,
+		Password: "", // NO RETURN
+	}
 }
