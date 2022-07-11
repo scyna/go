@@ -5,6 +5,7 @@ import (
 	proto "github.com/scyna/go/manager/.proto/generated"
 	"github.com/scyna/go/manager/model"
 	"github.com/scyna/go/manager/repository"
+	"github.com/scyna/go/manager/utils"
 	"github.com/scyna/go/scyna"
 )
 
@@ -21,9 +22,14 @@ func CreateClient(s *scyna.Service, request *proto.Client) {
 		return
 	}
 
+	if !utils.ValidatePassword(request.Secret) {
+		s.Error(scyna.REQUEST_INVALID)
+		return
+	}
+
 	var client model.Client
 	client.FromDTO(request)
-	if err := repository.CreateClient(&client); err != nil {
+	if err := repository.CreateClient(s.Logger, &client); err != nil {
 		s.Error(err)
 		return
 	}
@@ -33,7 +39,7 @@ func CreateClient(s *scyna.Service, request *proto.Client) {
 
 func validateClient(request *proto.Client) error {
 	return validation.ValidateStruct(request,
-		validation.Field(&request.Id, validation.Required, validation.Length(1, 100)),     //FIXME: name rules
-		validation.Field(&request.Secret, validation.Required, validation.Length(1, 200)), //FIXME: secret rules
+		validation.Field(&request.Id, validation.Required, validation.Length(5, 100)), //FIXME: name rules
+		validation.Field(&request.Secret, validation.Required, validation.Length(8, 50)),
 	)
 }

@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/scyna/go/manager/model"
 	"github.com/scyna/go/manager/service/application"
+	"github.com/scyna/go/manager/service/client"
 	"github.com/scyna/go/manager/service/module"
 	"github.com/scyna/go/manager/service/organization"
 	"github.com/scyna/go/manager/service/service"
@@ -30,5 +31,6 @@ func main() {
 	scyna.RegisterService(model.MANAGER_CREATE_APPLICATION_URL, application.CreateApplication)
 	scyna.RegisterService(model.MANAGER_CREATE_MODULE_URL, module.CreateModule)
 	scyna.RegisterService(model.MANAGER_CREATE_SERVICE_URL, service.CreateService)
+	scyna.RegisterService(model.MANAGER_CREATE_CLIENT_URL, client.CreateClient)
 	scyna.Start()
 }

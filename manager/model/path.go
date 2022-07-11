@@ -6,4 +6,5 @@ const (
 	MANAGER_CREATE_APPLICATION_URL   = "/scyna/manager/application/create"
 	MANAGER_CREATE_MODULE_URL        = "/scyna/manager/module/create"
 	MANAGER_CREATE_SERVICE_URL       = "/scyna/manager/service/create"
+	MANAGER_CREATE_CLIENT_URL        = "/scyna/manager/client/create"
 )
