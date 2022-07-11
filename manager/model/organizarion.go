@@ -3,9 +3,9 @@ package model
 import proto "github.com/scyna/go/manager/.proto/generated"
 
 type Organization struct {
-	Code     string
-	Name     string
-	Password string
+	Code     string `db:"code"`
+	Name     string `db:"name"`
+	Password string `db:"password"`
 }
 
 func (o *Organization) FromDTO(organization *proto.Organization) {

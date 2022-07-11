@@ -10,7 +10,7 @@ func CreateOrganization(LOG scyna.Logger, org *model.Organization) *scyna.Error 
 	if applied, err := qb.Insert("scyna.organization").
 		Columns("code", "name", "password").
 		Unique().Query(scyna.DB).
-		Bind(org).
+		BindStruct(org).
 		ExecCASRelease(); !applied {
 		if err == nil {
 			return model.ORGANIZATION_EXISTED
