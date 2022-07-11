@@ -7,5 +7,5 @@ import (
 
 func CreateClient(client *model.Client) *scyna.Error {
 	/*TODO*/
-	return scyna.OK
+	return nil
 }

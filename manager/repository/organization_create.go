@@ -19,5 +19,5 @@ func CreateOrganization(LOG scyna.Logger, org *model.Organization) *scyna.Error 
 			return scyna.SERVER_ERROR
 		}
 	}
-	return scyna.OK
+	return nil
 }

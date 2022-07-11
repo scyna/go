@@ -7,6 +7,8 @@ import (
 	"github.com/scyna/go/manager/repository"
 	"github.com/scyna/go/manager/utils"
 	"github.com/scyna/go/scyna"
+	"log"
+	"strings"
 )
 
 func CreateModule(s *scyna.Service, request *proto.Module) {
@@ -41,8 +43,9 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 		s.Error(err)
 		return
 	}
-
-	if utils.CreateStream(module.Code) != nil {
+	streamName := strings.Replace(module.Code, ".", "_", -1)
+	if err := utils.CreateStream(streamName); err != nil {
+		log.Println(err.Error())
 		s.Error(model.CAN_NOT_CREATE_STREAM)
 		return
 	}
@@ -53,7 +56,7 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 func validateModule(request *proto.Module) error {
 	return validation.ValidateStruct(request,
 		validation.Field(&request.Organization, validation.Required, validation.Length(1, 100)),
-		validation.Field(&request.Code, validation.Required, validation.Length(5, 100)),  //FIXME: module name rules
-		validation.Field(&request.Secret, validation.Required, validation.Length(5, 20)), //FIXME: secret rules
+		validation.Field(&request.Code, validation.Required, validation.Length(5, 100)), //FIXME: module name rules
+		validation.Field(&request.Secret, validation.Required, validation.Length(5, 20)),
 	)
 }

@@ -2,6 +2,7 @@ package service
 
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 	proto "github.com/scyna/go/manager/.proto/generated"
 	"github.com/scyna/go/manager/model"
 	"github.com/scyna/go/manager/repository"
@@ -23,7 +24,7 @@ func CreateService(s *scyna.Service, request *proto.Service) {
 
 	var service model.Service
 	service.FromDTO(request)
-	if err := repository.CreateService(&service); err != nil {
+	if err := repository.CreateService(s.Logger, &service); err != nil {
 		s.Error(err)
 		return
 	}
@@ -33,6 +34,6 @@ func CreateService(s *scyna.Service, request *proto.Service) {
 
 func validateService(request *proto.Service) error {
 	return validation.ValidateStruct(request,
-		validation.Field(&request.Url, validation.Required, validation.Length(1, 100)), //FIXME: name rules
+		validation.Field(&request.Url, validation.Required, is.URL),
 	)
 }

@@ -19,5 +19,5 @@ func CreateModule(LOG scyna.Logger, module *model.Module) *scyna.Error {
 			return scyna.SERVER_ERROR
 		}
 	}
-	return scyna.OK
+	return nil
 }

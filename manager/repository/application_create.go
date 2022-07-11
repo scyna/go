@@ -19,5 +19,5 @@ func CreateApplication(LOG scyna.Logger, app *model.Application) *scyna.Error {
 			return scyna.SERVER_ERROR
 		}
 	}
-	return scyna.OK
+	return nil
 }
