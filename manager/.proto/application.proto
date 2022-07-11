@@ -4,7 +4,9 @@ package proto;
 option  optimize_for = CODE_SIZE;
 option  go_package = "./;proto";
 
-message Application{
+message Application {
     string module = 1;
     string channel = 2;
+    string orgCode = 3;
+    string authPath = 4;
 }
