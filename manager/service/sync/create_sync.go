@@ -19,7 +19,8 @@ func CreateSync(s *scyna.Service, request *proto.CreateSyncRequest) {
 	/*TODO: validate channel*/
 
 	consumer := scyna.GetSyncConsumer(request.Module, request.Channel)
-	if err := utils.CreateConsumer(request.Module, consumer, request.Channel); err != nil {
+
+	if err := utils.AddConsumer(request.Module, consumer, "SYNC", request.Channel, request.Module+"."+request.Channel); err != nil {
 		s.Error(model.CAN_NOT_CREATE_CONSUMER)
 		return
 	}

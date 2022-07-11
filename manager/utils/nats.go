@@ -2,10 +2,11 @@ package utils
 
 import (
 	"errors"
-	"github.com/nats-io/nats.go"
-	"github.com/scyna/go/scyna"
 	"log"
 	"time"
+
+	"github.com/nats-io/nats.go"
+	"github.com/scyna/go/scyna"
 )
 
 func DeleteStream(name string) error {
@@ -30,12 +31,25 @@ func CreateStream(name string) error {
 
 func CreateConsumer(stream string, name string, channel string) error {
 	if _, err := scyna.JetStream.AddConsumer(stream, &nats.ConsumerConfig{
-		Durable:      channel,
+		Durable:      name,
 		DeliverGroup: name,
 		//DeliverSubject: deliverSubject,
 		// FilterSubject:  filterSubject,
 	}); err != nil {
 		log.Print("Add Consumer "+channel+": Error: ", err)
+	}
+	return nil
+}
+
+func AddConsumer(stream string, durable string, group string, deliverSubject string, filterSubject string) error {
+	if _, err := scyna.JetStream.AddConsumer(stream, &nats.ConsumerConfig{
+		Durable:        durable,
+		DeliverGroup:   group,
+		DeliverSubject: deliverSubject,
+		// FilterSubject:  filterSubject,
+	}); err != nil {
+		log.Print("Add Consumer "+durable+": Error: ", err)
+		return err
 	}
 	return nil
 }
