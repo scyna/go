@@ -9,3 +9,15 @@ message Client{
     string id = 2;
     string secret = 3;
 }
+
+message ClientAddServiceRequest {
+    string organization = 1;
+    string id = 2;
+    string service = 3;
+}
+
+message ClientRemoveServiceRequest {
+    string organization = 1;
+    string id = 2;
+    string service = 3;
+}

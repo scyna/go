@@ -31,6 +31,8 @@ func main() {
 	scyna.RegisterService(model.MANAGER_CREATE_APPLICATION_URL, application.CreateApplication)
 	scyna.RegisterService(model.MANAGER_CREATE_MODULE_URL, module.CreateModule)
 	scyna.RegisterService(model.MANAGER_CREATE_SERVICE_URL, service.CreateService)
-	scyna.RegisterService(model.MANAGER_CREATE_CLIENT_URL, client.CreateClient)
+	scyna.RegisterService(model.CLIENT_CREATE_URL, client.CreateClient)
+	scyna.RegisterService(model.CLIENT_ADD_SERVICE_URL, client.AddService)
+	scyna.RegisterService(model.CLIENT_REMOVE_SERVICE_URL, client.RemoveService)
 	scyna.Start()
 }

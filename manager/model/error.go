@@ -10,6 +10,7 @@ var (
 	MODULE_EXISTED          = &scyna.Error{Code: 22, Message: "Module Existed"}
 	SERVICE_EXISTED         = &scyna.Error{Code: 22, Message: "Service Existed"}
 	CLIENT_EXISTED          = &scyna.Error{Code: 22, Message: "Client Existed"}
+	CLIENT_NOT_EXISTED      = &scyna.Error{Code: 22, Message: "Client Not Exist"}
 	MODULE_NOT_EXIST        = &scyna.Error{Code: 23, Message: "Module Not Exist"}
 	CAN_NOT_CREATE_STREAM   = &scyna.Error{Code: 24, Message: "Can Not Create Stream"}
 	CAN_NOT_CREATE_CONSUMER = &scyna.Error{Code: 25, Message: "Can Not Create Consumer"}
