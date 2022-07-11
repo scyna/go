@@ -8,6 +8,7 @@ var (
 	APPLICATION_NOT_EXIST   = &scyna.Error{Code: 20, Message: "Application Not Exist"}
 	APPLICATION_EXISTED     = &scyna.Error{Code: 21, Message: "Application Existed"}
 	MODULE_EXISTED          = &scyna.Error{Code: 22, Message: "Module Existed"}
+	MODULE_CODE_BAD_FORMAT  = &scyna.Error{Code: 22, Message: "Module Code Bad Format"}
 	SERVICE_EXISTED         = &scyna.Error{Code: 22, Message: "Service Existed"}
 	CLIENT_EXISTED          = &scyna.Error{Code: 22, Message: "Client Existed"}
 	CLIENT_NOT_EXISTED      = &scyna.Error{Code: 22, Message: "Client Not Exist"}
