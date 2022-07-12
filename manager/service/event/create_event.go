@@ -24,7 +24,7 @@ func CreateEvent(s *scyna.Service, request *proto.CreateEventRequest) {
 	/*TODO: validate channel format*/
 
 	consumer := scyna.GetEventConsumer(request.SenderModule, request.Channel, request.ReceiverModule)
-	if err := utils.CreateConsumer(request.SenderModule, consumer, request.Channel); err != nil {
+	if err := utils.AddConsumer(request.SenderModule, consumer, request.Channel, request.Channel, request.SenderModule+"."+request.Channel); err != nil {
 		s.Error(model.CAN_NOT_CREATE_CONSUMER)
 		return
 	}

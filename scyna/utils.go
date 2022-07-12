@@ -40,8 +40,8 @@ func ConvertDateByInt(timestamp uint64) string {
 	return time.UnixMicro(int64(timestamp)).Format(time.RFC3339)
 }
 
-func GetSyncConsumer(module string, channel string) string {
-	return module + "_sync_" + channel //ex: user_sync_account
+func GetSyncConsumer(module string, channel string, receiver string) string {
+	return module + "_" + channel + "_" + receiver //ex: vf_account_sync_account_salesforce
 }
 
 func GetSyncSubject(module string, channel string) string {
