@@ -17,7 +17,7 @@ type SyncHandler[R proto.Message] func(ctx *Context, data R) *http.Request
 func RegisterSync[R proto.Message](channel string, receiver string, handler SyncHandler[R]) {
 	consumer := GetSyncConsumer(module, channel, receiver)
 	subject := GetSyncSubject(module, channel)
-	LOG.Info(fmt.Sprintf("channel %s, consummer: %s, group: %s", subject, consumer, module))
+	LOG.Info(fmt.Sprintf("channel %s, consummer: %s", subject, consumer))
 
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
@@ -29,7 +29,7 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 		Type:      TRACE_SYNC,
 	}
 
-	_, err := JetStream.QueueSubscribe(subject, module, func(m *nats.Msg) {
+	_, err := JetStream.QueueSubscribe(subject, "SYNC", func(m *nats.Msg) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())

@@ -45,7 +45,7 @@ func GetSyncConsumer(module string, channel string, receiver string) string {
 }
 
 func GetSyncSubject(module string, channel string) string {
-	return module + ".sync_" + channel //ex: user.sync_account
+	return module + "." + channel //ex: vf_account.sync_account
 }
 
 func GetEventConsumer(sender string, channel string, receiver string) string {
