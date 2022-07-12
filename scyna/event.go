@@ -1,6 +1,7 @@
 package scyna
 
 import (
+	"fmt"
 	"log"
 	reflect "reflect"
 	"time"
@@ -14,6 +15,9 @@ type EventHandler[R proto.Message] func(ctx *Context, data R)
 func RegisterEvent[R proto.Message](sender string, channel string, handler EventHandler[R]) {
 	consumer := GetEventConsumer(sender, channel, module)
 	subject := GetEventSubject(sender, channel)
+
+	LOG.Info(fmt.Sprintf("channel %s, consummer: %s, group: %s", subject, consumer, module))
+
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
 	event = ref.Interface().(R)
