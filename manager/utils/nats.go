@@ -42,13 +42,6 @@ func CreateConsumer(stream string, name string, channel string) error {
 }
 
 func AddConsumer(stream string, durable string, group string, deliverSubject string, filterSubject string) error {
-
-	log.Println("stream", stream)
-	log.Println("durable", durable)
-	log.Println("group", group)
-	log.Println("deliverSubject", deliverSubject)
-	log.Println("filterSubject", filterSubject)
-
 	if _, err := scyna.JetStream.AddConsumer(stream, &nats.ConsumerConfig{
 		Durable:        durable,
 		DeliverGroup:   group,
