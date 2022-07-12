@@ -17,7 +17,6 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 	subject := GetEventSubject(sender, channel)
 
 	LOG.Info(fmt.Sprintf("channel %s, consummer: %s, group: %s", subject, consumer, module))
-
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
 	event = ref.Interface().(R)

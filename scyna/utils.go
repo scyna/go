@@ -53,5 +53,5 @@ func GetEventConsumer(sender string, channel string, receiver string) string {
 }
 
 func GetEventSubject(sender string, channel string) string {
-	return sender + "." + channel //ex: user.account_created
+	return sender + "." + channel //ex: vf_account.account_created
 }
