@@ -1,8 +1,8 @@
 go 1.18
 
 use (
-	./example
 	./engine
-	./scyna
+	./example
 	./manager
+	./scyna
 )
