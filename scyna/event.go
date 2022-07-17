@@ -68,7 +68,9 @@ func (es *eventStream) start() {
 			if messages, err := sub.Fetch(1); err == nil {
 				for _, m := range messages {
 					if executor, ok := es.executors[m.Subject]; ok {
-						storeEvent(m)
+						if !storeEvent(m) {
+							continue
+						}
 						executor(m)
 					}
 					m.Ack()
@@ -94,8 +96,4 @@ func createOrGetEventStream(sender string) *eventStream {
 	eventStreams[sender] = stream
 	stream.start()
 	return stream
-}
-
-func storeEvent(m *nats.Msg) {
-	/*TODO*/
 }
