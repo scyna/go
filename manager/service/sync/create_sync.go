@@ -1,6 +1,9 @@
 package sync
 
 import (
+	"regexp"
+
+	validation "github.com/go-ozzo/ozzo-validation"
 	proto "github.com/scyna/go/manager/.proto/generated"
 	"github.com/scyna/go/manager/model"
 	"github.com/scyna/go/manager/repository"
@@ -11,16 +14,17 @@ import (
 func CreateSync(s *scyna.Service, request *proto.CreateSyncRequest) {
 	s.Logger.Info("Receive CreateSyncRequest")
 
+	if validation.Validate(request.Channel, validation.Match(regexp.MustCompile("^[a-z0-9_]*$"))) != nil {
+		s.Error(scyna.REQUEST_INVALID)
+		return
+	}
+
 	if !repository.CheckModule(request.Module) {
 		s.Error(model.MODULE_NOT_EXIST)
 		return
 	}
 
-	/*TODO: validate channel*/
-
-	consumer := scyna.GetSyncConsumer(request.Module, request.Channel)
-
-	if err := utils.AddConsumer(request.Module, consumer, "SYNC", request.Channel, request.Module+"."+request.Channel); err != nil {
+	if err := utils.CreateSyncConsumer(request.Module, request.Channel); err != nil {
 		s.Error(model.CAN_NOT_CREATE_CONSUMER)
 		return
 	}

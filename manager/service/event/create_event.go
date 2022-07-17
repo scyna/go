@@ -1,6 +1,9 @@
 package event
 
 import (
+	"regexp"
+
+	validation "github.com/go-ozzo/ozzo-validation"
 	proto "github.com/scyna/go/manager/.proto/generated"
 	"github.com/scyna/go/manager/model"
 	"github.com/scyna/go/manager/repository"
@@ -10,6 +13,11 @@ import (
 
 func CreateEvent(s *scyna.Service, request *proto.CreateEventRequest) {
 	s.Logger.Info("Receive CreateEventRequest")
+
+	if validation.Validate(request.Channel, validation.Match(regexp.MustCompile("^[a-z0-9_]*$"))) != nil {
+		s.Error(scyna.REQUEST_INVALID)
+		return
+	}
 
 	if !repository.CheckModule(request.SenderModule) {
 		s.Error(model.MODULE_NOT_EXIST)
@@ -21,10 +29,7 @@ func CreateEvent(s *scyna.Service, request *proto.CreateEventRequest) {
 		return
 	}
 
-	/*TODO: validate channel format*/
-
-	consumer := scyna.GetEventConsumer(request.SenderModule, request.Channel, request.ReceiverModule)
-	if err := utils.CreateConsumer(request.SenderModule, consumer, request.Channel); err != nil {
+	if err := utils.CreateConsumer(request.SenderModule, request.ReceiverModule); err != nil {
 		s.Error(model.CAN_NOT_CREATE_CONSUMER)
 		return
 	}
