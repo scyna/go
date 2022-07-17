@@ -44,4 +44,5 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 	// }, nats.Durable(consumer), nats.ManualAck()); err != nil {
 	// 	log.Fatal("Error in registering Event: ", err)
 	// }
+
 }
