@@ -65,13 +65,15 @@ func (es *eventStream) start() {
 
 	go func() {
 		for {
-			messages, _ := sub.Fetch(1)
-			log.Print(err)
-			for _, m := range messages {
-				if handler, ok := es.handlers[m.Subject]; ok {
-					handler(m)
-					m.Ack()
+			if messages, err := sub.Fetch(1); err == nil {
+				for _, m := range messages {
+					if handler, ok := es.handlers[m.Subject]; ok {
+						handler(m)
+						m.Ack()
+					}
 				}
+			} else {
+				log.Print(err)
 			}
 		}
 	}()
