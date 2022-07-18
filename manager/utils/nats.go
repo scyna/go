@@ -47,17 +47,18 @@ func CreateConsumer(source string, target string) error {
 }
 
 func CreateSyncConsumer(module string, channel string) error {
+
 	consumerName := "sync_" + channel
 
 	/*check if consumer exists*/
 	if _, err := scyna.JetStream.ConsumerInfo(module, consumerName); err != nil {
-		return nil
+		return err
 	}
 
 	/*create push consumer*/
 	if _, err := scyna.JetStream.AddConsumer(module, &nats.ConsumerConfig{
 		Durable:        consumerName,
-		DeliverSubject: ".sync." + channel,
+		DeliverSubject: "sync." + channel,
 		FilterSubject:  module + ".sync." + channel,
 	}); err != nil {
 		log.Print("Add Consumer "+consumerName+": Error: ", err)
