@@ -1,7 +1,6 @@
 package scyna
 
 import (
-	"fmt"
 	"log"
 	reflect "reflect"
 	"time"
@@ -12,11 +11,17 @@ import (
 
 type EventHandler[R proto.Message] func(ctx *Context, data R)
 
-func RegisterEvent[R proto.Message](sender string, channel string, handler EventHandler[R]) {
-	consumer := GetEventConsumer(sender, channel, module)
-	subject := GetEventSubject(sender, channel)
+type eventStream struct {
+	sender    string
+	receiver  string
+	executors map[string]func(m *nats.Msg)
+}
 
-	LOG.Info(fmt.Sprintf("channel %s, consummer: %s, group: %s", subject, consumer, module))
+var eventStreams map[string]*eventStream = make(map[string]*eventStream)
+
+func RegisterEvent[R proto.Message](sender string, channel string, handler EventHandler[R]) {
+	stream := createOrGetEventStream(sender)
+	subject := sender + "." + channel
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
 	event = ref.Interface().(R)
@@ -27,9 +32,8 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 		Type:      TRACE_EVENT,
 	}
 
-	if _, err := JetStream.QueueSubscribe(subject, module, func(m *nats.Msg) {
+	stream.executors[channel] = func(m *nats.Msg) {
 		var msg EventOrSignal
-		defer m.Ack() //assure ordering
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
 			return
@@ -49,7 +53,47 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 		}
 
 		trace.Record()
-	}, nats.Durable(consumer), nats.ManualAck()); err != nil {
-		log.Fatal("Error in registering Event: ", err)
 	}
+}
+
+func (es *eventStream) start() {
+	sub, err := JetStream.PullSubscribe("", es.receiver, nats.BindStream(es.sender))
+
+	if err != nil {
+		log.Fatal("Error in start event stream:", err.Error())
+	}
+
+	go func() {
+		for {
+			if messages, err := sub.Fetch(1); err == nil {
+				for _, m := range messages {
+					if executor, ok := es.executors[m.Subject]; ok {
+						if !storeEvent(m) {
+							continue
+						}
+						executor(m)
+					}
+					m.Ack()
+				}
+			} else {
+				log.Print(err)
+			}
+		}
+	}()
+}
+
+func createOrGetEventStream(sender string) *eventStream {
+	if stream, ok := eventStreams[sender]; ok {
+		return stream
+	}
+
+	stream := &eventStream{
+		sender:    sender,
+		receiver:  module,
+		executors: make(map[string]func(m *nats.Msg)),
+	}
+
+	eventStreams[sender] = stream
+	stream.start()
+	return stream
 }

@@ -14,10 +14,9 @@ import (
 
 type SyncHandler[R proto.Message] func(ctx *Context, data R) *http.Request
 
-func RegisterSync[R proto.Message](channel string, receiver string, handler SyncHandler[R]) {
-	consumer := GetSyncConsumer(module, channel, receiver)
-	subject := GetSyncSubject(module, channel)
-	LOG.Info(fmt.Sprintf("channel %s, consummer: %s", subject, consumer))
+func RegisterSync[R proto.Message](channel string, handler SyncHandler[R]) {
+	subject := module + ".sync." + channel
+	LOG.Info(fmt.Sprintf("Channel %s, consummer: %s", subject, module))
 
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
@@ -28,7 +27,8 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 		SessionID: Session.ID(),
 		Type:      TRACE_SYNC,
 	}
-	_, err := JetStream.QueueSubscribe(subject, "SYNC", func(m *nats.Msg) {
+
+	_, err := JetStream.Subscribe(subject, func(m *nats.Msg) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
@@ -49,12 +49,12 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 		}
 
 		request := handler(&context, event)
-		if sendRequest(request) {
+		if sendSyncRequest(request) {
 			m.Ack()
 		} else {
 			for i := 0; i < 3; i++ {
 				request := handler(&context, event)
-				if sendRequest(request) {
+				if sendSyncRequest(request) {
 					m.Ack()
 					return
 				}
@@ -64,14 +64,14 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 			m.Nak()
 		}
 		trace.Record()
-	}, nats.Durable(consumer), nats.ManualAck())
+	}, nats.Durable(module), nats.ManualAck())
 
 	if err != nil {
 		log.Fatal("JetStream Error: ", err)
 	}
 }
 
-func sendRequest(request *http.Request) bool {
+func sendSyncRequest(request *http.Request) bool {
 	if request == nil {
 		return true
 	}
