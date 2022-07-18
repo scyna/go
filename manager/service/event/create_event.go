@@ -12,7 +12,7 @@ import (
 func CreateEvent(s *scyna.Service, request *proto.CreateEventRequest) {
 	s.Logger.Info("Receive CreateEventRequest")
 
-	if validation.Validate(request.Channel, validation.Match(utils.NAMING_RULE)) != nil {
+	if validation.Validate(request.Channel, validation.Match(utils.NAME_PATTERN)) != nil {
 		s.Error(scyna.REQUEST_INVALID)
 		return
 	}

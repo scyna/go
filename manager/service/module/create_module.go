@@ -56,7 +56,7 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 func validateModule(request *proto.Module) error {
 	return validation.ValidateStruct(request,
 		validation.Field(&request.Organization, validation.Required, validation.Length(1, 100)),
-		validation.Field(&request.Code, validation.Required, validation.Length(3, 200), validation.Match(utils.NAMING_RULE)),
+		validation.Field(&request.Code, validation.Required, validation.Length(3, 200), validation.Match(utils.NAME_PATTERN)),
 		validation.Field(&request.Secret, validation.Required, validation.Length(5, 20)),
 	)
 }
