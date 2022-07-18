@@ -32,7 +32,7 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 		Type:      TRACE_EVENT,
 	}
 
-	stream.executors[channel] = func(m *nats.Msg) {
+	stream.executors[sender+"."+channel] = func(m *nats.Msg) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
@@ -69,10 +69,11 @@ func (es *eventStream) start() {
 				if len(messages) == 1 {
 					m := messages[0]
 					if executor, ok := es.executors[m.Subject]; ok {
-						if !storeEvent(m) {
+						if storeEvent(m) {
+							executor(m)
+						} else {
 							continue
 						}
-						executor(m)
 					}
 					m.Ack()
 				}
