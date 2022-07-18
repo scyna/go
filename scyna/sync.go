@@ -64,7 +64,7 @@ func RegisterSync[R proto.Message](channel string, handler SyncHandler[R]) {
 			m.Nak()
 		}
 		trace.Record()
-	}, nats.Durable(module), nats.ManualAck())
+	}, nats.Durable("sync_"+channel), nats.ManualAck())
 
 	if err != nil {
 		log.Fatal("JetStream Error: ", err)

@@ -36,8 +36,8 @@ func CreateModule(s *scyna.Service, request *proto.Module) {
 
 	var module model.Module
 	module.FromDTO(request)
-	hash, _ := utils.HashPassword(module.Secret)
-	module.Secret = hash
+	//hash, _ := utils.HashPassword(module.Secret)
+	//module.Secret = hash
 
 	if err := repository.CreateModule(s.Logger, &module); err != nil {
 		s.Error(err)
