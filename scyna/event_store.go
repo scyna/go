@@ -9,12 +9,10 @@ import (
 
 const es_TRY_COUNT = 10
 
-var lastEventID int64
-
 func storeEvent(m *nats.Msg) bool {
 	for i := 0; i < es_TRY_COUNT; i++ {
-		if err := loadEventStoreHeader(); err == nil {
-			if saveEventToStore(m) == nil {
+		if err, lastID := getLastEventID(); err == nil {
+			if saveEventToStore(lastID+1, m) == nil {
 				return true
 			}
 		} else {
@@ -24,33 +22,23 @@ func storeEvent(m *nats.Msg) bool {
 	return false
 }
 
-func loadEventStoreHeader() error {
+func getLastEventID() (error, int64) {
 	/*load event with id = 0, data hold lastID of event */
+	var lastEventID int64
 	ctx := context.Background()
-
-	if err := DB.Session.Query("SELECT blobAsBigint(data) as last_id FROM event_store WHERE id=0 LIMIT 1").
+	if err := DB.Session.Query("SELECT blobAsBigint(data) as last_id FROM " + module + ".event_store WHERE id=0 LIMIT 1").
 		WithContext(ctx).
 		Consistency(gocql.One).
 		Scan(&lastEventID); err != nil {
-		return err
+		return err, 0
 	}
-
-	// if err := qb.Select(module + ".event_store").
-	// 	Columns("blobAsBigint(data)").
-	// 	Where(qb.Eq("id")).
-	// 	Query(DB).Bind(0).
-	// 	Get(&lastEventID); err != nil {
-	// 	return err
-	// }
-	return nil
+	return nil, lastEventID
 }
 
-func saveEventToStore(m *nats.Msg) error {
+func saveEventToStore(id int64, m *nats.Msg) error {
 	batch := DB.NewBatch(gocql.LoggedBatch)
-	nextID := lastEventID + 1
-
-	batch.Query("INSERT INTO "+module+".event_store(id, subject, data) VALUES(?,?,?) IF NOT EXISTS", nextID, m.Subject, m.Data)
-	batch.Query("UPDATE "+module+".event_store SET data=bigintAsBlob(?) WHERE id=?", nextID, 0)
+	batch.Query("INSERT INTO "+module+".event_store(id, subject, data) VALUES(?,?,?) IF NOT EXISTS", id, m.Subject, m.Data)
+	batch.Query("UPDATE "+module+".event_store SET data=bigintAsBlob(?) WHERE id=?", id, 0)
 
 	if applied, _, err := DB.ExecuteBatchCAS(batch); applied {
 		return nil
