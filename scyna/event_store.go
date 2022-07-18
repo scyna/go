@@ -10,27 +10,72 @@ import (
 const es_TRY_COUNT = 10
 const es_BUCKET_SIZE = 1024
 
-var errCanNotApplied = errors.New("Can not save bucket")
+var errCanNotApplied = errors.New("can not save bucket")
 
 var esBucket int64
 
 func InitEventStore() {
-	getLastBucket()
+	esBucket, _ = getLastBucket()
 }
 
-func storeEvent(m *nats.Msg) bool {
-	for i := 0; i < es_TRY_COUNT; i++ {
-		if lastId, err := getLastEventID(esBucket); err == nil {
-			if saveEventToStore(lastId+1, m) == nil {
-				return true
+func StoreEvent(m *nats.Msg) bool {
+	tryCount := 0
+	state := "GETID"
+	lastBucket := esBucket
+	var lastID int64
+	var err error
+
+	for tryCount < es_BUCKET_SIZE {
+		switch state {
+		case "GET_ID":
+			if lastID, err = getLastEventID(esBucket); err != nil {
+				tryCount++
+				continue
 			}
+			if lastID == esBucket*es_BUCKET_SIZE { /*reach end of bucket*/
+				state = "GET_BUCKET"
+				continue
+			}
+			state = "SAVE_EVENT"
+		case "GET_BUCKET":
+			if lastBucket, err = getLastBucket(); err != nil {
+				tryCount++
+				continue
+			}
+
+			if lastBucket == esBucket { /*need to switch bucket*/
+				lastBucket++
+				state = "SAVE_BUCKET"
+				continue
+			}
+			state = "SAVE_EVENT"
+			esBucket = lastBucket
+		case "SAVE_BUCKET":
+			if err = saveLastBucket(lastBucket); err != nil {
+				tryCount++
+				continue
+			}
+			state = "SAVE_EVENT"
+			esBucket = lastBucket
+		case "SAVE_EVENT":
+			if err := saveEventToStore(lastID, m); err != nil {
+				state = "GET_ID"
+				tryCount++
+				continue
+			}
+			return true
 		}
 	}
 	return false
 }
 
-func getLastBucket() {
+func saveLastBucket(bucket int64) error {
+	return nil
+}
+
+func getLastBucket() (int64, error) {
 	/*TODO*/
+	return 0, nil
 }
 
 func getLastEventID(bucket int64) (int64, error) {
@@ -39,33 +84,21 @@ func getLastEventID(bucket int64) (int64, error) {
 }
 
 func saveEventToStore(id int64, m *nats.Msg) error {
-	bucket := esBucket
-	if id > esBucket*es_BUCKET_SIZE {
-		bucket++
-	}
-
 	if applied, err := qb.Insert(module+".event_store").
 		Columns("bucket", "id", "subject", "data").
 		Unique().
 		Query(DB).
-		Bind(bucket, id, m.Subject, m.Data).
+		Bind(esBucket, id, m.Subject, m.Data).
 		ExecCASRelease(); !applied {
-
 		if err != nil {
 			return err
-		}
-
-		if bucket > esBucket {
-			getLastBucket()
 		}
 		return errCanNotApplied
 	}
 
-	if bucket > esBucket {
-		/*TODO:update bucket*/
-		esBucket = bucket
+	if id == esBucket*es_BUCKET_SIZE {
+		/*TODO: switch to new bucket*/
 	}
-
 	return nil
 }
 
