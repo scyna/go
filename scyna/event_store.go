@@ -1,9 +1,10 @@
 package scyna
 
 import (
+	"context"
+
 	"github.com/gocql/gocql"
 	"github.com/nats-io/nats.go"
-	"github.com/scylladb/gocqlx/v2/qb"
 )
 
 const es_TRY_COUNT = 10
@@ -25,13 +26,22 @@ func storeEvent(m *nats.Msg) bool {
 
 func loadEventStoreHeader() error {
 	/*load event with id = 0, data hold lastID of event */
-	if err := qb.Select(module + ".event_store").
-		Columns("blobAsBigint(data)").
-		Where(qb.Eq("id")).
-		Query(DB).Bind(0).
-		Get(&lastEventID); err != nil {
+	ctx := context.Background()
+
+	if err := DB.Session.Query("SELECT blobAsBigint(data) as last_id FROM event_store WHERE id=0").
+		WithContext(ctx).
+		Consistency(gocql.One).
+		Scan(&lastEventID); err != nil {
 		return err
 	}
+
+	// if err := qb.Select(module + ".event_store").
+	// 	Columns("blobAsBigint(data)").
+	// 	Where(qb.Eq("id")).
+	// 	Query(DB).Bind(0).
+	// 	Get(&lastEventID); err != nil {
+	// 	return err
+	// }
 	return nil
 }
 
