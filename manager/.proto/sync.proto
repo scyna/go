@@ -6,8 +6,7 @@ option  go_package = "./;proto";
 
 message CreateSyncRequest{
     string Module = 1;  //vf_account
-    string Channel = 2; //sync_account
-    string Receiver = 3;//salesforce
+    string Channel = 2; //sync_account_loyalty
 }
 
 message DropSyncRequest{
