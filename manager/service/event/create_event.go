@@ -1,8 +1,6 @@
 package event
 
 import (
-	"regexp"
-
 	validation "github.com/go-ozzo/ozzo-validation"
 	proto "github.com/scyna/go/manager/.proto/generated"
 	"github.com/scyna/go/manager/model"
@@ -14,7 +12,7 @@ import (
 func CreateEvent(s *scyna.Service, request *proto.CreateEventRequest) {
 	s.Logger.Info("Receive CreateEventRequest")
 
-	if validation.Validate(request.Channel, validation.Match(regexp.MustCompile("^[a-z0-9_]*$"))) != nil {
+	if validation.Validate(request.Channel, validation.Match(utils.NAMING_RULE)) != nil {
 		s.Error(scyna.REQUEST_INVALID)
 		return
 	}

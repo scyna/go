@@ -1,8 +1,6 @@
 package sync
 
 import (
-	"regexp"
-
 	validation "github.com/go-ozzo/ozzo-validation"
 	proto "github.com/scyna/go/manager/.proto/generated"
 	"github.com/scyna/go/manager/model"
@@ -14,7 +12,7 @@ import (
 func CreateSync(s *scyna.Service, request *proto.CreateSyncRequest) {
 	s.Logger.Info("Receive CreateSyncRequest")
 
-	if validation.Validate(request.Channel, validation.Match(regexp.MustCompile("^[a-z0-9_]*$"))) != nil {
+	if validation.Validate(request.Channel, validation.Match(utils.NAMING_RULE)) != nil {
 		s.Error(scyna.REQUEST_INVALID)
 		return
 	}
