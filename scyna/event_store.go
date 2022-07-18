@@ -33,11 +33,12 @@ func storeEvent(m *nats.Msg) bool {
 
 func loadEventStoreHeader() error {
 	/*load event with id = 0, Subject hold last event id */
-	if err := qb.Select(module+".event_store").
-		Columns("id", "subject").
+	var lastID int64
+	if err := qb.Select(module + ".event_store").
+		Columns("blobAsBigint(data)").
 		Where(qb.Eq("id")).
 		Query(DB).Bind(0).
-		Get(&eventStoreHeader); err != nil {
+		Get(&lastID); err != nil {
 		return err
 	}
 	return nil
@@ -53,7 +54,7 @@ func saveEventToStore(m *nats.Msg) error {
 	}
 
 	batch.Query("INSERT INTO "+module+".event_store(id, subject, data) VALUES(?,?,?) IF NOT EXISTS", nextID, m.Subject, m.Data)
-	batch.Query("UPDATE "+module+".event_store SET subject=? WHERE id=?", strconv.FormatInt(nextID, 10), 0) /*update last event id to header*/
+	batch.Query("UPDATE "+module+".event_store SET data=bigintAsBlob(?) WHERE id=?", nextID, 0)
 
 	if applied, _, err := DB.ExecuteBatchCAS(batch); applied {
 		return nil

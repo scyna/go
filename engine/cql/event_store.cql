@@ -7,4 +7,4 @@ CREATE TABLE module_name.event_store
     data        blob
 );
 
-INSERT INTO module_name.event_store(id, subject) values(0, '0');
+INSERT INTO module_name.event_store(id, data) values(0, bigintAsBlob(0));
