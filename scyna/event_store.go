@@ -28,7 +28,7 @@ func loadEventStoreHeader() error {
 	/*load event with id = 0, data hold lastID of event */
 	ctx := context.Background()
 
-	if err := DB.Session.Query("SELECT blobAsBigint(data) as last_id FROM event_store WHERE id=0").
+	if err := DB.Session.Query("SELECT blobAsBigint(data) as last_id FROM event_store WHERE id=0 LIMIT 1").
 		WithContext(ctx).
 		Consistency(gocql.One).
 		Scan(&lastEventID); err != nil {
