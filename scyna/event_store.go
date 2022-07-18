@@ -10,7 +10,8 @@ import (
 const es_TRY_COUNT = 10
 const es_BUCKET_SIZE = 1024
 
-var errCanNotApplied = errors.New("can not save bucket")
+var errBucketUpdated = errors.New("bucket updated")
+var errIDIsReserved = errors.New("id is reserved")
 
 var esBucket int64
 
@@ -28,12 +29,13 @@ func StoreEvent(m *nats.Msg) bool {
 	for tryCount < es_BUCKET_SIZE {
 		switch state {
 		case "GET_ID":
-			if lastID, err = getLastEventID(esBucket); err != nil {
+			if lastID, err = getLastEventID(lastBucket); err != nil {
 				tryCount++
 				continue
 			}
 			if lastID == esBucket*es_BUCKET_SIZE { /*reach end of bucket*/
-				state = "GET_BUCKET"
+				lastBucket++
+				state = "SAVE_BUCKET"
 				continue
 			}
 			state = "SAVE_EVENT"
@@ -42,28 +44,32 @@ func StoreEvent(m *nats.Msg) bool {
 				tryCount++
 				continue
 			}
-
 			if lastBucket == esBucket { /*need to switch bucket*/
 				lastBucket++
 				state = "SAVE_BUCKET"
 				continue
 			}
 			state = "SAVE_EVENT"
-			esBucket = lastBucket
 		case "SAVE_BUCKET":
-			if err = saveLastBucket(lastBucket); err != nil {
-				tryCount++
+			if err = saveLastBucket(lastBucket); err == nil {
+				state = "SAVE_EVENT"
 				continue
 			}
-			state = "SAVE_EVENT"
-			esBucket = lastBucket
-		case "SAVE_EVENT":
-			if err := saveEventToStore(lastID, m); err != nil {
+			if err == errBucketUpdated {
 				state = "GET_ID"
-				tryCount++
 				continue
 			}
-			return true
+			tryCount++
+		case "SAVE_EVENT":
+			if err := saveEventToStore(lastID+1, m); err == nil {
+				esBucket = lastBucket
+				return true
+			}
+			tryCount++
+			if err == errIDIsReserved {
+				state = "GET_ID"
+				continue
+			}
 		}
 	}
 	return false
@@ -93,11 +99,7 @@ func saveEventToStore(id int64, m *nats.Msg) error {
 		if err != nil {
 			return err
 		}
-		return errCanNotApplied
-	}
-
-	if id == esBucket*es_BUCKET_SIZE {
-		/*TODO: switch to new bucket*/
+		return errIDIsReserved
 	}
 	return nil
 }
