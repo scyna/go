@@ -32,7 +32,7 @@ func storeEvent(m *nats.Msg) bool {
 }
 
 func loadEventStoreHeader() error {
-	/*load event with id = 0, Subject hold last event id */
+	/*load event with id = 0, data hold lastID of event */
 	var lastID int64
 	if err := qb.Select(module + ".event_store").
 		Columns("blobAsBigint(data)").
