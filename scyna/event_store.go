@@ -11,7 +11,7 @@ const es_TRY_COUNT = 10
 
 func storeEvent(m *nats.Msg) bool {
 	for i := 0; i < es_TRY_COUNT; i++ {
-		if err, lastID := getLastEventID(); err == nil {
+		if lastID, err := getLastEventID(); err == nil {
 			if saveEventToStore(lastID+1, m) == nil {
 				return true
 			}
@@ -22,7 +22,7 @@ func storeEvent(m *nats.Msg) bool {
 	return false
 }
 
-func getLastEventID() (error, int64) {
+func getLastEventID() (int64, error) {
 	/*load event with id = 0, data hold lastID of event */
 	var lastEventID int64
 	ctx := context.Background()
@@ -30,9 +30,9 @@ func getLastEventID() (error, int64) {
 		WithContext(ctx).
 		Consistency(gocql.One).
 		Scan(&lastEventID); err != nil {
-		return err, 0
+		return 0, err
 	}
-	return nil, lastEventID
+	return lastEventID, nil
 }
 
 func saveEventToStore(id int64, m *nats.Msg) error {
