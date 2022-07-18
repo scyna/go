@@ -1,10 +1,12 @@
 /*schema for EventStore*/
 CREATE TABLE module_name.event_store
 (
-    id          bigint PRIMARY KEY,
+    bucket      bigint,
+    id          bigint,
     time        timestamp,
     subject     text,
-    data        blob
+    data        blob,
+    PRIMARY(bucket, id)
 );
 
 INSERT INTO module_name.event_store(id, data) values(0, bigintAsBlob(0));
