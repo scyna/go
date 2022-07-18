@@ -66,7 +66,8 @@ func (es *eventStream) start() {
 	go func() {
 		for {
 			if messages, err := sub.Fetch(1); err == nil {
-				for _, m := range messages {
+				if len(messages) == 1 {
+					m := messages[0]
 					if executor, ok := es.executors[m.Subject]; ok {
 						if !storeEvent(m) {
 							continue
