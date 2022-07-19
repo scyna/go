@@ -3,6 +3,7 @@ package scyna
 import (
 	"errors"
 
+	"github.com/gocql/gocql"
 	"github.com/nats-io/nats.go"
 	"github.com/scylladb/gocqlx/v2/qb"
 )
@@ -33,7 +34,7 @@ func StoreEvent(m *nats.Msg) bool {
 	for tryCount < es_TRY_COUNT {
 		switch state {
 		case ES_GET_LAST_ID:
-			if lastID, err = getLastEventID(lastBucket); err != nil {
+			if lastID, err = getLastID(lastBucket); err != nil {
 				tryCount++
 				continue
 			}
@@ -75,17 +76,35 @@ func StoreEvent(m *nats.Msg) bool {
 }
 
 func saveLastBucket(bucket int64) error {
+	if applied, err := qb.Insert(module+".event_store").
+		Columns("bucket", "id").
+		Unique().
+		Query(DB).
+		Bind(0, bucket).
+		ExecCASRelease(); !applied {
+		return err
+	}
 	return nil
 }
 
 func getLastBucket() (int64, error) {
-	/*TODO*/
-	return 0, nil
+	var lastBucket int64
+	if err := DB.Session.Query("SELECT id FROM " + module + ".event_store WHERE bucket=0 LIMIT 1").
+		Consistency(gocql.One).
+		Scan(&lastBucket); err != nil {
+		return 0, err
+	}
+	return lastBucket, nil
 }
 
-func getLastEventID(bucket int64) (int64, error) {
-	/*TODO*/
-	return 0, nil
+func getLastID(bucket int64) (int64, error) {
+	var lastID int64
+	if err := DB.Session.Query("SELECT id FROM "+module+".event_store WHERE bucket=? LIMIT 1", bucket).
+		Consistency(gocql.One).
+		Scan(&lastID); err != nil {
+		return 0, err
+	}
+	return lastID, nil
 }
 
 func saveEventToStore(id int64, m *nats.Msg) error {
@@ -103,54 +122,3 @@ func saveEventToStore(id int64, m *nats.Msg) error {
 	}
 	return nil
 }
-
-// func getLastEventID() (int64, error) {
-// 	/*load event with id = 0, data hold lastID of event */
-// 	var lastEventID int64
-// 	ctx := context.Background()
-// 	if err := DB.Session.Query("SELECT blobAsBigint(data) as last_id FROM " + module + ".event_store WHERE id=0 LIMIT 1").
-// 		WithContext(ctx).
-// 		Consistency(gocql.One).
-// 		Scan(&lastEventID); err != nil {
-// 		return 0, err
-// 	}
-// 	return lastEventID, nil
-// }
-
-// func saveEventToStore(id int64, m *nats.Msg) error {
-// 	batch := DB.NewBatch(gocql.LoggedBatch)
-// 	batch.Query("INSERT INTO "+module+".event_store(id, subject, data) VALUES(?,?,?) IF NOT EXISTS", id, m.Subject, m.Data)
-// 	batch.Query("UPDATE "+module+".event_store SET data=bigintAsBlob(?) WHERE id=?", id, 0)
-
-// 	if applied, _, err := DB.ExecuteBatchCAS(batch); applied {
-// 		return nil
-// 	} else {
-// 		return err
-// 	}
-// }
-
-// func getLastBucket() (int64, error) {
-// 	/*load event with id = 0, data hold lastID of event */
-// 	var lastEventID int64
-// 	ctx := context.Background()
-// 	if err := DB.Session.Query("SELECT blobAsBigint(data) as last_id FROM " + module + ".event_store WHERE id=0 LIMIT 1").
-// 		WithContext(ctx).
-// 		Consistency(gocql.One).
-// 		Scan(&lastEventID); err != nil {
-// 		return 0, err
-// 	}
-// 	return lastEventID, nil
-// }
-
-// func getLastID(bucket int64) (int64, error) {
-// 	/*load event with id = 0, data hold lastID of event */
-// 	var lastEventID int64
-// 	ctx := context.Background()
-// 	if err := DB.Session.Query("SELECT blobAsBigint(data) as last_id FROM " + module + ".event_store WHERE id=0 LIMIT 1").
-// 		WithContext(ctx).
-// 		Consistency(gocql.One).
-// 		Scan(&lastEventID); err != nil {
-// 		return 0, err
-// 	}
-// 	return lastEventID, nil
-// }
