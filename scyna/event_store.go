@@ -34,7 +34,12 @@ func StoreEvent(m *nats.Msg) bool {
 	for tryCount < es_TRY_COUNT {
 		switch state {
 		case ES_GET_LAST_ID:
-			if lastID, err = getLastID(lastBucket); err != nil {
+			if lastID, err = getLastID(lastBucket); err == gocql.ErrNotFound {
+				lastID = (lastBucket-1)*es_BUCKET_SIZE + 1
+				state = ES_STORE_EVENT
+				continue
+			}
+			if err != nil {
 				tryCount++
 				continue
 			}
@@ -53,7 +58,7 @@ func StoreEvent(m *nats.Msg) bool {
 				state = ES_UPDATE_BUCKET
 				continue
 			}
-			state = ES_STORE_EVENT
+			state = ES_GET_LAST_ID
 		case ES_UPDATE_BUCKET:
 			if err = saveLastBucket(lastBucket); err == nil {
 				state = ES_STORE_EVENT
@@ -89,9 +94,11 @@ func saveLastBucket(bucket int64) error {
 
 func getLastBucket() (int64, error) {
 	var lastBucket int64
-	if err := DB.Session.Query("SELECT id FROM " + module + ".event_store WHERE bucket=0 LIMIT 1").
-		Consistency(gocql.One).
-		Scan(&lastBucket); err != nil {
+	if err := qb.Select(module + ".event_store").
+		Columns("id").
+		Where(qb.Eq("bucket")).
+		Query(DB).Bind(0).
+		GetRelease(&lastBucket); err != nil {
 		return 0, err
 	}
 	return lastBucket, nil
@@ -99,9 +106,11 @@ func getLastBucket() (int64, error) {
 
 func getLastID(bucket int64) (int64, error) {
 	var lastID int64
-	if err := DB.Session.Query("SELECT id FROM "+module+".event_store WHERE bucket=? LIMIT 1", bucket).
-		Consistency(gocql.One).
-		Scan(&lastID); err != nil {
+	if err := qb.Select(module + ".event_store").
+		Columns("id").
+		Where(qb.Eq("bucket")).
+		Query(DB).Bind(bucket).
+		GetRelease(&lastID); err != nil {
 		return 0, err
 	}
 	return lastID, nil
