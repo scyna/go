@@ -67,7 +67,6 @@ func storeEvent(m *nats.Msg) bool {
 			tryCount++
 		case ES_STORE_EVENT:
 			if err := saveEventToStore(lastID+1, m); err == nil {
-				esBucket = lastBucket
 				return true
 			}
 			tryCount++
@@ -129,5 +128,6 @@ func saveEventToStore(id int64, m *nats.Msg) error {
 		}
 		return err_ID_IS_RESERVED
 	}
+	esBucket = bucket
 	return nil
 }
