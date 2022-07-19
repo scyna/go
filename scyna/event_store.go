@@ -35,7 +35,7 @@ func StoreEvent(m *nats.Msg) bool {
 		switch state {
 		case ES_GET_LAST_ID:
 			if lastID, err = getLastID(lastBucket); err == gocql.ErrNotFound {
-				lastID = (lastBucket-1)*es_BUCKET_SIZE + 1
+				lastID = (lastBucket - 1) * es_BUCKET_SIZE
 				state = ES_STORE_EVENT
 				continue
 			}
