@@ -24,7 +24,7 @@ const (
 	ES_STORE_EVENT     esStateType = 4
 )
 
-func StoreEvent(m *nats.Msg) bool {
+func storeEvent(m *nats.Msg) bool {
 	tryCount := 0
 	state := ES_GET_LAST_ID
 	lastBucket := esBucket
