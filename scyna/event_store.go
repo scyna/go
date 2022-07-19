@@ -20,7 +20,7 @@ type esStateType int
 const (
 	ES_GET_LAST_ID     esStateType = 1
 	ES_GET_LAST_BUCKET esStateType = 2
-	ES_UPDATE_BUCKET   esStateType = 3
+	ES_RESERVE_BUCKET  esStateType = 3
 	ES_STORE_EVENT     esStateType = 4
 )
 
@@ -55,18 +55,18 @@ func storeEvent(m *nats.Msg) bool {
 			}
 			if lastBucket == esBucket { /*need to switch bucket*/
 				lastBucket++
-				state = ES_UPDATE_BUCKET
+				state = ES_RESERVE_BUCKET
 				continue
 			}
 			state = ES_GET_LAST_ID
-		case ES_UPDATE_BUCKET:
-			if err = saveLastBucket(lastBucket); err == nil {
+		case ES_RESERVE_BUCKET:
+			if err = reserveBucket(lastBucket); err == nil {
 				state = ES_STORE_EVENT
 				continue
 			}
 			tryCount++
 		case ES_STORE_EVENT:
-			if err := saveEventToStore(lastID+1, m); err == nil {
+			if err := appendEvent(lastID+1, m); err == nil {
 				return true
 			}
 			tryCount++
@@ -79,7 +79,7 @@ func storeEvent(m *nats.Msg) bool {
 	return false
 }
 
-func saveLastBucket(bucket int64) error {
+func reserveBucket(bucket int64) error {
 	if applied, err := qb.Insert(module+".event_store").
 		Columns("bucket", "id").
 		Unique().
@@ -115,7 +115,7 @@ func getLastID(bucket int64) (int64, error) {
 	return lastID, nil
 }
 
-func saveEventToStore(id int64, m *nats.Msg) error {
+func appendEvent(id int64, m *nats.Msg) error {
 	bucket := id/es_BUCKET_SIZE + 1
 	if applied, err := qb.Insert(module+".event_store").
 		Columns("bucket", "id", "subject", "data").
