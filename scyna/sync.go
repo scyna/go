@@ -15,15 +15,16 @@ import (
 type SyncHandler[R proto.Message] func(ctx *Context, data R) *http.Request
 
 func RegisterSync[R proto.Message](channel string, receiver string, handler SyncHandler[R]) {
-	subject := module + ".sync." + channel + "_" + receiver
-	LOG.Info(fmt.Sprintf("Channel %s, consummer: %s", subject, module))
+	subject := module + ".sync." + channel
+	durable := "sync_" + channel + "_" + receiver
+	LOG.Info(fmt.Sprintf("Channel %s, durable: %s", subject, durable))
 
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
 	event = ref.Interface().(R)
 
 	trace := Trace{
-		Path:      subject,
+		Path:      subject, //FIXME
 		SessionID: Session.ID(),
 		Type:      TRACE_SYNC,
 	}
@@ -64,7 +65,7 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 			m.Nak()
 		}
 		trace.Record()
-	}, nats.Durable("sync_"+channel), nats.ManualAck())
+	}, nats.Durable(durable), nats.ManualAck())
 
 	if err != nil {
 		log.Fatal("JetStream Error: ", err)
