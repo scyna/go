@@ -14,8 +14,8 @@ import (
 
 type SyncHandler[R proto.Message] func(ctx *Context, data R) *http.Request
 
-func RegisterSync[R proto.Message](channel string, handler SyncHandler[R]) {
-	subject := module + ".sync." + channel
+func RegisterSync[R proto.Message](channel string, receiver string, handler SyncHandler[R]) {
+	subject := module + ".sync." + channel + "_" + receiver
 	LOG.Info(fmt.Sprintf("Channel %s, consummer: %s", subject, module))
 
 	var event R

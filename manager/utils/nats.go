@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"log"
 	"time"
 
@@ -52,8 +53,8 @@ func CreateSyncConsumer(module string, channel string, receiver string) error {
 	consumerName := "sync_" + channel + "_" + receiver
 
 	/*check if consumer exists*/
-	if _, err := scyna.JetStream.ConsumerInfo(module, consumerName); err != nil {
-		return err
+	if _, err := scyna.JetStream.ConsumerInfo(module, consumerName); err == nil {
+		return errors.New("consumer existed")
 	}
 
 	/*create push consumer*/
