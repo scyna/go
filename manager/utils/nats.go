@@ -57,28 +57,6 @@ func CreateSyncConsumer(module string, channel string, receiver string) error {
 		return errors.New("consumer existed")
 	}
 
-	/*create push consumer*/
-	if _, err := scyna.JetStream.AddConsumer(module, &nats.ConsumerConfig{
-		Durable:        consumerName,
-		DeliverGroup:   receiver,
-		DeliverSubject: "sync." + channel,
-		FilterSubject:  module + ".sync." + channel,
-	}); err != nil {
-		log.Print("Add Consumer "+consumerName+": Error: ", err)
-		return err
-	}
-	return nil
-}
-
-func CreateSyncConsumer2(module string, channel string, receiver string) error {
-
-	consumerName := "sync_" + channel + "_" + receiver
-
-	/*check if consumer exists*/
-	if _, err := scyna.JetStream.ConsumerInfo(module, consumerName); err == nil {
-		return errors.New("consumer existed")
-	}
-
 	/*create pull consumer*/
 	if _, err := scyna.JetStream.AddConsumer(module, &nats.ConsumerConfig{
 		Durable:       consumerName,
