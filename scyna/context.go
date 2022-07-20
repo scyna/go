@@ -21,28 +21,29 @@ func (ctx *Context) EmitSignal(channel string, data proto.Message) {
 	}
 }
 
-func (ctx *Context) PostEvent(channel string, data proto.Message) {
+func (ctx *Context) PostEvent(channel string, data proto.Message) { // account_created
+	subject := module + "." + channel
 	msg := EventOrSignal{ParentID: ctx.ID}
 	if data, err := proto.Marshal(data); err == nil {
 		msg.Body = data
 	}
 
 	if data, err := proto.Marshal(&msg); err == nil {
-		JetStream.Publish(channel, data)
+		JetStream.Publish(subject, data)
 	}
 }
 
-// func (ctx *Context) StoreAndPostEvent(entity uint64, channel string, data proto.Message) {
-// 	msg := EventOrSignal{ParentID: ctx.ID}
-// 	if data, err := proto.Marshal(data); err == nil {
-// 		msg.Body = data
-// 	}
+func (ctx *Context) PostSync(channel string, data proto.Message) { // account_loyalty
+	subject := module + ".sync." + channel
+	msg := EventOrSignal{ParentID: ctx.ID}
+	if data, err := proto.Marshal(data); err == nil {
+		msg.Body = data
+	}
 
-// 	if data, err := proto.Marshal(&msg); err == nil {
-// 		/*TODO: Save to EventStore and Entity_Has_Event*/
-// 		JetStream.Publish(channel, data)
-// 	}
-// }
+	if data, err := proto.Marshal(&msg); err == nil {
+		JetStream.Publish(subject, data)
+	}
+}
 
 func (ctx *Context) SendCommand(url string, response proto.Message) *Error {
 	return ctx.CallService(url, nil, response)
