@@ -15,8 +15,8 @@ import (
 type SyncHandler[R proto.Message] func(ctx *Context, data R) *http.Request
 
 func RegisterSync[R proto.Message](channel string, receiver string, handler SyncHandler[R]) {
-	subject := module + ".sync." + channel
-	durable := "sync_" + channel + "_" + receiver
+	subject := module + ".sync." + channel        // vf_account.sync.account
+	durable := "sync_" + channel + "_" + receiver // sync_account_loyalty
 	LOG.Info(fmt.Sprintf("Channel %s, durable: %s", subject, durable))
 
 	var event R
@@ -29,7 +29,7 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 		Type:      TRACE_SYNC,
 	}
 
-	_, err := JetStream.QueueSubscribe(subject, "SYNC", func(m *nats.Msg) {
+	_, err := JetStream.QueueSubscribe(subject, receiver, func(m *nats.Msg) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())

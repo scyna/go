@@ -19,6 +19,6 @@ func main() {
 
 	scyna.RegisterService("/scyna.example/user/create", user.CreateUser)
 	//scyna.RegisterEvent("vf_account", "account_loyalty", user.HandlerEventMessage)
-	scyna.RegisterSync("account", "loyalty", user.HandlerSyncMessage)
+	scyna.RegisterSync("account", "salesforce", user.HandlerSyncMessage)
 	scyna.Start()
 }
