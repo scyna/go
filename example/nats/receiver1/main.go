@@ -15,8 +15,8 @@ func main() {
 	})
 	defer scyna.Release()
 
-	scyna.RegisterService("/scyna.example/user/create", user.CreateUser)
+	//scyna.RegisterService("/scyna.example/user/create", user.CreateUser)
 	//scyna.RegisterEvent("vf_account", "account_loyalty", user.HandlerEventMessage)
-	scyna.RegisterSync("account", "loyalty", user.HandlerSyncMessage)
+	scyna.RegisterSync2("account", "salesforce", user.HandlerSyncMessage)
 	scyna.Start()
 }

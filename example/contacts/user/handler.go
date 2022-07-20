@@ -12,6 +12,6 @@ func HandlerEventMessage(ctx *scyna.Context, message *proto.User) {
 }
 
 func HandlerSyncMessage(ctx *scyna.Context, message *proto.User) *http.Request {
-	log.Println("X Sync")
+	log.Println("X Sync " + message.Email)
 	return nil
 }

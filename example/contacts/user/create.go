@@ -21,10 +21,13 @@ func CreateUser(s *scyna.Service, request *proto.User) {
 
 	user := FromDTO(request)
 	user.ID = scyna.ID.Next()
-	if err := Repository.Create(s.Logger, user); err != nil {
-		s.Error(err)
-		return
-	}
+	//if err := Repository.Create(s.Logger, user); err != nil {
+	//	s.Error(err)
+	//	return
+	//}
+
+	s.PostSync("account", user.ToDTO())
+
 	s.Done(&proto.CreateUserResponse{Id: user.ID})
 }
 
