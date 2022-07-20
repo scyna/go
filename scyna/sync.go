@@ -72,6 +72,75 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 	}
 }
 
+func RegisterSync2[R proto.Message](channel string, receiver string, handler SyncHandler[R]) {
+	subject := module + ".sync." + channel        // vf_account.sync.account
+	durable := "sync_" + channel + "_" + receiver // sync_account_loyalty
+	LOG.Info(fmt.Sprintf("Channel %s, durable: %s", subject, durable))
+
+	var event R
+	ref := reflect.New(reflect.TypeOf(event).Elem())
+	event = ref.Interface().(R)
+
+	trace := Trace{
+		Path:      subject, //FIXME
+		SessionID: Session.ID(),
+		Type:      TRACE_SYNC,
+	}
+
+	sub, err := JetStream.PullSubscribe("", durable, nats.BindStream(module))
+
+	if err != nil {
+		log.Fatal("Error in start event stream:", err.Error())
+	}
+
+	go func() {
+		for {
+			messages, err := sub.Fetch(1)
+			if err != nil || len(messages) != 1 {
+
+				continue
+			}
+			m := messages[0]
+
+			var msg EventOrSignal
+			if err := proto.Unmarshal(m.Data, &msg); err != nil {
+				log.Print("Register unmarshal error response data:", err.Error())
+				return
+			}
+			trace.Time = time.Now()
+			trace.ID = ID.Next()
+			trace.ParentID = msg.ParentID
+
+			context := Context{
+				Logger{ID: trace.ID, session: false},
+			}
+
+			if err := proto.Unmarshal(msg.Body, event); err != nil {
+				log.Print("Error in parsing data:", err)
+				m.Ack()
+				return
+			}
+
+			request := handler(&context, event)
+			if sendSyncRequest(request) {
+				m.Ack()
+			} else {
+				for i := 0; i < 3; i++ {
+					request := handler(&context, event)
+					if sendSyncRequest(request) {
+						m.Ack()
+						return
+					}
+					time.Sleep(time.Second * 30)
+				}
+				time.Sleep(time.Minute * 10)
+				m.Nak()
+			}
+			trace.Record()
+		}
+	}()
+}
+
 func sendSyncRequest(request *http.Request) bool {
 	if request == nil {
 		return true
