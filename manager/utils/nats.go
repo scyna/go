@@ -60,6 +60,7 @@ func CreateSyncConsumer(module string, channel string, receiver string) error {
 	/*create push consumer*/
 	if _, err := scyna.JetStream.AddConsumer(module, &nats.ConsumerConfig{
 		Durable:        consumerName,
+		DeliverGroup:   "SYNC",
 		DeliverSubject: "sync." + channel,
 		FilterSubject:  module + ".sync." + channel,
 	}); err != nil {

@@ -29,7 +29,7 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 		Type:      TRACE_SYNC,
 	}
 
-	_, err := JetStream.Subscribe(subject, func(m *nats.Msg) {
+	_, err := JetStream.QueueSubscribe(subject, "SYNC", func(m *nats.Msg) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
