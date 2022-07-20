@@ -22,7 +22,7 @@ func CreateSync(s *scyna.Service, request *proto.CreateSyncRequest) {
 		return
 	}
 
-	if err := utils.CreateSyncConsumer(request.Module, request.Channel); err != nil {
+	if err := utils.CreateSyncConsumer(request.Module, request.Channel, request.Receiver); err != nil {
 		s.Error(model.CAN_NOT_CREATE_CONSUMER)
 		return
 	}
