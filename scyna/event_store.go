@@ -2,6 +2,7 @@ package scyna
 
 import (
 	"errors"
+	"time"
 
 	"github.com/gocql/gocql"
 	"github.com/nats-io/nats.go"
@@ -118,10 +119,10 @@ func getLastID(bucket int64) (int64, error) {
 func appendEvent(id int64, m *nats.Msg) error {
 	bucket := id/es_BUCKET_SIZE + 1
 	if applied, err := qb.Insert(module+".event_store").
-		Columns("bucket", "id", "subject", "data").
+		Columns("bucket", "id", "subject", "data", "time").
 		Unique().
 		Query(DB).
-		Bind(bucket, id, m.Subject, m.Data).
+		Bind(bucket, id, m.Subject, m.Data, time.Now()).
 		ExecCASRelease(); !applied {
 		if err != nil {
 			return err
