@@ -70,11 +70,11 @@ func (es *eventStream) start() {
 					m := messages[0]
 					if executor, ok := es.executors[m.Subject]; ok {
 						executor(m)
-						//if storeEvent(m) {
-						//	executor(m)
-						//} else {
-						//	continue
-						//}
+						if storeEvent(m) {
+							executor(m)
+						} else {
+							continue
+						}
 					}
 					m.Ack()
 				}
