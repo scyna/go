@@ -72,6 +72,7 @@ func (es *eventStream) start() {
 						if storeEvent(m) {
 							executor(m)
 						} else {
+							m.Nak()
 							continue
 						}
 					}
