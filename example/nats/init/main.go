@@ -17,7 +17,7 @@ func main() {
 
 	utils.DeleteStream("vf_account")
 	utils.CreateStreamForModule("vf_account")
-	utils.CreateSyncConsumer2("vf_account", "account", "loyalty")
-	utils.CreateSyncConsumer2("vf_account", "account", "salesforce")
+	utils.CreateSyncConsumer("vf_account", "account", "loyalty")
+	utils.CreateSyncConsumer("vf_account", "account", "salesforce")
 	scyna.Start()
 }
