@@ -48,6 +48,7 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 
 		if err := proto.Unmarshal(msg.Body, event); err == nil {
 			handler(&context, event)
+			/*TODO: save activity here*/
 		} else {
 			log.Print("Error in parsing data:", err)
 		}
