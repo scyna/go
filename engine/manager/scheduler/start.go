@@ -43,7 +43,7 @@ func StartTask(s *scyna.Service, request *scyna.StartTaskRequest) {
 
 func validateStartTaskRequest(request *scyna.StartTaskRequest) error {
 	if int64(request.Time) < time.Now().Unix() {
-		return errors.New("Task time is less than now")
+		return errors.New("task time is less than now")
 	}
 	if request.Interval < 60 {
 		return errors.New("interval must be greater than 60 second")
