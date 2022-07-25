@@ -1,6 +1,7 @@
 package scyna
 
 import (
+	"fmt"
 	"log"
 	reflect "reflect"
 	"time"
@@ -22,6 +23,7 @@ var eventStreams map[string]*eventStream = make(map[string]*eventStream)
 func RegisterEvent[R proto.Message](sender string, channel string, handler EventHandler[R]) {
 	stream := createOrGetEventStream(sender)
 	subject := sender + "." + channel
+	LOG.Info(fmt.Sprintf("Events: subject = %s, receiver = %s", subject, stream.receiver))
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
 	event = ref.Interface().(R)
@@ -79,8 +81,6 @@ func (es *eventStream) start() {
 					}
 					m.Ack()
 				}
-			} else {
-				log.Print(err)
 			}
 		}
 	}()
