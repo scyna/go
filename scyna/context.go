@@ -33,6 +33,18 @@ func (ctx *Context) PostEvent(channel string, data proto.Message) { // account_c
 	}
 }
 
+func (ctx *Context) PostEventAndActivity(channel string, data proto.Message, entities []uint64) {
+	subject := module + "." + channel
+	msg := EventOrSignal{ParentID: ctx.ID, Entities: entities}
+	if data, err := proto.Marshal(data); err == nil {
+		msg.Body = data
+	}
+
+	if data, err := proto.Marshal(&msg); err == nil {
+		JetStream.Publish(subject, data)
+	}
+}
+
 func (ctx *Context) PostSync(channel string, data proto.Message) { // account_loyalty
 	subject := module + ".sync." + channel
 	msg := EventOrSignal{ParentID: ctx.ID}

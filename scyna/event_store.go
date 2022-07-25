@@ -25,7 +25,7 @@ const (
 	ES_STORE_EVENT     esStateType = 4
 )
 
-func storeEvent(m *nats.Msg) bool {
+func storeEvent(m *nats.Msg) (bool, int64) {
 	tryCount := 0
 	state := ES_GET_LAST_ID
 	lastBucket := esBucket
@@ -67,8 +67,9 @@ func storeEvent(m *nats.Msg) bool {
 			}
 			tryCount++
 		case ES_STORE_EVENT:
-			if err := appendEvent(lastID+1, m); err == nil {
-				return true
+			nextID := lastID + 1
+			if err := appendEvent(nextID, m); err == nil {
+				return true, nextID
 			}
 			tryCount++
 			if err == err_ID_IS_RESERVED {
@@ -77,7 +78,7 @@ func storeEvent(m *nats.Msg) bool {
 			}
 		}
 	}
-	return false
+	return false, 0
 }
 
 func reserveBucket(bucket int64) error {
