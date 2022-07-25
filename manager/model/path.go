@@ -11,4 +11,5 @@ const (
 	CLIENT_REMOVE_SERVICE_URL = "/scyna/manager/client/remove-service"
 	EVENT_CREATE_URL          = "/scyna/manager/event/create"
 	SYNC_CREATE_URL           = "/scyna/manager/sync/create"
+	TASK_CREATE_URL           = "/scyna/manager/task/create"
 )

@@ -68,3 +68,23 @@ func CreateSyncConsumer(module string, channel string, receiver string) error {
 	}
 	return nil
 }
+
+func CreateTaskConsumer(module string, task string) error {
+	consumerName := "task_" + task
+
+	/*check if consumer exists*/
+	if _, err := scyna.JetStream.ConsumerInfo(module, consumerName); err == nil {
+		return errors.New("consumer existed")
+	}
+
+	/*create pull consumer*/
+	if _, err := scyna.JetStream.AddConsumer(module, &nats.ConsumerConfig{
+		Durable:       consumerName,
+		FilterSubject: module + ".task." + task,
+		AckPolicy:     nats.AckExplicitPolicy,
+	}); err != nil {
+		log.Print("Add Consumer "+consumerName+": Error: ", err)
+		return err
+	}
+	return nil
+}

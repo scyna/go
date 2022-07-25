@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/scyna/go/manager/model"
 	"github.com/scyna/go/manager/service/application"
 	"github.com/scyna/go/manager/service/client"
@@ -10,6 +11,7 @@ import (
 	"github.com/scyna/go/manager/service/organization"
 	"github.com/scyna/go/manager/service/service"
 	"github.com/scyna/go/manager/service/sync"
+	"github.com/scyna/go/manager/service/task"
 	"github.com/scyna/go/scyna"
 )
 
@@ -38,5 +40,6 @@ func main() {
 	scyna.RegisterService(model.CLIENT_REMOVE_SERVICE_URL, client.RemoveService)
 	scyna.RegisterService(model.EVENT_CREATE_URL, event.CreateEvent)
 	scyna.RegisterService(model.SYNC_CREATE_URL, sync.CreateSync)
+	scyna.RegisterService(model.TASK_CREATE_URL, task.CreateTask)
 	scyna.Start()
 }
