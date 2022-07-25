@@ -3,7 +3,7 @@ CREATE TABLE module_name.event_store
 (
     bucket      bigint,
     id          bigint,
-    entity_id   bigint,
+    entity_id   list<bigint>,
     time        timestamp,
     subject     text,
     data        blob,
