@@ -3,6 +3,7 @@ package test
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/scyna/go/engine/manager/authentication"
 	"github.com/scyna/go/engine/manager/generator"
@@ -17,6 +18,23 @@ import (
 const MODULE_CODE = "scyna.engine"
 const STREAM_TEST = "TEST_STREAM"
 const SUBJECT_TEST = "SUBJECT"
+
+type task struct {
+	ID        uint64    `db:"id"`
+	Topic     string    `db:"topic"`
+	Data      []byte    `db:"data"`
+	Done      bool      `db:"done"`
+	LoopIndex uint64    `db:"loop_index"`
+	LoopCount uint64    `db:"loop_count"`
+	Next      time.Time `db:"next"`
+	Start     time.Time `db:"start"`
+	Interval  uint64    `db:"interval"`
+}
+
+type toDo struct {
+	Bucket uint64 `db:"bucket"`
+	TaskID uint64 `db:"task_id"`
+}
 
 func TestMain(m *testing.M) {
 	config := scyna.Configuration{

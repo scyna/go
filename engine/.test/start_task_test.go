@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/scylladb/gocqlx/v2/qb"
-	"github.com/scyna/go/engine/manager/scheduler"
 	"github.com/scyna/go/scyna"
 	scyna_test "github.com/scyna/go/scyna/testing"
 )
@@ -26,7 +25,7 @@ func TestStartTask(t *testing.T) {
 	defer qb.Delete("scyna.todo").Where(qb.Eq("bucket"), qb.Eq("task_id")).Query(scyna.DB).Bind(bucket, response.Id).ExecRelease()
 	defer qb.Delete("scyna.task").Where(qb.Eq("id")).Query(scyna.DB).Bind(response.Id).ExecRelease()
 	/* Check in db */
-	var task scheduler.Task
+	var task task
 	if err := qb.Select("scyna.task").
 		Columns("*").
 		Where(qb.Eq("id")).
@@ -40,7 +39,7 @@ func TestStartTask(t *testing.T) {
 		t.Fatalf("Wrong value in time")
 	}
 
-	var todo scheduler.ToDo
+	var todo toDo
 	if err := qb.Select("scyna.todo").
 		Columns("*").
 		Where(qb.Eq("bucket"), qb.Eq("task_id")).

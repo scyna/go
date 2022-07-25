@@ -28,9 +28,11 @@ func TestProcessInScheduler(t *testing.T) {
 	defer qb.Delete("scyna.todo").Where(qb.Eq("bucket"), qb.Eq("task_id")).Query(scyna.DB).Bind(nextBucket, response.Id).ExecRelease()
 	defer qb.Delete("scyna.doing").Where(qb.Eq("bucket"), qb.Eq("task_id")).Query(scyna.DB).Bind(nextBucket-1, response.Id).ExecRelease()
 
+	time.Sleep(time.Second * 1)
+	scheduler.Start(time.Second * 2)
 	time.Sleep(time.Second * 3)
-	scheduler.Loop()
-	var task scheduler.Task
+
+	var task task
 	if err := qb.Select("scyna.task").
 		Columns("*").
 		Where(qb.Eq("id")).
