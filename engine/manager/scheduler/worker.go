@@ -29,17 +29,17 @@ func NewWorker() *worker {
 			Limit(1).
 			Query(scyna.DB),
 		qTodos: qb.Select("scyna.todo").
-			Columns("id").
+			Columns("task_id").
 			Where(qb.Eq("bucket")).
 			Limit(20).
 			Query(scyna.DB),
 	}
 }
 
-func (w *worker) Start(delay time.Duration) {
+func (w *worker) Start(delay time.Duration, interval time.Duration) {
 	go func() {
 		time.Sleep(delay)
-		ticker := time.NewTicker(INTERVAL)
+		ticker := time.NewTicker(interval)
 		for {
 			select {
 			case <-done:
@@ -56,7 +56,7 @@ func (w *worker) execute() {
 	bucket := GetBucket(time.Now())
 	for {
 		var tasks []int64
-		if err := w.qTodos.Bind(bucket).Select(tasks); err != nil || len(tasks) == 0 {
+		if err := w.qTodos.Bind(bucket).Select(&tasks); err != nil || len(tasks) == 0 {
 			break
 		}
 
@@ -70,7 +70,7 @@ func (w *worker) execute() {
 
 func (w *worker) process(bucket int64, id int64) {
 	var t task
-	if err := w.qGet.Bind(id).GetRelease(t); err != nil {
+	if err := w.qGet.Bind(id).GetRelease(&t); err != nil {
 		log.Print("Can not load task")
 		return
 	}
@@ -93,16 +93,16 @@ func (w *worker) process(bucket int64, id int64) {
 	scyna.JetStream.Publish(t.Topic, t.Data) /*activate task handler*/
 
 	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
-	qBatch.Query("DELETE FROM scyna.todo WHERE bucket = ? AND id = ?;", bucket, id) /* remove old task from todolist */
+	qBatch.Query("DELETE FROM scyna.todo WHERE bucket = ? AND task_id = ?;", bucket, id) /* remove old task from todolist */
 
 	t.LoopIndex++
 	if t.LoopIndex < t.LoopCount {
 		t.Next = t.Next.Add(time.Second * time.Duration(t.Interval)) /* calculate next */
 		nextBucket := GetBucket(t.Next)
-		qBatch.Query("INSERT INTO scyna.todo (bucket, id) VALUES (?, ?);", nextBucket, t.ID) /* add new task to todo list */
+		qBatch.Query("INSERT INTO scyna.todo (bucket, task_id) VALUES (?, ?);", nextBucket, t.ID) /* add new task to todo list */
 		qBatch.Query("UPDATE scyna.task SET next = ?, loop_index = ?  WHERE id = ?;", t.Next, t.LoopIndex, t.ID)
 	} else {
-		qBatch.Query("UPDATE scyna.task SET done = true WHERE id = ?;")
+		qBatch.Query("UPDATE scyna.task SET done = true WHERE id = ?;", t.ID)
 	}
 
 	if err := scyna.DB.ExecuteBatch(qBatch); err != nil {

@@ -20,9 +20,9 @@ type task struct {
 	Interval  uint64    `db:"interval"`
 }
 
-func Start() {
+func Start(interval time.Duration) {
 	w = NewWorker()
-	w.Start(0) //FIXME: random
+	w.Start(0, interval) //FIXME: random
 }
 
 func Stop() {
