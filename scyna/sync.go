@@ -47,7 +47,8 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 			var msg EventOrSignal
 			if err := proto.Unmarshal(m.Data, &msg); err != nil {
 				log.Print("Register unmarshal error response data:", err.Error())
-				return
+				m.Ack()
+				continue
 			}
 			trace.Time = time.Now()
 			trace.ID = ID.Next()
@@ -60,27 +61,31 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 			if err := proto.Unmarshal(msg.Body, event); err != nil {
 				log.Print("Error in parsing data:", err)
 				m.Ack()
-				return
+				continue
 			}
 
 			request := handler(&context, event)
 			if sendSyncRequest(request) {
 				m.Ack()
 			} else {
-				for i := 0; i < 3; i++ {
-					request := handler(&context, event)
-					if sendSyncRequest(request) {
-						m.Ack()
-						return
-					}
-					time.Sleep(time.Second * 30)
-				}
+				tryGetRequest(3, handler, &context, event, m)
 				time.Sleep(time.Minute * 10)
 				m.Nak()
 			}
 			trace.Record()
 		}
 	}()
+}
+
+func tryGetRequest[R proto.Message](n int, handler SyncHandler[R], context *Context, event R, m *nats.Msg) {
+	for i := 0; i < n; i++ {
+		request := handler(context, event)
+		if sendSyncRequest(request) {
+			m.Ack()
+			return
+		}
+		time.Sleep(time.Second * 30)
+	}
 }
 
 func sendSyncRequest(request *http.Request) bool {
