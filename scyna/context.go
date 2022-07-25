@@ -49,6 +49,22 @@ func (ctx *Context) SendCommand(url string, response proto.Message) *Error {
 	return ctx.CallService(url, nil, response)
 }
 
+func (ctx *Context) Schedule(task string, time time.Time, interval time.Time, data []byte, loop uint64) (*Error, uint64) {
+	var response StopTaskRequest
+	if err := ctx.CallService(START_TASK_URL, &StartTaskRequest{
+		Module:   module,
+		Topic:    task,
+		Data:     data,
+		Time:     uint64(time.Unix()),
+		Interval: uint64(interval.Unix()),
+		Loop:     loop,
+	}, &response); err != nil {
+		return err, 0
+	}
+
+	return nil, response.Id
+}
+
 func (ctx *Context) CallService(url string, request proto.Message, response proto.Message) *Error {
 	trace := Trace{
 		ID:       ID.Next(),
