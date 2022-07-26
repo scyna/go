@@ -1,6 +1,7 @@
 package scyna
 
 import (
+	"fmt"
 	"time"
 
 	"google.golang.org/protobuf/proto"
@@ -65,7 +66,7 @@ func (ctx *Context) Schedule(task string, start time.Time, interval time.Duratio
 	var response StopTaskRequest
 	if err := ctx.CallService(START_TASK_URL, &StartTaskRequest{
 		Module:   module,
-		Topic:    task,
+		Topic:    fmt.Sprintf("%s.task.%s", module, task),
 		Data:     data,
 		Time:     uint64(start.Unix()),
 		Interval: uint64(interval / time.Second),
