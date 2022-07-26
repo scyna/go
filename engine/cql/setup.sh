@@ -23,6 +23,9 @@ cqlsh -f organization.cql
 echo "application"
 cqlsh -f application.cql
 
+echo "schedule"
+cqlsh -f schedule.cql
+
 echo "data"
-cqlsh -f data.cql 
+cqlsh -f data.cql
 #go run data.go
