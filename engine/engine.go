@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/scyna/go/engine/gateway"
 	"github.com/scyna/go/engine/manager/authentication"
@@ -107,6 +108,8 @@ func main() {
 		}
 	}()
 
+	/* Start worker */
+	scheduler.Start(time.Second * 25)
 	/*session*/
 	scyna.RegisterSignalLite(scyna.SESSION_END_CHANNEL, session.End)
 	scyna.RegisterSignalLite(scyna.SESSION_UPDATE_CHANNEL, session.Update)
