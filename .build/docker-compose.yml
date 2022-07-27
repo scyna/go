@@ -2,9 +2,8 @@ version: '3'
 
 services:
   engine:
-    restart: always
     build:
-      context: ../
+      context: ../engine/
       dockerfile: ./Dockerfile
     environment:
       - NATS_URL=127.0.0.1
@@ -19,3 +18,14 @@ services:
       - PROXY_PORT=8080
       - GATEWAY_PORT=8443
     network_mode: "host"
+  manager:
+    build:
+      context: ../manager/
+      dockerfile: ./Dockerfile
+    environment:
+      - NATS_URL=127.0.0.1
+      - MANAGER_URL=https://localhost:8081
+      - PASSWORD=123456
+    network_mode: "host"
+    depends_on:
+      - engine
