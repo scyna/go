@@ -1,4 +1,4 @@
-FROM golang:1.18.1-alpine3.15 AS build-env
+FROM golang:1.18.4-alpine3.16 AS build-env
 
 ENV GO111MODULE=on
 
@@ -14,7 +14,7 @@ COPY ./go.mod ./go.mod
 RUN go mod tidy
 RUN go build -o ./application .
 
-FROM alpine:3.15
+FROM alpine:3.16
 
 WORKDIR /app
 

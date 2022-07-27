@@ -1,31 +1,12 @@
 #!/bin/bash
-echo "cleanup"
-cqlsh -f _cleanup.cql
+host=db-oneprofile.vin3s.vn
+username=cassandra
+password=cassandra
 
-echo "generator"
-cqlsh -f generator.cql
+files='_cleanup.cql generator.cql module.cql session.cql trace.cql client.cql organization.cql application.cql task.cql data.cql'
 
-echo "module"
-cqlsh -f module.cql
-
-echo "session"
-cqlsh -f session.cql
-
-echo "trace"
-cqlsh -f trace.cql
-
-echo "client"
-cqlsh -f client.cql
-
-echo "organization"
-cqlsh -f organization.cql
-
-echo "application"
-cqlsh -f application.cql
-
-echo "schedule"
-cqlsh -f schedule.cql
-
-echo "data"
-cqlsh -f data.cql
-#go run data.go
+for file in $files
+do
+    echo ${file}
+    cqlsh ${host} -u ${username} -p ${password} -f ${file}
+done
