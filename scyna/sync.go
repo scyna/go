@@ -69,8 +69,6 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 				m.Ack()
 			} else {
 				tryGetRequest(3, handler, &context, event, m)
-				time.Sleep(time.Minute * 10)
-				m.Nak()
 			}
 			trace.Record()
 		}
@@ -86,6 +84,8 @@ func tryGetRequest[R proto.Message](n int, handler SyncHandler[R], context *Cont
 		}
 		time.Sleep(time.Second * 30)
 	}
+	//time.Sleep(time.Minute * 10)
+	m.Nak()
 }
 
 func sendSyncRequest(request *http.Request) bool {
