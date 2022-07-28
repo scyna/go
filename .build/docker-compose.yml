@@ -23,7 +23,6 @@ services:
       context: ../manager/
       dockerfile: ./Dockerfile
     environment:
-      - NATS_URL=127.0.0.1
       - MANAGER_URL=https://localhost:8081
       - PASSWORD=123456
     network_mode: "host"
