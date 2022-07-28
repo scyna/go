@@ -68,24 +68,24 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 			if sendSyncRequest(request) {
 				m.Ack()
 			} else {
-				tryGetRequest(3, handler, &context, event, m)
+				sent := false
+				for i := 0; i < 3; i++ {
+					request := handler(&context, event)
+					if sendSyncRequest(request) {
+						m.Ack()
+						sent = true
+						break
+					}
+					time.Sleep(time.Second * 30)
+				}
+
+				if !sent {
+					m.Nak()
+				}
 			}
 			trace.Record()
 		}
 	}()
-}
-
-func tryGetRequest[R proto.Message](n int, handler SyncHandler[R], context *Context, event R, m *nats.Msg) {
-	for i := 0; i < n; i++ {
-		request := handler(context, event)
-		if sendSyncRequest(request) {
-			m.Ack()
-			return
-		}
-		time.Sleep(time.Second * 30)
-	}
-	//time.Sleep(time.Minute * 10)
-	m.Nak()
 }
 
 func sendSyncRequest(request *http.Request) bool {
