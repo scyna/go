@@ -68,8 +68,8 @@ func (ctx *Context) Schedule(task string, start time.Time, interval int64, data 
 		Module:   module,
 		Topic:    fmt.Sprintf("%s.task.%s", module, task),
 		Data:     data,
-		Time:     uint64(start.Unix()),
-		Interval: uint64(interval / time.Second),
+		Time:     start.Unix(),
+		Interval: interval,
 		Loop:     loop,
 	}, &response); err != nil {
 		return err, 0
