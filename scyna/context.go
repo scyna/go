@@ -63,7 +63,7 @@ func (ctx *Context) SendCommand(url string, response proto.Message) *Error {
 }
 
 func (ctx *Context) Schedule(task string, start time.Time, interval time.Duration, data []byte, loop uint64) (*Error, uint64) {
-	var response StopTaskRequest
+	var response StartTaskResponse
 	if err := ctx.CallService(START_TASK_URL, &StartTaskRequest{
 		Module:   module,
 		Topic:    fmt.Sprintf("%s.task.%s", module, task),
