@@ -62,7 +62,7 @@ func (ctx *Context) SendCommand(url string, response proto.Message) *Error {
 	return ctx.CallService(url, nil, response)
 }
 
-func (ctx *Context) Schedule(task string, start time.Time, interval time.Duration, data []byte, loop uint64) (*Error, uint64) {
+func (ctx *Context) Schedule(task string, start time.Time, interval int64, data []byte, loop uint64) (*Error, uint64) {
 	var response StartTaskResponse
 	if err := ctx.CallService(START_TASK_URL, &StartTaskRequest{
 		Module:   module,
