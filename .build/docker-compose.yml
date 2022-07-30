@@ -23,7 +23,7 @@ services:
       context: ../manager/
       dockerfile: ./Dockerfile
     environment:
-      - MANAGER_URL=https://localhost:8081
+      - MANAGER_URL=http://localhost:8081
       - PASSWORD=123456
     network_mode: "host"
     depends_on:
