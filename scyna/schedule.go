@@ -3,7 +3,6 @@ package scyna
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"reflect"
 	"time"
 
@@ -11,7 +10,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type TaskHandler[R proto.Message] func(ctx *Context, data R) *http.Request
+type TaskHandler[R proto.Message] func(ctx *Context, data R)
 
 func RegisterTask[R proto.Message](sender string, channel string, handler TaskHandler[R]) {
 	subject := sender + ".task." + channel // vf_vehicle.task.add_driver
