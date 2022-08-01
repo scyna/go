@@ -90,6 +90,8 @@ func DirectInit(name string, c *Configuration) {
 	hosts := strings.Split(c.DBHost, ",")
 	initScylla(hosts, c.DBUsername, c.DBPassword, c.DBLocation)
 
+	Settings.Init()
+
 	/*registration*/
 	RegisterSignalLite(SETTING_UPDATE_CHANNEL+module, UpdateSettingHandler)
 	RegisterSignalLite(SETTING_REMOVE_CHANNEL+module, RemoveSettingHandler)
