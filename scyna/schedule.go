@@ -41,21 +41,14 @@ func RegisterTask[R proto.Message](sender string, channel string, handler TaskHa
 			}
 			m := messages[0]
 
-			var msg EventOrSignal
-			if err := proto.Unmarshal(m.Data, &msg); err != nil {
-				log.Print("Register unmarshal error response data:", err.Error())
-				m.Ack()
-				continue
-			}
 			trace.Time = time.Now()
 			trace.ID = ID.Next()
-			trace.ParentID = msg.ParentID
 
 			context := Context{
 				Logger{ID: trace.ID, session: false},
 			}
 
-			if err := proto.Unmarshal(msg.Body, task); err != nil {
+			if err := proto.Unmarshal(m.Data, task); err != nil {
 				log.Print("Error in parsing data:", err)
 				m.Ack()
 				continue
