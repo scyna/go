@@ -16,7 +16,7 @@ func Read(s *scyna.Service, request *scyna.ReadSettingRequest) {
 		Where(qb.Eq("module_code"), qb.Eq("key")).
 		Limit(1).
 		Query(scyna.DB).
-		BindStruct(&request).
+		Bind(request.Module, request.Key).
 		GetRelease(&value); err != nil {
 		s.Logger.Info("Can not read setting - " + err.Error())
 		s.Error(scyna.REQUEST_INVALID)

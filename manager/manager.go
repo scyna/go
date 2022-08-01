@@ -19,7 +19,7 @@ const MODULE_CODE = "scyna.manager"
 
 func main() {
 	secret_ := flag.String("password", "123456", "AuthenticateByToken")
-	managerUrl := flag.String("managerUrl", "https://127.0.0.1:8081", "Manager Url")
+	managerUrl := flag.String("managerUrl", "http://127.0.0.1:8081", "Manager Url")
 	flag.Parse()
 
 	scyna.RemoteInit(scyna.RemoteConfig{
