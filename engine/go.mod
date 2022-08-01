@@ -20,6 +20,7 @@ require (
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/scylladb/go-reflectx v1.0.1 // indirect
+	github.com/scyna/go/scyna v0.0.0-20220801072539-e332d1681d4d // indirect
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
 	golang.org/x/sys v0.0.0-20220422013727-9388b58f7150 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
