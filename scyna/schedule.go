@@ -25,7 +25,7 @@ func RegisterTask[R proto.Message](sender string, channel string, handler TaskHa
 	trace := Trace{
 		Path:      subject, //FIXME
 		SessionID: Session.ID(),
-		Type:      TRACE_SYNC,
+		Type:      TRACE_TASK,
 	}
 
 	sub, err := JetStream.PullSubscribe(subject, durable, nats.BindStream(module))
