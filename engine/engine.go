@@ -109,7 +109,7 @@ func main() {
 	}()
 
 	/* Start worker */
-	scheduler.Start(time.Second * 25)
+	scheduler.Start(time.Second * 10)
 	/*session*/
 	scyna.RegisterSignalLite(scyna.SESSION_END_CHANNEL, session.End)
 	scyna.RegisterSignalLite(scyna.SESSION_UPDATE_CHANNEL, session.Update)
