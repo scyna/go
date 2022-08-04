@@ -28,3 +28,14 @@ services:
     network_mode: "host"
     depends_on:
       - engine
+  mapping-proxy:
+    build:
+      context: ../../mapping_proxy
+      dockerfile: ./Dockerfile
+    environment:
+      - MANAGER_URL=http://localhost:8081
+      - PASSWORD=123456789aA@
+      - PROXY_PORT=8088
+    network_mode: "host"
+    depends_on:
+      - engine
