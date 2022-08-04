@@ -16,7 +16,6 @@ type eventStream struct {
 	sender    string
 	receiver  string
 	executors map[string]func(m *nats.Msg, id int64)
-	subject   string
 }
 
 var eventStreams map[string]*eventStream = make(map[string]*eventStream)
@@ -25,7 +24,6 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 	stream := createOrGetEventStream(sender)
 	subject := sender + "." + channel
 	LOG.Info(fmt.Sprintf("Events: subject = %s, receiver = %s", subject, stream.receiver))
-	stream.subject = subject
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
 	event = ref.Interface().(R)
@@ -59,12 +57,10 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 
 		trace.Record()
 	}
-
-	stream.start()
 }
 
 func (es *eventStream) start() {
-	sub, err := JetStream.PullSubscribe(es.subject, es.receiver, nats.BindStream(es.sender))
+	sub, err := JetStream.PullSubscribe("", es.receiver, nats.BindStream(es.sender))
 
 	if err != nil {
 		log.Fatal("Error in start event stream:", err.Error())
@@ -103,4 +99,10 @@ func createOrGetEventStream(sender string) *eventStream {
 
 	eventStreams[sender] = stream
 	return stream
+}
+
+func startEventStream() {
+	for _, e := range eventStreams {
+		e.start()
+	}
 }
