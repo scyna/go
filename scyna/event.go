@@ -57,6 +57,8 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 
 		trace.Record()
 	}
+
+	stream.start()
 }
 
 func (es *eventStream) start() {
@@ -98,6 +100,5 @@ func createOrGetEventStream(sender string) *eventStream {
 	}
 
 	eventStreams[sender] = stream
-	stream.start()
 	return stream
 }
