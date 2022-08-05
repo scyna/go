@@ -19,8 +19,8 @@ var esBucket int64 = 1
 type esStateType int
 
 type EventStore struct {
-	Bucket   uint64
-	ID       uint64
+	Bucket   int64
+	ID       int64
 	EntityID []uint64
 	Time     time.Time
 	Subject  string
