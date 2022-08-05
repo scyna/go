@@ -36,6 +36,7 @@ services:
       - MANAGER_URL=http://localhost:8081
       - PASSWORD=123456789aA@
       - PROXY_PORT=8088
+      - USE_CERT=false
     network_mode: "host"
     depends_on:
       - engine
