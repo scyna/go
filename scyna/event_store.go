@@ -18,6 +18,15 @@ var esBucket int64 = 1
 
 type esStateType int
 
+type EventStore struct {
+	Bucket   uint64
+	ID       uint64
+	EntityID []uint64
+	Time     time.Time
+	Subject  string
+	Data     []byte
+}
+
 const (
 	ES_GET_LAST_ID     esStateType = 1
 	ES_GET_LAST_BUCKET esStateType = 2
@@ -132,4 +141,18 @@ func appendEvent(id int64, m *nats.Msg) error {
 	}
 	esBucket = bucket
 	return nil
+}
+
+func GetEvent(eventID int64) *EventStore {
+	var eventStore EventStore
+	bucket := eventID/es_BUCKET_SIZE + 1
+	if err := qb.Select(module+".event_store").
+		Columns("bucket", "id", "subject", "data", "time", "entity_id").
+		Where(qb.Eq("bucket"), qb.Eq("id")).
+		Query(DB).
+		Bind(bucket, eventID).
+		GetRelease(&eventStore); err != nil {
+		return nil
+	}
+	return &eventStore
 }
