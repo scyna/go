@@ -34,7 +34,7 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 		Type:      TRACE_EVENT,
 	}
 
-	stream.executors[subject] = func(m *nats.Msg, id int64) {
+	stream.executors[subject] = func(m *nats.Msg, eventID int64) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
@@ -50,7 +50,9 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 
 		if err := proto.Unmarshal(msg.Body, event); err == nil {
 			handler(&context, event)
-			/*TODO: save activity here*/
+			for _, entityID := range msg.Entities {
+				addActivity(entityID, eventID)
+			}
 		} else {
 			log.Print("Error in parsing data:", err)
 		}
