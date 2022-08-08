@@ -3,7 +3,6 @@ package scyna
 import (
 	"github.com/scylladb/gocqlx/v2"
 	"github.com/scylladb/gocqlx/v2/qb"
-	"github.com/scyna/go/scyna"
 )
 
 var activityPool *QueryPool
@@ -13,7 +12,7 @@ func SetupActivity(table string) {
 		return qb.Insert(module+".activity").
 			Columns("entity_id", "event_id").
 			Unique().
-			Query(scyna.DB)
+			Query(DB)
 	})
 }
 
