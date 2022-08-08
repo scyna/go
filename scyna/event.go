@@ -53,6 +53,7 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 			for _, entityID := range msg.Entities {
 				addActivity(entityID, eventID)
 			}
+			// TODO: update entity id to module_name.event_store
 		} else {
 			log.Print("Error in parsing data:", err)
 		}
