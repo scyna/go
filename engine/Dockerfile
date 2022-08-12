@@ -25,7 +25,6 @@ ENV MANAGER_PORT=8081
 ENV PROXY_PORT=8080
 ENV GATEWAY_PORT=8443
 
-ENV SECRET="123456"
 ENV NATS_URL=localhost
 ENV NATS_USERNAME=""
 ENV NATS_PASSWORD=""
@@ -40,8 +39,8 @@ EXPOSE ${MANAGER_PORT}
 EXPOSE ${PROXY_PORT}
 EXPOSE ${GATEWAY_PORT}
 
-CMD /engine --secret ${SECRET} \
-    --manager_port ${MANAGER_PORT} --proxy_port ${PROXY_PORT} --gateway_port ${GATEWAY_PORT} \
-    --nats_url ${NATS_URL} --nats_username ${NATS_USERNAME} --nats_password ${NATS_PASSWORD} \
-    --db_host ${DB_HOST} --db_username ${DB_USERNAME} --db_password ${DB_PASSWORD}  --db_location ${DB_LOCATION} \
-    --certificateFile ${CERTIFICATE_FILE} --certificateKey ${CERTIFICATE_KEY}
+CMD /engine \
+    --manager_port=${MANAGER_PORT} --proxy_port=${PROXY_PORT} --gateway_port=${GATEWAY_PORT} \
+    --nats_url=${NATS_URL} --nats_username=${NATS_USERNAME} --nats_password=${NATS_PASSWORD} \
+    --db_host=${DB_HOST} --db_username=${DB_USERNAME} --db_password=${DB_PASSWORD}  --db_location=${DB_LOCATION} \
+    --certificateFile=${CERTIFICATE_FILE} --certificateKey=${CERTIFICATE_KEY}
