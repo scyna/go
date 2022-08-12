@@ -15,8 +15,8 @@ import (
 type SyncHandler[R proto.Message] func(ctx *Context, data R) *http.Request
 
 func RegisterSync[R proto.Message](channel string, receiver string, handler SyncHandler[R]) {
-	subject := module + ".sync." + channel        // vf_account.sync.account
-	durable := "sync_" + channel + "_" + receiver // sync_account_loyalty
+	subject := module + ".sync." + channel
+	durable := "sync_" + channel + "_" + receiver
 	LOG.Info(fmt.Sprintf("Channel %s, durable: %s", subject, durable))
 
 	var event R
@@ -47,7 +47,8 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 			var msg EventOrSignal
 			if err := proto.Unmarshal(m.Data, &msg); err != nil {
 				log.Print("Register unmarshal error response data:", err.Error())
-				return
+				m.Ack()
+				continue
 			}
 			trace.Time = time.Now()
 			trace.ID = ID.Next()
@@ -60,23 +61,27 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 			if err := proto.Unmarshal(msg.Body, event); err != nil {
 				log.Print("Error in parsing data:", err)
 				m.Ack()
-				return
+				continue
 			}
 
 			request := handler(&context, event)
 			if sendSyncRequest(request) {
 				m.Ack()
 			} else {
+				sent := false
 				for i := 0; i < 3; i++ {
 					request := handler(&context, event)
 					if sendSyncRequest(request) {
 						m.Ack()
-						return
+						sent = true
+						break
 					}
 					time.Sleep(time.Second * 30)
 				}
-				time.Sleep(time.Minute * 10)
-				m.Nak()
+
+				if !sent {
+					m.Nak()
+				}
 			}
 			trace.Record()
 		}

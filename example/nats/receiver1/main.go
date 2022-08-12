@@ -5,7 +5,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-const MODULE_CODE = "vf_account"
+const MODULE_CODE = "nats"
 
 func main() {
 	scyna.RemoteInit(scyna.RemoteConfig{
@@ -15,8 +15,6 @@ func main() {
 	})
 	defer scyna.Release()
 
-	//scyna.RegisterService("/scyna.example/user/create", user.CreateUser)
-	//scyna.RegisterEvent("vf_account", "account_loyalty", user.HandlerEventMessage)
 	scyna.RegisterSync("account", "salesforce", user.HandlerSyncMessage)
 	scyna.Start()
 }

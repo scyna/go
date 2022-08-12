@@ -1,32 +1,37 @@
-DROP TABLE IF EXISTS scyna.task;
-CREATE TABLE scyna.task
+DROP TABLE IF EXISTS scyna.todo;
+CREATE TABLE scyna.todo
 (
-    bucket              bigint,
-    id                  bigint,
-    recurring_task_id   bigint,
-    send_to             text,
-    type                text,
-    time                timestamp,
-    data                blob,
-    PRIMARY KEY (bucket, id)
-) WITH CLUSTERING ORDER BY (time ASC);
+    bucket        bigint,
+    task_id       bigint,
+    PRIMARY KEY (bucket, task_id)
+);
 
-DROP TABLE IF EXISTS scyna.assigned_task;
-CREATE TABLE scyna.assigned_task
+DROP TABLE IF EXISTS scyna.doing;
+CREATE TABLE scyna.doing
 (
     bucket        bigint,
     task_id       bigint, 
-    PRIMARY KEY (bucket, task_id),
+    PRIMARY KEY (bucket, task_id)
 );
 
-DROP TABLE IF EXISTS scyna.recurring_task;
-CREATE TABLE scyna.recurring_task
+DROP TABLE IF EXISTS scyna.task;
+CREATE TABLE scyna.task
 (
-    id              bigint PRIMARY KEY,
-    time            timestamp,
-    interval        bigint,
-    count           bigint,
-    send_to         text,
-    type            text,
-    data            blob,
+    id           bigint PRIMARY KEY ,
+    topic        text,
+    data         blob,
+    start        timestamp,
+    next         timestamp,
+    interval     bigint,
+    loop_index   bigint,
+    loop_count   bigint,
+    done         boolean,
+);
+
+DROP TABLE IF EXISTS scyna.module_has_task;
+CREATE TABLE scyna.module_has_task
+(
+    module       text,
+    task_id      bigint,
+    PRIMARY KEY (module, task_id)
 );

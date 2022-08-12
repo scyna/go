@@ -11,8 +11,8 @@ message StartTaskRequest {
   string Module = 1;
   string Topic = 2;
   bytes  Data = 3;
-  uint64 Time = 4;     /* Unit: second */
-  uint64 Interval = 5; /* In second, must be greater than 60 */
+  int64  Time = 4;     /* Unit: second */
+  int64  Interval = 5; /* In second, must be greater than 60 */
   uint64 Loop = 6;
 }
 

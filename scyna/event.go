@@ -1,6 +1,7 @@
 package scyna
 
 import (
+	"fmt"
 	"log"
 	reflect "reflect"
 	"time"
@@ -14,7 +15,7 @@ type EventHandler[R proto.Message] func(ctx *Context, data R)
 type eventStream struct {
 	sender    string
 	receiver  string
-	executors map[string]func(m *nats.Msg)
+	executors map[string]func(m *nats.Msg, id int64)
 }
 
 var eventStreams map[string]*eventStream = make(map[string]*eventStream)
@@ -22,6 +23,7 @@ var eventStreams map[string]*eventStream = make(map[string]*eventStream)
 func RegisterEvent[R proto.Message](sender string, channel string, handler EventHandler[R]) {
 	stream := createOrGetEventStream(sender)
 	subject := sender + "." + channel
+	LOG.Info(fmt.Sprintf("Events: subject = %s, receiver = %s", subject, stream.receiver))
 	var event R
 	ref := reflect.New(reflect.TypeOf(event).Elem())
 	event = ref.Interface().(R)
@@ -32,7 +34,7 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 		Type:      TRACE_EVENT,
 	}
 
-	stream.executors[sender+"."+channel] = func(m *nats.Msg) {
+	stream.executors[subject] = func(m *nats.Msg, eventID int64) {
 		var msg EventOrSignal
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
@@ -48,6 +50,10 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 
 		if err := proto.Unmarshal(msg.Body, event); err == nil {
 			handler(&context, event)
+			for _, entityID := range msg.Entities {
+				addActivity(entityID, eventID)
+			}
+			// TODO: update entity id to module_name.event_store
 		} else {
 			log.Print("Error in parsing data:", err)
 		}
@@ -69,8 +75,8 @@ func (es *eventStream) start() {
 				if len(messages) == 1 {
 					m := messages[0]
 					if executor, ok := es.executors[m.Subject]; ok {
-						if storeEvent(m) {
-							executor(m)
+						if ok, eventID := storeEvent(m); ok {
+							executor(m, eventID)
 						} else {
 							m.Nak()
 							continue
@@ -78,8 +84,6 @@ func (es *eventStream) start() {
 					}
 					m.Ack()
 				}
-			} else {
-				log.Print(err)
 			}
 		}
 	}()
@@ -93,10 +97,15 @@ func createOrGetEventStream(sender string) *eventStream {
 	stream := &eventStream{
 		sender:    sender,
 		receiver:  module,
-		executors: make(map[string]func(m *nats.Msg)),
+		executors: make(map[string]func(m *nats.Msg, id int64)),
 	}
 
 	eventStreams[sender] = stream
-	stream.start()
 	return stream
+}
+
+func startEventStream() {
+	for _, e := range eventStreams {
+		e.start()
+	}
 }

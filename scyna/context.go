@@ -1,6 +1,7 @@
 package scyna
 
 import (
+	"fmt"
 	"time"
 
 	"google.golang.org/protobuf/proto"
@@ -33,6 +34,18 @@ func (ctx *Context) PostEvent(channel string, data proto.Message) { // account_c
 	}
 }
 
+func (ctx *Context) PostEventAndActivity(channel string, data proto.Message, entities []uint64) {
+	subject := module + "." + channel
+	msg := EventOrSignal{ParentID: ctx.ID, Entities: entities}
+	if data, err := proto.Marshal(data); err == nil {
+		msg.Body = data
+	}
+
+	if data, err := proto.Marshal(&msg); err == nil {
+		JetStream.Publish(subject, data)
+	}
+}
+
 func (ctx *Context) PostSync(channel string, data proto.Message) { // account_loyalty
 	subject := module + ".sync." + channel
 	msg := EventOrSignal{ParentID: ctx.ID}
@@ -49,14 +62,14 @@ func (ctx *Context) SendCommand(url string, response proto.Message) *Error {
 	return ctx.CallService(url, nil, response)
 }
 
-func (ctx *Context) Schedule(task string, time time.Time, interval time.Time, data []byte, loop uint64) (*Error, uint64) {
-	var response StopTaskRequest
+func (ctx *Context) Schedule(task string, start time.Time, interval int64, data []byte, loop uint64) (*Error, uint64) {
+	var response StartTaskResponse
 	if err := ctx.CallService(START_TASK_URL, &StartTaskRequest{
 		Module:   module,
-		Topic:    task,
+		Topic:    fmt.Sprintf("%s.task.%s", module, task),
 		Data:     data,
-		Time:     uint64(time.Unix()),
-		Interval: uint64(interval.Unix()),
+		Time:     start.Unix(),
+		Interval: interval,
 		Loop:     loop,
 	}, &response); err != nil {
 		return err, 0

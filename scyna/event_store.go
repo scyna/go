@@ -18,6 +18,15 @@ var esBucket int64 = 1
 
 type esStateType int
 
+type EventStore struct {
+	Bucket   int64
+	ID       int64
+	EntityID []uint64
+	Time     time.Time
+	Subject  string
+	Data     []byte
+}
+
 const (
 	ES_GET_LAST_ID     esStateType = 1
 	ES_GET_LAST_BUCKET esStateType = 2
@@ -25,7 +34,7 @@ const (
 	ES_STORE_EVENT     esStateType = 4
 )
 
-func storeEvent(m *nats.Msg) bool {
+func storeEvent(m *nats.Msg) (bool, int64) {
 	tryCount := 0
 	state := ES_GET_LAST_ID
 	lastBucket := esBucket
@@ -67,8 +76,9 @@ func storeEvent(m *nats.Msg) bool {
 			}
 			tryCount++
 		case ES_STORE_EVENT:
-			if err := appendEvent(lastID+1, m); err == nil {
-				return true
+			nextID := lastID + 1
+			if err := appendEvent(nextID, m); err == nil {
+				return true, nextID
 			}
 			tryCount++
 			if err == err_ID_IS_RESERVED {
@@ -77,7 +87,7 @@ func storeEvent(m *nats.Msg) bool {
 			}
 		}
 	}
-	return false
+	return false, 0
 }
 
 func reserveBucket(bucket int64) error {
@@ -131,4 +141,18 @@ func appendEvent(id int64, m *nats.Msg) error {
 	}
 	esBucket = bucket
 	return nil
+}
+
+func GetEvent(eventID int64) *EventStore {
+	var eventStore EventStore
+	bucket := eventID/es_BUCKET_SIZE + 1
+	if err := qb.Select(module+".event_store").
+		Columns("bucket", "id", "subject", "data", "time", "entity_id").
+		Where(qb.Eq("bucket"), qb.Eq("id")).
+		Query(DB).
+		Bind(bucket, eventID).
+		GetRelease(&eventStore); err != nil {
+		return nil
+	}
+	return &eventStore
 }

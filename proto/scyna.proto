@@ -26,5 +26,5 @@ message EventOrSignal {
   uint64 ParentID = 1;
   bytes  Body = 2;
   string Data = 3;
-  uint64 EntityID = 4;
+  repeated uint64 Entities = 4;
 }

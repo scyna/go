@@ -12,7 +12,7 @@ import (
 
 type worker struct {
 	qCheck *gocqlx.Queryx
-	qGet   *gocqlx.Queryx
+	qGet   *qb.SelectBuilder
 	qTodos *gocqlx.Queryx
 }
 
@@ -26,8 +26,7 @@ func NewWorker() *worker {
 		qGet: qb.Select("scyna.task").
 			Columns("id", "topic", "data", "next", "interval", "loop_index", "loop_count", "done").
 			Where(qb.Eq("id")).
-			Limit(1).
-			Query(scyna.DB),
+			Limit(1),
 		qTodos: qb.Select("scyna.todo").
 			Columns("task_id").
 			Where(qb.Eq("bucket")).
@@ -70,11 +69,10 @@ func (w *worker) execute() {
 
 func (w *worker) process(bucket int64, id int64) {
 	var t task
-	if err := w.qGet.Bind(id).GetRelease(&t); err != nil {
+	if err := w.qGet.Query(scyna.DB).Bind(id).GetRelease(&t); err != nil {
 		log.Print("Can not load task")
 		return
 	}
-
 	if bucket != GetBucket(t.Next) {
 		return
 	}

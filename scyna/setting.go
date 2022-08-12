@@ -100,3 +100,7 @@ func (s *settings) removed(key string) {
 	defer s.mutex.Unlock()
 	delete(s.data, key)
 }
+
+func (s *settings) Init() {
+	s.data = make(map[string]string)
+}
