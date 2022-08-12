@@ -13,8 +13,8 @@ import (
 type TaskHandler[R proto.Message] func(ctx *Context, data R)
 
 func RegisterTask[R proto.Message](sender string, channel string, handler TaskHandler[R]) {
-	subject := sender + ".task." + channel // vf_vehicle.task.add_driver
-	durable := "task_" + channel           // task_add_driver
+	subject := sender + ".task." + channel
+	durable := "task_" + channel
 	LOG.Info(fmt.Sprintf("Task: Channel %s, durable: %s", subject, durable))
 
 	var task R

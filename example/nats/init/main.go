@@ -5,7 +5,7 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-const MODULE_CODE = "vf_op_init"
+const MODULE_CODE = "nats"
 
 func main() {
 	scyna.RemoteInit(scyna.RemoteConfig{
@@ -15,9 +15,9 @@ func main() {
 	})
 	defer scyna.Release()
 
-	utils.DeleteStream("vf_account")
-	utils.CreateStreamForModule("vf_account")
-	utils.CreateSyncConsumer("vf_account", "account", "loyalty")
-	utils.CreateSyncConsumer("vf_account", "account", "salesforce")
+	utils.DeleteStream("nats_stream")
+	utils.CreateStreamForModule("nats_stream")
+	utils.CreateSyncConsumer("nats_stream", "channel1", "receiver1")
+	utils.CreateSyncConsumer("nats_stream", "channel1", "receiver2")
 	scyna.Start()
 }
