@@ -48,13 +48,13 @@ func UseDirectLog(count int) {
 				if l.Session {
 					if _, err := qSession.Query(DB).
 						Bind(l.ID, GetDayByTime(time_), time_, l.Sequence, l.Level, l.Message).
-						ExecCAS(); err != nil {
+						ExecCASRelease(); err != nil {
 						log.Println("saveSessionLog: " + err.Error())
 					}
 				} else {
 					if _, err := qService.Query(DB).
 						Bind(l.ID, time_, l.Sequence, l.Level, l.Message).
-						ExecCAS(); err != nil {
+						ExecCASRelease(); err != nil {
 						log.Println("saveServiceLog: " + err.Error())
 					}
 				}
