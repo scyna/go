@@ -4,7 +4,6 @@ ENV GO111MODULE=on
 
 WORKDIR /workspace/engine
 
-COPY ./.cert/ ./cert
 COPY ./gateway/ ./gateway
 COPY ./proxy/ ./proxy
 COPY ./manager/ ./manager
@@ -19,7 +18,6 @@ FROM alpine:3.16
 WORKDIR /app
 
 COPY --from=build-env /workspace/engine/application /engine
-COPY --from=build-env /workspace/engine/cert/ /cert
 
 ENV MANAGER_PORT=8081
 ENV PROXY_PORT=8080
