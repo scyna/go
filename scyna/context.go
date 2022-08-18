@@ -71,7 +71,7 @@ func (ctx *Context) Schedule(task string, start time.Time, interval int64, data 
 		Time:     start.Unix(),
 		Interval: interval,
 		Loop:     loop,
-	}, &response); err != nil {
+	}, &response); err.Code != OK.Code {
 		return err, 0
 	}
 
