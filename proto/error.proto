@@ -8,6 +8,6 @@ option  optimize_for = CODE_SIZE;
 option  go_package = "./;scyna";
 
 message Error {
-  int32  Code = 1;
-  string Message = 2;
+  int32  code = 1;
+  string message = 2;
 }
