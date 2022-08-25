@@ -104,7 +104,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		trace.Status = http.StatusInternalServerError
 		return
 	}
-
+	trace.RequestBody = string(ctx.Request.Body)
 	ctx.Request.TraceID = callID
 	ctx.Request.Data = client.Type
 

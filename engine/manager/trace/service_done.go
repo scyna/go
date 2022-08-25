@@ -9,6 +9,6 @@ func ServiceDone(signal *scyna.ServiceDoneSignal) {
 	qb.Insert("scyna.tag").
 		Columns("trace_id", "key", "value").
 		Query(scyna.DB).
-		Bind(signal.TraceID, "data", signal.Request+"\n"+signal.Response).
+		Bind(signal.TraceID, "response", signal.Response).
 		ExecRelease()
 }

@@ -86,12 +86,10 @@ func (ctx *Service) tag(code uint32, response proto.Message) {
 	if ctx.ID == 0 {
 		return
 	}
-	req, _ := json.Marshal(ctx.request)
 	res, _ := json.Marshal(response)
 
 	EmitSignalLite(SERVICE_DONE_CHANNEL, &ServiceDoneSignal{
 		TraceID:  ctx.ID,
-		Request:  string(req),
 		Response: string(res),
 	})
 }

@@ -17,15 +17,16 @@ const (
 )
 
 type Trace struct {
-	ParentID  uint64    `db:"parent_id"`
-	ID        uint64    `db:"id"`
-	Type      TraceType `db:"type"`
-	Time      time.Time `db:"time"`
-	Duration  uint64    `db:"duration"`
-	Path      string    `db:"path"`
-	Source    string    `db:"source"`
-	SessionID uint64    `db:"session_id"`
-	Status    int32     `db:"status"`
+	ParentID    uint64    `db:"parent_id"`
+	ID          uint64    `db:"id"`
+	Type        TraceType `db:"type"`
+	Time        time.Time `db:"time"`
+	Duration    uint64    `db:"duration"`
+	Path        string    `db:"path"`
+	Source      string    `db:"source"`
+	SessionID   uint64    `db:"session_id"`
+	Status      int32     `db:"status"`
+	RequestBody string
 }
 
 func (trace *Trace) Record() {
@@ -62,6 +63,11 @@ func (trace *Trace) Save() {
 		trace.Source,
 		trace.ID,
 		day,
+	)
+	qBatch.Query("INSERT INTO scyna.tag(trace_id, key, value) VALUES (?,?,?)",
+		trace.ID,
+		"request",
+		trace.RequestBody,
 	)
 	if err := DB.ExecuteBatch(qBatch); err != nil {
 		LOG.Error("Can not save trace - " + err.Error())
