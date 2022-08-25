@@ -1,3 +1,4 @@
 .idea
 .vscode
-engine/.build/docker.sh
+engine/build.sh
+manager/build.sh
