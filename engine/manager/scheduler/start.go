@@ -17,15 +17,18 @@ func StartTask(s *scyna.Service, request *scyna.StartTaskRequest) {
 		return
 	}
 
+	//TODO: Check module exits
+
 	if request.Loop == 0 {
 		request.Loop = math.MaxInt64
 	}
 
 	// Insert new task to scyna.task table
 	taskID := scyna.ID.Next()
-	start := time.Unix(int64(request.Time), 0)
+	start := time.Unix(request.Time, 0)
 	qBatch := scyna.DB.NewBatch(gocql.LoggedBatch)
-	qBatch.Query("INSERT INTO scyna.task(id, topic, data, start, next, interval, loop_count, loop_index, done) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+	qBatch.Query("INSERT INTO scyna.task(id, topic, data, start, next, interval, loop_count, loop_index, done) "+
+		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
 		taskID, request.Topic, request.Data, start, start, request.Interval, request.Loop, 0, false)
 
 	qBatch.Query("INSERT INTO scyna.module_has_task(module, task_id) VALUES (?, ?);", request.Module, taskID)
