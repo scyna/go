@@ -27,5 +27,8 @@ func CreateSync(s *scyna.Service, request *proto.CreateSyncRequest) {
 		s.Error(model.CAN_NOT_CREATE_CONSUMER)
 		return
 	}
+	
+	// TODO: save db
+
 	s.Done(scyna.OK)
 }

@@ -32,5 +32,7 @@ func CreateEvent(s *scyna.Service, request *proto.CreateEventRequest) {
 		return
 	}
 
+	// TODO: save db
+
 	s.Done(scyna.OK)
 }
