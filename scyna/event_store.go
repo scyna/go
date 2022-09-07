@@ -48,12 +48,15 @@ func storeEvent(m *nats.Msg) (bool, int64) {
 				lastID = (lastBucket - 1) * es_BUCKET_SIZE
 				state = ES_STORE_EVENT
 				continue
+			} else {
+				esBucket = lastID/es_BUCKET_SIZE + 1
 			}
+
 			if err != nil {
 				tryCount++
 				continue
 			}
-			if lastID == lastBucket*es_BUCKET_SIZE { /*reach end of bucket*/
+			if lastID == lastBucket*es_BUCKET_SIZE-1 { /*reach end of bucket*/
 				state = ES_GET_LAST_BUCKET
 				continue
 			}
