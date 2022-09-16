@@ -77,7 +77,7 @@ func (es *eventStream) start() {
 					if executor, ok := es.executors[m.Subject]; ok {
 						executor(m, 0)
 						// if ok, eventID := storeEvent(m); ok {
-						//  executor(m, eventID)
+						// 	executor(m, eventID)
 						// } else {
 						// 	m.Nak()
 						// 	continue
