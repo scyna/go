@@ -3,7 +3,6 @@ package scyna
 import (
 	"encoding/json"
 	"log"
-	reflect "reflect"
 	"time"
 
 	"github.com/nats-io/nats.go"
@@ -26,8 +25,6 @@ func callService(url string, request proto.Message, response proto.Message) *Err
 func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	log.Println("Register Service: ", url)
 	var request R
-	ref := reflect.New(reflect.TypeOf(request).Elem())
-	request = ref.Interface().(R)
 
 	ctx := Service{
 		Context: Context{Logger{session: false}},
@@ -43,6 +40,8 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 		ctx.ID = ctx.Request.TraceID
 		ctx.Reply = m.Reply
 		ctx.Reset(ctx.ID)
+		ref := request.ProtoReflect().New()
+		request = ref.Interface().(R)
 
 		if ctx.Request.JSON {
 			if err := json.Unmarshal(ctx.Request.Body, request); err != nil {
