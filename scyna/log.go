@@ -39,10 +39,10 @@ func UseDirectLog(count int) {
 	logQueue = make(chan LogData)
 
 	for i := 0; i < count; i++ {
-		qSession := qb.Insert("scyna.session_log").Columns("session_id", "day", "time", "seq", "level", "message").Unique().Query(DB)
-		qService := qb.Insert("scyna.log").Columns("trace_id", "time", "seq", "level", "message").Unique().Query(DB)
-
 		go func() {
+			qSession := qb.Insert("scyna.session_log").Columns("session_id", "day", "time", "seq", "level", "message").Unique().Query(DB)
+			qService := qb.Insert("scyna.log").Columns("trace_id", "time", "seq", "level", "message").Unique().Query(DB)
+
 			for l := range logQueue {
 				time_ := time.Now()
 				if l.Session {
