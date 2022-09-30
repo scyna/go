@@ -42,7 +42,6 @@ func UseDirectLog(count int) {
 		go func() {
 			qSession := qb.Insert("scyna.session_log").Columns("session_id", "day", "time", "seq", "level", "message").Unique().Query(DB)
 			qService := qb.Insert("scyna.log").Columns("trace_id", "time", "seq", "level", "message").Unique().Query(DB)
-
 			for l := range logQueue {
 				time_ := time.Now()
 				if l.Session {
@@ -74,7 +73,6 @@ func UseRemoteLog(count int) {
 					Level:   uint32(l.Level),
 					Text:    l.Message,
 					Session: l.Session,
-					SEQ:     l.Sequence,
 				}
 				EmitSignalLite(LOG_CREATED_CHANNEL, &event)
 			}
