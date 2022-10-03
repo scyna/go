@@ -73,6 +73,7 @@ func UseRemoteLog(count int) {
 					Level:   uint32(l.Level),
 					Text:    l.Message,
 					Session: l.Session,
+					SEQ:     l.Sequence,
 				}
 				EmitSignalLite(LOG_CREATED_CHANNEL, &event)
 			}
