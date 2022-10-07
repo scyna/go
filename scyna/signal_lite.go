@@ -23,7 +23,7 @@ func RegisterSignalLite[R proto.Message](channel string, handler SignalLiteHandl
 			log.Print("Error in parsing data:", err)
 		}
 	}); err != nil {
-		log.Fatal("Error in register SignalLite")
+		Fatal("Error in register SignalLite")
 	}
 }
 

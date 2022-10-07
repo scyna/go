@@ -1,7 +1,6 @@
 package scyna
 
 import (
-	"log"
 	"sync"
 	"time"
 
@@ -31,7 +30,7 @@ func (g *generator) Next() uint64 {
 		g.next++
 	} else {
 		if !g.getID() {
-			log.Fatal("Can not create generator")
+			Fatal("Can not create generator")
 		}
 	}
 	return (uint64(g.prefix) << 44) + g.next

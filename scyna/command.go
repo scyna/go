@@ -28,6 +28,6 @@ func RegisterCommand(url string, handler CommandHandler) {
 	})
 
 	if err != nil {
-		log.Fatal("Can not register command:", url)
+		Fatal("Can not register command:", url)
 	}
 }

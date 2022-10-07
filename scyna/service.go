@@ -62,7 +62,7 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	})
 
 	if err != nil {
-		log.Fatal("Can not register service:", url)
+		Fatal("Can not register service:", url)
 	}
 }
 

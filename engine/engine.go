@@ -115,6 +115,8 @@ func main() {
 	scyna.RegisterSignalLite(scyna.SESSION_UPDATE_CHANNEL, session.Update)
 	http.HandleFunc(scyna.SESSION_CREATE_URL, session.Create)
 	log.Println("Scyna Manager Start with port " + *managerPort)
-	log.Fatal(http.ListenAndServe(":"+*managerPort, nil))
-	// log.Fatal(http.ListenAndServeTLS(":"+*managerPort, *certificateFile, *certificateKey, nil))
+	if err := http.ListenAndServe(":"+*managerPort, nil); err != nil {
+		scyna.Fatal(err)
+	}
+	// scyna.Fatal(http.ListenAndServeTLS(":"+*managerPort, *certificateFile, *certificateKey, nil))
 }

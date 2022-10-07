@@ -30,31 +30,31 @@ func RemoteInit(config RemoteConfig) {
 
 	data, err := proto.Marshal(&request)
 	if err != nil {
-		log.Fatal("Bad authentication request")
+		Fatal("Bad authentication request")
 	}
 
 	req, err := http.NewRequest("POST", config.ManagerUrl+SESSION_CREATE_URL, bytes.NewBuffer(data))
 	if err != nil {
-		log.Fatal("Error in create http request:", err)
+		Fatal("Error in create http request:", err)
 	}
 
 	res, err := HttpClient().Do(req)
 	if err != nil {
-		log.Fatal("Error in send http request:", err)
+		Fatal("Error in send http request:", err)
 	}
 
 	if res.StatusCode != 200 {
-		log.Fatal("Error in autheticate")
+		Fatal("Error in autheticate")
 	}
 
 	resBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Fatal("Can not read response body:", err)
+		Fatal("Can not read response body:", err)
 	}
 
 	var response CreateSessionResponse
 	if err := proto.Unmarshal(resBody, &response); err != nil {
-		log.Fatal("Authenticate error")
+		Fatal("Authenticate error")
 	}
 
 	Session = NewSession(response.SessionID)
@@ -77,13 +77,13 @@ func DirectInit(name string, c *Configuration) {
 	}
 
 	if err != nil {
-		log.Fatal("Can not connect to NATS:", nats_)
+		Fatal("Can not connect to NATS:", nats_)
 	}
 
 	/*init jetstream*/
 	JetStream, err = Connection.JetStream()
 	if err != nil {
-		log.Fatal("Init: " + err.Error())
+		Fatal("Init: " + err.Error())
 	}
 
 	/*init db*/
@@ -112,6 +112,6 @@ func initScylla(host []string, username string, password string, location string
 	var err error
 	DB, err = gocqlx.WrapSession(cluster.CreateSession())
 	if err != nil {
-		log.Fatalf("Can not create session: Host = %s, Error = %s ", host, err.Error())
+		Fatalf("Can not create session: Host = %s, Error = %s ", host, err.Error())
 	}
 }

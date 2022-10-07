@@ -18,7 +18,7 @@ func Init() {
 			return
 		}
 	}
-	log.Fatal("Can not init id generator")
+	scyna.Fatal("Can not init id generator")
 }
 
 func GetID(s *scyna.Service) {

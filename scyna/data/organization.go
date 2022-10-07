@@ -24,7 +24,7 @@ func NewOrganization(code string, name string, password string) *Organization {
 		Unique().Query(scyna.DB).
 		Bind(code, name, password).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in create Organization:", err)
+			log.Println("Error in create Organization:", err)
 		}
 	}
 	return &Organization{Code: code}
@@ -36,7 +36,7 @@ func (org *Organization) AddModule(code string, description string, t ModuleType
 		Unique().Query(scyna.DB).
 		Bind(code, description, uint16(t), org.Code).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in AddModule:", err)
+			log.Println("Error in AddModule:", err)
 		}
 	}
 
@@ -45,7 +45,7 @@ func (org *Organization) AddModule(code string, description string, t ModuleType
 		Unique().Query(scyna.DB).
 		Bind(org.Code, code).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in create org_has_module:", err)
+			log.Println("Error in create org_has_module:", err)
 		}
 	}
 
@@ -58,7 +58,7 @@ func (org *Organization) AddApplication(code string, name string, auth string) *
 		Unique().Query(scyna.DB).
 		Bind(code, name, auth, org.Code).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in AddApplication")
+			log.Println("Error in AddApplication")
 		}
 	}
 
@@ -67,7 +67,7 @@ func (org *Organization) AddApplication(code string, name string, auth string) *
 		Unique().Query(scyna.DB).
 		Bind(org.Code, code).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in create org_has_app")
+			log.Println("Error in create org_has_app")
 		}
 	}
 	return org
@@ -79,7 +79,7 @@ func (org *Organization) AddClient(id string, secret string) *Organization {
 		Unique().Query(scyna.DB).
 		Bind(id, secret, org.Code).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in AddClient")
+			log.Println("Error in AddClient")
 		}
 	}
 
@@ -88,7 +88,7 @@ func (org *Organization) AddClient(id string, secret string) *Organization {
 		Unique().Query(scyna.DB).
 		Bind(org.Code, id).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in create org_has_client")
+			log.Println("Error in create org_has_client")
 		}
 	}
 	return org

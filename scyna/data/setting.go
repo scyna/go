@@ -15,7 +15,7 @@ func WriteSetting(module string, key string, value string) {
 		Bind(module, key, value).
 		ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in write setting:", err.Error())
+			log.Println("Error in write setting:", err.Error())
 			return
 		}
 	}

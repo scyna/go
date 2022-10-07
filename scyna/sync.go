@@ -32,7 +32,7 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 	sub, err := JetStream.PullSubscribe(subject, durable, nats.BindStream(module))
 
 	if err != nil {
-		log.Fatal("Error in start event stream:", err.Error())
+		Fatal("Error in start event stream:", err.Error())
 	}
 
 	go func() {

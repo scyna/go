@@ -17,7 +17,7 @@ func CreateService(module string, url string) *Service {
 		Unique().Query(scyna.DB).
 		Bind(module, url).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in create Service")
+			log.Println("Error in create Service")
 		}
 	}
 	return &Service{URL: url}
@@ -29,7 +29,7 @@ func (s *Service) AttachToApp(app string) *Service {
 		Unique().Query(scyna.DB).
 		Bind(app, s.URL).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in AttatchToApp")
+			log.Println("Error in AttatchToApp")
 		}
 	}
 	return s
@@ -41,7 +41,7 @@ func (s *Service) AttachToClient(clientid string) *Service {
 		Unique().Query(scyna.DB).
 		Bind(clientid, s.URL).ExecCASRelease(); !applied {
 		if err != nil {
-			log.Fatal("Error in AttatchToClient")
+			log.Println("Error in AttatchToClient")
 		}
 	}
 	return s

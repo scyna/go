@@ -2,7 +2,6 @@ package scyna
 
 import (
 	"fmt"
-	"log"
 	"sync"
 )
 
@@ -37,7 +36,7 @@ func (sn *serialNumber) Next() string {
 			sn.next = response.Start
 			sn.last = response.End
 		} else {
-			log.Fatal("Can not get SerialNumber")
+			Fatal("Can not get SerialNumber")
 		}
 	}
 	return fmt.Sprintf("%d%07d", sn.prefix, sn.next)

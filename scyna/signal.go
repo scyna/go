@@ -45,6 +45,6 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 
 		trace.Record()
 	}); err != nil {
-		log.Fatal("Error in register Signal:", err)
+		Fatal("Error in register Signal:", err)
 	}
 }
