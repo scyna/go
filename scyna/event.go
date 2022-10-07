@@ -66,6 +66,9 @@ func (es *eventStream) start() {
 	sub, err := JetStream.PullSubscribe("", es.receiver, nats.BindStream(es.sender))
 
 	if err != nil {
+		if data, err := proto.Marshal(&EndSessionSignal{ID: Session.ID(), Code: "1", Module: module}); err == nil {
+			Connection.Publish(SESSION_END_CHANNEL, data)
+		}
 		log.Fatal("Error in start event stream - sender", es.sender, "- receiver", es.receiver, ":", err.Error())
 	}
 
