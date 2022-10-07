@@ -25,6 +25,7 @@ func CreateClient(s *scyna.Service, request *proto.Client) {
 
 	if !utils.ValidatePassword(request.Secret) {
 		s.Error(scyna.REQUEST_INVALID)
+		s.Logger.Error("Password is too weak!")
 		return
 	}
 
