@@ -3,7 +3,7 @@ package scyna
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -30,31 +30,31 @@ func RemoteInit(config RemoteConfig) {
 
 	data, err := proto.Marshal(&request)
 	if err != nil {
-		Fatal("Bad authentication request")
+		log.Fatal("Bad authentication request")
 	}
 
 	req, err := http.NewRequest("POST", config.ManagerUrl+SESSION_CREATE_URL, bytes.NewBuffer(data))
 	if err != nil {
-		Fatal("Error in create http request:", err)
+		log.Fatal("Error in create http request:", err)
 	}
 
 	res, err := HttpClient().Do(req)
 	if err != nil {
-		Fatal("Error in send http request:", err)
+		log.Fatal("Error in send http request:", err)
 	}
 
 	if res.StatusCode != 200 {
-		Fatal("Error in autheticate")
+		log.Fatal("Error in autheticate")
 	}
 
-	resBody, err := ioutil.ReadAll(res.Body)
+	resBody, err := io.ReadAll(res.Body)
 	if err != nil {
-		Fatal("Can not read response body:", err)
+		log.Fatal("Can not read response body:", err)
 	}
 
 	var response CreateSessionResponse
 	if err := proto.Unmarshal(resBody, &response); err != nil {
-		Fatal("Authenticate error")
+		log.Fatal("Authenticate error")
 	}
 
 	Session = NewSession(response.SessionID)
@@ -77,7 +77,7 @@ func DirectInit(name string, c *Configuration) {
 	}
 
 	if err != nil {
-		Fatal("Can not connect to NATS:", nats_)
+		log.Fatal("Can not connect to NATS:", nats_)
 	}
 
 	/*init jetstream*/
