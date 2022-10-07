@@ -35,6 +35,7 @@ func CreateClient(s *scyna.Service, request *proto.Client) {
 	}
 
 	s.Done(scyna.OK)
+	scyna.Connection.Publish(scyna.CLIENT_UPDATE_CHANNEL, []byte("Reload clients"))
 }
 
 func validateClient(request *proto.Client) error {
