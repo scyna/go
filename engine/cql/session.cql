@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS session;
 CREATE TABLE session
 (
     id          bigint,
-    module_code text,
+    context_code text,
     start       timestamp,
     last_update timestamp,
     end         timestamp,
