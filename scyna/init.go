@@ -57,12 +57,11 @@ func RemoteInit(config RemoteConfig) {
 		log.Fatal("Authenticate error")
 	}
 
-	Session = NewSession(response.SessionID)
-	DirectInit(config.Name, response.Config)
+	DirectInit(response.SessionID, config.Name, response.Config)
 }
 
-func DirectInit(name string, c *Configuration) {
-	module = name
+func DirectInit(sessionID uint64, context string, c *Configuration) {
+	Session = NewSession(sessionID, context)
 	var err error
 	var nats_ []string
 	for _, n := range strings.Split(c.NatsUrl, ",") {
@@ -89,12 +88,6 @@ func DirectInit(name string, c *Configuration) {
 	/*init db*/
 	hosts := strings.Split(c.DBHost, ",")
 	initScylla(hosts, c.DBUsername, c.DBPassword, c.DBLocation)
-
-	Settings.Init()
-
-	/*registration*/
-	RegisterSignalLite(SETTING_UPDATE_CHANNEL+module, UpdateSettingHandler)
-	RegisterSignalLite(SETTING_REMOVE_CHANNEL+module, RemoveSettingHandler)
 }
 
 func initScylla(host []string, username string, password string, location string) {

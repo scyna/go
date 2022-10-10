@@ -16,13 +16,11 @@ const REQUEST_TIMEOUT = 10
 
 var Connection *nats.Conn
 var JetStream nats.JetStreamContext
-var Session *session
 var DB gocqlx.Session
+var Session *session
 var ID generator
-var Settings settings
 
 var httpClient *http.Client
-var module string
 var LOG *Logger
 
 func Release() {
@@ -33,7 +31,6 @@ func Release() {
 }
 
 func Start() {
-	startEventStream()
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 	<-sig

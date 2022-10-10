@@ -56,16 +56,16 @@ func main() {
 	scyna.UseDirectLog(5)
 
 	/* generator */
-	scyna.RegisterCommand(scyna.GEN_GET_ID_URL, generator.GetID)
+	//scyna.RegisterService(scyna.GEN_GET_ID_URL, generator.GetID)
 	scyna.RegisterService(scyna.GEN_GET_SN_URL, generator.GetSN)
 
 	/*logging*/
-	scyna.RegisterSignalLite(scyna.LOG_CREATED_CHANNEL, logging.Write)
+	scyna.RegisterSignal(scyna.LOG_CREATED_CHANNEL, logging.Write)
 
 	/*trace*/
-	scyna.RegisterSignalLite(scyna.TRACE_CREATED_CHANNEL, trace.TraceCreated)
-	scyna.RegisterSignalLite(scyna.TAG_CREATED_CHANNEL, trace.TagCreated)
-	scyna.RegisterSignalLite(scyna.SERVICE_DONE_CHANNEL, trace.ServiceDone)
+	scyna.RegisterSignal(scyna.TRACE_CREATED_CHANNEL, trace.TraceCreated)
+	scyna.RegisterSignal(scyna.TAG_CREATED_CHANNEL, trace.TagCreated)
+	scyna.RegisterSignal(scyna.SERVICE_DONE_CHANNEL, trace.ServiceDone)
 
 	/*setting*/
 	scyna.RegisterService(scyna.SETTING_READ_URL, setting.Read)
@@ -111,8 +111,8 @@ func main() {
 	/* Start worker */
 	scheduler.Start(time.Second * 10)
 	/*session*/
-	scyna.RegisterSignalLite(scyna.SESSION_END_CHANNEL, session.End)
-	scyna.RegisterSignalLite(scyna.SESSION_UPDATE_CHANNEL, session.Update)
+	scyna.RegisterSignal(scyna.SESSION_END_CHANNEL, session.End)
+	scyna.RegisterSignal(scyna.SESSION_UPDATE_CHANNEL, session.Update)
 	http.HandleFunc(scyna.SESSION_CREATE_URL, session.Create)
 	log.Println("Scyna Manager Start with port " + *managerPort)
 	log.Fatal(http.ListenAndServe(":"+*managerPort, nil))

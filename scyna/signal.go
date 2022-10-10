@@ -3,48 +3,32 @@ package scyna
 import (
 	"log"
 	reflect "reflect"
-	"time"
 
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
 )
 
-type SignalHandler[R proto.Message] func(ctx *Context, data R)
+type SignalHandler[R proto.Message] func(data R)
 
 func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
-	log.Print("Register Signal:", channel)
+	log.Print("Register SignalLite:", channel)
 	var signal R
 	ref := reflect.New(reflect.TypeOf(signal).Elem())
 	signal = ref.Interface().(R)
 
-	trace := Trace{
-		Path:      channel,
-		SessionID: Session.ID(),
-		Type:      TRACE_SIGNAL,
-	}
-
-	if _, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
-		var msg EventOrSignal
-		if err := proto.Unmarshal(m.Data, &msg); err != nil {
-			log.Print("Register unmarshal error response data:", err.Error())
-			return
-		}
-		trace.Time = time.Now()
-		trace.ID = ID.Next()
-		trace.ParentID = msg.ParentID
-
-		context := Context{
-			Logger{ID: trace.ID, session: false},
-		}
-
-		if err := proto.Unmarshal(msg.Body, signal); err == nil {
-			handler(&context, signal)
+	if _, err := Connection.QueueSubscribe(channel, Session.context, func(m *nats.Msg) {
+		if err := proto.Unmarshal(m.Data, signal); err == nil {
+			handler(signal)
 		} else {
 			log.Print("Error in parsing data:", err)
 		}
-
-		trace.Record()
 	}); err != nil {
-		log.Fatal("Error in register Signal:", err)
+		log.Fatal("Error in register SignalLite")
+	}
+}
+
+func EmitSignal(channel string, event proto.Message) {
+	if data, err := proto.Marshal(event); err == nil {
+		Connection.Publish(channel, data)
 	}
 }

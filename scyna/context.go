@@ -94,7 +94,7 @@ func (ctx *Context) Tag(key string, value string) {
 	if ctx.ID == 0 {
 		return
 	}
-	EmitSignalLite(TAG_CREATED_CHANNEL, &TagCreatedSignal{
+	EmitSignal(TAG_CREATED_CHANNEL, &TagCreatedSignal{
 		TraceID: ctx.ID,
 		Key:     key,
 		Value:   value,

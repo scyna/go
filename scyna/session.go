@@ -10,13 +10,15 @@ type session struct {
 	mutex    sync.Mutex
 	sequence uint64
 	quit     chan struct{}
+	context  string
 }
 
-func NewSession(id uint64) *session {
+func NewSession(id uint64, context string) *session {
 	ret := &session{
 		id:       id,
 		sequence: 1,
 		quit:     make(chan struct{}),
+		context:  context,
 	}
 
 	LOG = &Logger{session: true, ID: id}
@@ -26,7 +28,7 @@ func NewSession(id uint64) *session {
 		for {
 			select {
 			case <-ticker.C:
-				EmitSignalLite(SESSION_UPDATE_CHANNEL, &UpdateSessionSignal{ID: ret.id, Module: module})
+				EmitSignal(SESSION_UPDATE_CHANNEL, &UpdateSessionSignal{ID: ret.id, Module: context})
 			case <-ret.quit:
 				ticker.Stop()
 				return
@@ -48,5 +50,5 @@ func (s *session) NextSequence() uint64 {
 }
 
 func (s *session) release() {
-	close(s.quit)
+	close(s.quit) //
 }

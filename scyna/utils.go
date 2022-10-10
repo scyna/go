@@ -36,6 +36,6 @@ func SubscriberURL(urlPath string) string {
 	return subURL
 }
 
-func ConvertDateByInt(timestamp uint64) string {
+func DateFromInt(timestamp uint64) string {
 	return time.UnixMicro(int64(timestamp)).Format(time.RFC3339)
 }
