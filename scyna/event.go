@@ -50,9 +50,9 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 
 		if err := proto.Unmarshal(msg.Body, event); err == nil {
 			handler(&context, event)
-			for _, entityID := range msg.Entities {
-				addActivity(entityID, eventID)
-			}
+			// for _, entityID := range msg.Entities {
+			// 	addActivity(entityID, eventID)
+			// }
 			// TODO: update entity id to module_name.event_store
 		} else {
 			log.Print("Error in parsing data:", err)
@@ -75,12 +75,7 @@ func (es *eventStream) start() {
 				if len(messages) == 1 {
 					m := messages[0]
 					if executor, ok := es.executors[m.Subject]; ok {
-						if ok, eventID := storeEvent(m); ok {
-							executor(m, eventID)
-						} else {
-							m.Nak()
-							continue
-						}
+						executor(m, 0) //FIXME
 					}
 					m.Ack()
 				}
@@ -96,7 +91,7 @@ func createOrGetEventStream(sender string) *eventStream {
 
 	stream := &eventStream{
 		sender:    sender,
-		receiver:  module,
+		receiver:  Session.context,
 		executors: make(map[string]func(m *nats.Msg, id int64)),
 	}
 

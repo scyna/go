@@ -11,62 +11,11 @@ type Context struct {
 	Logger
 }
 
-func (ctx *Context) EmitSignal(channel string, data proto.Message) {
-	msg := EventOrSignal{ParentID: ctx.ID}
-	if data, err := proto.Marshal(data); err == nil {
-		msg.Body = data
-	}
-
-	if data, err := proto.Marshal(&msg); err == nil {
-		Connection.Publish(channel, data)
-	}
-}
-
-func (ctx *Context) PostEvent(channel string, data proto.Message) { // account_created
-	subject := module + "." + channel
-	msg := EventOrSignal{ParentID: ctx.ID}
-	if data, err := proto.Marshal(data); err == nil {
-		msg.Body = data
-	}
-
-	if data, err := proto.Marshal(&msg); err == nil {
-		JetStream.Publish(subject, data)
-	}
-}
-
-func (ctx *Context) PostEventAndActivity(channel string, data proto.Message, entities []uint64) {
-	subject := module + "." + channel
-	msg := EventOrSignal{ParentID: ctx.ID, Entities: entities}
-	if data, err := proto.Marshal(data); err == nil {
-		msg.Body = data
-	}
-
-	if data, err := proto.Marshal(&msg); err == nil {
-		JetStream.Publish(subject, data)
-	}
-}
-
-func (ctx *Context) PostSync(channel string, data proto.Message) { // account_loyalty
-	subject := module + ".sync." + channel
-	msg := EventOrSignal{ParentID: ctx.ID}
-	if data, err := proto.Marshal(data); err == nil {
-		msg.Body = data
-	}
-
-	if data, err := proto.Marshal(&msg); err == nil {
-		JetStream.Publish(subject, data)
-	}
-}
-
-func (ctx *Context) SendCommand(url string, response proto.Message) *Error {
-	return ctx.CallService(url, nil, response)
-}
-
 func (ctx *Context) Schedule(task string, start time.Time, interval int64, data []byte, loop uint64) (*Error, uint64) {
 	var response StartTaskResponse
 	if err := ctx.CallService(START_TASK_URL, &StartTaskRequest{
-		Module:   module,
-		Topic:    fmt.Sprintf("%s.task.%s", module, task),
+		Module:   Session.context,
+		Topic:    fmt.Sprintf("%s.task.%s", Session.context, task),
 		Data:     data,
 		Time:     start.Unix(),
 		Interval: interval,
@@ -85,7 +34,7 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 		Time:     time.Now(),
 		Path:     url,
 		Type:     TRACE_SERVICE,
-		Source:   module,
+		Source:   Session.context,
 	}
 	return callService_(&trace, url, request, response)
 }
