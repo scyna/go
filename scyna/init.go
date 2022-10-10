@@ -16,15 +16,15 @@ import (
 )
 
 type RemoteConfig struct {
-	ManagerUrl string
-	Name       string
-	Secret     string
+	Url     string
+	Context string
+	Secret  string
 }
 
 func RemoteInit(config RemoteConfig) {
 
 	request := CreateSessionRequest{
-		Module: config.Name,
+		Module: config.Context,
 		Secret: config.Secret,
 	}
 
@@ -33,7 +33,7 @@ func RemoteInit(config RemoteConfig) {
 		log.Fatal("Bad authentication request")
 	}
 
-	req, err := http.NewRequest("POST", config.ManagerUrl+SESSION_CREATE_URL, bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", config.Url+SESSION_CREATE_URL, bytes.NewBuffer(data))
 	if err != nil {
 		log.Fatal("Error in create http request:", err)
 	}
@@ -57,13 +57,20 @@ func RemoteInit(config RemoteConfig) {
 		log.Fatal("Authenticate error")
 	}
 
-	DirectInit(response.SessionID, config.Name, response.Config)
+	Session = NewSession(response.SessionID, config.Context)
+	initNats(response.Config)
+	initScylla(response.Config)
 }
 
-func DirectInit(sessionID uint64, context string, c *Configuration) {
-	Session = NewSession(sessionID, context)
-	var err error
+func DirectInit(c *Configuration) {
+	initNats(c)
+	initScylla(c)
+}
+
+func initNats(c *Configuration) {
 	var nats_ []string
+	var err error
+
 	for _, n := range strings.Split(c.NatsUrl, ",") {
 		fmt.Printf("Nats configuration: nats://%s:4222\n", n)
 		nats_ = append(nats_, fmt.Sprintf("nats://%s:4222", n))
@@ -79,32 +86,26 @@ func DirectInit(sessionID uint64, context string, c *Configuration) {
 		log.Fatal("Can not connect to NATS:", nats_)
 	}
 
-	/*init jetstream*/
 	JetStream, err = Connection.JetStream()
 	if err != nil {
 		log.Fatal("Init: " + err.Error())
 	}
-
-	/*init db*/
-	hosts := strings.Split(c.DBHost, ",")
-	initScylla(hosts, c.DBUsername, c.DBPassword, c.DBLocation)
 }
 
-func initScylla(host []string, username string, password string, location string) {
-	cluster := gocql.NewCluster(host...)
-	cluster.Authenticator = gocql.PasswordAuthenticator{Username: username, Password: password}
-	cluster.PoolConfig.HostSelectionPolicy = gocql.DCAwareRoundRobinPolicy(location)
+func initScylla(c *Configuration) {
+	hosts := strings.Split(c.DBHost, ",")
+	cluster := gocql.NewCluster(hosts...)
+	cluster.Authenticator = gocql.PasswordAuthenticator{Username: c.DBUsername, Password: c.DBPassword}
+	cluster.PoolConfig.HostSelectionPolicy = gocql.DCAwareRoundRobinPolicy(c.DBLocation)
 	cluster.ConnectTimeout = time.Second * 10
 	cluster.DisableInitialHostLookup = true
 	cluster.Consistency = gocql.Quorum
 
-	//TODO: Config connect with TLS/SSL
-
-	log.Printf("Connect to db: %s\n", host)
+	log.Printf("Connecting to: %s\n", hosts)
 
 	var err error
 	DB, err = gocqlx.WrapSession(cluster.CreateSession())
 	if err != nil {
-		log.Fatalf("Can not create session: Host = %s, Error = %s ", host, err.Error())
+		log.Fatalf("Can not create session: Host = %s, Error = %s ", hosts, err.Error())
 	}
 }

@@ -2,11 +2,12 @@ package session
 
 import (
 	"bytes"
-	"github.com/scylladb/gocqlx/v2/qb"
-	"google.golang.org/protobuf/encoding/protojson"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/scylladb/gocqlx/v2/qb"
+	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/scyna/go/engine/manager/manager"
 	"github.com/scyna/go/scyna"
@@ -32,7 +33,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if sid, err := newSession(request.Module, request.Secret); err == scyna.OK {
+	if sid, err := createSession(request.Module, request.Secret); err == scyna.OK {
 		var response scyna.CreateSessionResponse
 		response.SessionID = sid
 

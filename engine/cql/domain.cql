@@ -14,6 +14,7 @@ CREATE TABLE scyna.context
     domain_code     text,
     code            text,
     name            text,
+    secret          text,
     PRIMARY KEY (domain_code, code)
 );
 CREATE INDEX ON scyna.context (code);

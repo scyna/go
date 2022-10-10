@@ -19,7 +19,7 @@ message Configuration {
 
 /*session*/
 message CreateSessionRequest {
-  string Module = 1;
+  string Context = 1;
   string Secret = 2;
 }
 
@@ -87,81 +87,4 @@ message TagCreatedSignal {
 message ServiceDoneSignal {
   uint64 TraceID = 1;
   string Response = 2;
-}
-
-/*SETTING*/
-message WriteSettingRequest {
-  string Module = 1;
-  string Key = 2;
-  string Value = 3;
-}
-
-message ReadSettingRequest {
-  string Module = 1;
-  string Key = 2;
-}
-
-message ReadSettingResponse {
-  string Value = 1;
-}
-
-message SettingUpdatedSignal {
-  string Module = 1;
-  string Key = 2;
-  string Value = 3;
-}
-
-message SettingRemovedSignal {
-  string Module = 1;
-  string Key = 2;
-}
-
-message RemoveSettingRequest {
-  string Module = 1;
-  string Key = 2;
-}
-
-/*CALL*/
-message WriteCallSignal {
-  uint64 id = 1;
-  string source = 2;
-  string caller_id = 3;
-  uint64 session_id = 4;
-  uint32 duration = 5;
-  bytes  request = 6;
-  bytes  response = 7;
-  uint32 status = 8;
-  uint64 time = 9;
-  uint32 day = 10;
-}
-
-/*Authentication*/
-message CreateAuthRequest {
-  string          Organization = 1;
-  string          Secret = 2;
-  string          UserID = 3;
-  repeated string Apps = 4;
-}
-
-message CreateAuthResponse {
-  string Token = 1;
-  uint64 Expired = 2;
-}
-
-message GetAuthRequest {
-  string Token = 1;
-  string App = 2;
-}
-
-message GetAuthResponse {
-  string Token = 1;
-  uint64 Expired = 2;
-  string UserID = 3;
-}
-
-message LogoutRequest {
-  string Organization = 1;
-  string Secret = 2;
-  string UserID = 3;
-  string Token = 4;
 }

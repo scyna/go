@@ -50,5 +50,5 @@ func (s *session) NextSequence() uint64 {
 }
 
 func (s *session) release() {
-	close(s.quit) //
+	close(s.quit)
 }

@@ -8,15 +8,15 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Init(module string, secret string) {
-	if id, err := newSession(module, secret); err != scyna.OK {
+func Init(context string, secret string) {
+	if id, err := createSession(context, secret); err != scyna.OK {
 		log.Fatal("Error in create session")
 	} else {
-		scyna.Session = scyna.NewSession(id)
+		scyna.Session = scyna.NewSession(id, context)
 	}
 }
 
-func newSession(module string, secret string) (uint64, *scyna.Error) {
+func createSession(module string, secret string) (uint64, *scyna.Error) {
 	log.Print("Creating session for module: ", module)
 	var secret_ string
 	if err := qb.Select("scyna.module").

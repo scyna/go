@@ -12,7 +12,6 @@ import (
 	"github.com/scyna/go/engine/manager/logging"
 	"github.com/scyna/go/engine/manager/scheduler"
 	"github.com/scyna/go/engine/manager/session"
-	"github.com/scyna/go/engine/manager/setting"
 	"github.com/scyna/go/engine/manager/trace"
 	"github.com/scyna/go/engine/proxy"
 	"github.com/scyna/go/scyna"
