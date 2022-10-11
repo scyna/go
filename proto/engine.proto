@@ -40,6 +40,9 @@ message UpdateSessionSignal {
 }
 
 /*GENERATOR*/
+message GetIDRequest {
+}
+
 message GetIDResponse {
   uint32 prefix = 1;
   uint64 start = 2;

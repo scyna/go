@@ -28,12 +28,12 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if request.Module == manager.MODULE_CODE {
+	if request.Context == manager.ENGINE_CONTEXT {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
-	if sid, err := createSession(request.Module, request.Secret); err == scyna.OK {
+	if sid, err := createSession(request.Context, request.Secret); err == scyna.OK {
 		var response scyna.CreateSessionResponse
 		response.SessionID = sid
 
@@ -43,9 +43,9 @@ func Create(w http.ResponseWriter, r *http.Request) {
 			Where(qb.Eq("module_code"), qb.Eq("key")).
 			Limit(1).
 			Query(scyna.DB).
-			Bind(request.Module, scyna.SETTING_KEY).
+			Bind(request.Context, scyna.SETTING_KEY).
 			GetRelease(&value); err != nil {
-			log.Println("Can not find module config for module " + request.Module + " - " + err.Error())
+			log.Println("Can not find module config for module " + request.Context + " - " + err.Error())
 		}
 
 		if len(value) > 0 {

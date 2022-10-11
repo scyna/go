@@ -21,7 +21,7 @@ func Init() {
 	log.Fatal("Can not init id generator")
 }
 
-func GetID(s *scyna.Service) {
+func GetID(s *scyna.Service, request *scyna.GetIDRequest) {
 	log.Print("Receive GetIDRequest")
 	for i := 0; i < tryCount; i++ {
 		if ok, prefix, start, end := allocate(); ok {

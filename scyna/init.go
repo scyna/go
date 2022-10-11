@@ -24,8 +24,8 @@ type RemoteConfig struct {
 func RemoteInit(config RemoteConfig) {
 
 	request := CreateSessionRequest{
-		Module: config.Context,
-		Secret: config.Secret,
+		Context: config.Context,
+		Secret:  config.Secret,
 	}
 
 	data, err := proto.Marshal(&request)
