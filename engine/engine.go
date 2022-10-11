@@ -8,6 +8,7 @@ import (
 	"github.com/scyna/go/engine/manager/generator"
 	"github.com/scyna/go/engine/manager/logging"
 	"github.com/scyna/go/engine/manager/session"
+	"github.com/scyna/go/engine/manager/trace"
 	"github.com/scyna/go/scyna"
 )
 
@@ -48,6 +49,11 @@ func main() {
 
 	/*logging*/
 	scyna.RegisterSignal(scyna.LOG_CREATED_CHANNEL, logging.Write)
+
+	/*trace*/
+	scyna.RegisterSignal(scyna.TRACE_CREATED_CHANNEL, trace.TraceCreated)
+	scyna.RegisterSignal(scyna.TAG_CREATED_CHANNEL, trace.TagCreated)
+	scyna.RegisterSignal(scyna.SERVICE_DONE_CHANNEL, trace.ServiceDone)
 
 	/*session*/
 	scyna.RegisterSignal(scyna.SESSION_END_CHANNEL, session.End)
