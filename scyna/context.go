@@ -78,6 +78,17 @@ func (ctx *Context) Schedule(task string, start time.Time, interval int64, data 
 	return nil, response.Id
 }
 
+func (ctx *Context) StopSchedule(taskID uint64) *Error {
+	var response Error
+	if err := ctx.CallService(STOP_TASK_URL, &StopTaskRequest{
+		Id: taskID,
+	}, &response); err.Code != OK.Code {
+		return err
+	}
+
+	return nil
+}
+
 func (ctx *Context) CallService(url string, request proto.Message, response proto.Message) *Error {
 	trace := Trace{
 		ID:       ID.Next(),
