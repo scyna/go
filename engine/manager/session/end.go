@@ -13,7 +13,7 @@ import (
 func End(signal *scyna.EndSessionSignal) {
 	if applied, err := qb.Update("scyna.session").
 		Set("end", "exit_code").
-		Where(qb.Eq("id"), qb.Eq("module_code")).Existing().
+		Where(qb.Eq("id"), qb.Eq("context")).Existing().
 		Query(scyna.DB).
 		Bind(time.Now(), signal.Code, signal.ID, signal.Context).
 		ExecCASRelease(); !applied {

@@ -7,7 +7,7 @@ import (
 
 func Remove(s *scyna.Service, request *scyna.RemoveSettingRequest) {
 	if err := qb.Delete("scyna.setting").
-		Where(qb.Eq("module_code"), qb.Eq("key")).
+		Where(qb.Eq("context"), qb.Eq("key")).
 		Query(scyna.DB).
 		Bind(request.Context, request.Key).ExecRelease(); err != nil {
 		s.Error(scyna.SERVER_ERROR)

@@ -13,7 +13,7 @@ func Read(s *scyna.Service, request *scyna.ReadSettingRequest) {
 	var value string
 	if err := qb.Select("scyna.setting").
 		Columns("value").
-		Where(qb.Eq("module_code"), qb.Eq("key")).
+		Where(qb.Eq("context"), qb.Eq("key")).
 		Limit(1).
 		Query(scyna.DB).
 		Bind(request.Context, request.Key).

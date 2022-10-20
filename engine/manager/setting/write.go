@@ -11,7 +11,7 @@ func Write(s *scyna.Service, request *scyna.WriteSettingRequest) {
 	log.Println("Receive WriteSettingRequest")
 
 	if err := qb.Insert("scyna.setting").
-		Columns("module_code", "key", "value").
+		Columns("context", "key", "value").
 		Query(scyna.DB).
 		Bind(request.Context, request.Key, request.Value).
 		ExecRelease(); err != nil {
