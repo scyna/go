@@ -16,14 +16,14 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 	ref := reflect.New(reflect.TypeOf(signal).Elem())
 	signal = ref.Interface().(R)
 
-	if _, err := Connection.QueueSubscribe(channel, Session.context, func(m *nats.Msg) {
+	if _, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
 		if err := proto.Unmarshal(m.Data, signal); err == nil {
 			handler(signal)
 		} else {
 			log.Print("Error in parsing data:", err)
 		}
 	}); err != nil {
-		log.Fatal("Error in register SignalLite")
+		Fatal("Error in register SignalLite")
 	}
 }
 

@@ -2,9 +2,12 @@ package scyna
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 	"time"
+
+	"google.golang.org/protobuf/proto"
 )
 
 const microSecondPerDay = 24 * 60 * 60 * 1000000
@@ -36,6 +39,20 @@ func SubscriberURL(urlPath string) string {
 	return subURL
 }
 
-func DateFromInt(timestamp uint64) string {
+func ConvertDateByInt(timestamp uint64) string {
 	return time.UnixMicro(int64(timestamp)).Format(time.RFC3339)
+}
+
+func Fatal(v ...any) {
+	if data, err := proto.Marshal(&EndSessionSignal{ID: Session.ID(), Code: "1", Module: module}); err == nil {
+		Connection.Publish(SESSION_END_CHANNEL, data)
+	}
+	log.Fatal(v)
+}
+
+func Fatalf(format string, v ...any) {
+	if data, err := proto.Marshal(&EndSessionSignal{ID: Session.ID(), Code: "1", Module: module}); err == nil {
+		Connection.Publish(SESSION_END_CHANNEL, data)
+	}
+	log.Fatalf(format, v)
 }

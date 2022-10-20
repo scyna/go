@@ -3,7 +3,7 @@ package scyna
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -16,16 +16,16 @@ import (
 )
 
 type RemoteConfig struct {
-	Url     string
-	Context string
-	Secret  string
+	ManagerUrl string
+	Name       string
+	Secret     string
 }
 
 func RemoteInit(config RemoteConfig) {
 
 	request := CreateSessionRequest{
-		Context: config.Context,
-		Secret:  config.Secret,
+		Module: config.Name,
+		Secret: config.Secret,
 	}
 
 	data, err := proto.Marshal(&request)
@@ -33,7 +33,7 @@ func RemoteInit(config RemoteConfig) {
 		log.Fatal("Bad authentication request")
 	}
 
-	req, err := http.NewRequest("POST", config.Url+SESSION_CREATE_URL, bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", config.ManagerUrl+SESSION_CREATE_URL, bytes.NewBuffer(data))
 	if err != nil {
 		log.Fatal("Error in create http request:", err)
 	}
@@ -47,7 +47,7 @@ func RemoteInit(config RemoteConfig) {
 		log.Fatal("Error in autheticate")
 	}
 
-	resBody, err := ioutil.ReadAll(res.Body)
+	resBody, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal("Can not read response body:", err)
 	}
@@ -57,20 +57,14 @@ func RemoteInit(config RemoteConfig) {
 		log.Fatal("Authenticate error")
 	}
 
-	Session = NewSession(response.SessionID, config.Context)
-	initNats(response.Config)
-	initScylla(response.Config)
+	Session = NewSession(response.SessionID)
+	DirectInit(config.Name, response.Config)
 }
 
-func DirectInit(c *Configuration) {
-	initNats(c)
-	initScylla(c)
-}
-
-func initNats(c *Configuration) {
-	var nats_ []string
+func DirectInit(name string, c *Configuration) {
+	module = name
 	var err error
-
+	var nats_ []string
 	for _, n := range strings.Split(c.NatsUrl, ",") {
 		fmt.Printf("Nats configuration: nats://%s:4222\n", n)
 		nats_ = append(nats_, fmt.Sprintf("nats://%s:4222", n))
@@ -86,26 +80,38 @@ func initNats(c *Configuration) {
 		log.Fatal("Can not connect to NATS:", nats_)
 	}
 
+	/*init jetstream*/
 	JetStream, err = Connection.JetStream()
 	if err != nil {
-		log.Fatal("Init: " + err.Error())
+		Fatal("Init: " + err.Error())
 	}
+
+	/*init db*/
+	hosts := strings.Split(c.DBHost, ",")
+	initScylla(hosts, c.DBUsername, c.DBPassword, c.DBLocation)
+
+	Settings.Init()
+
+	/*registration*/
+	RegisterSignal(SETTING_UPDATE_CHANNEL+module, UpdateSettingHandler)
+	RegisterSignal(SETTING_REMOVE_CHANNEL+module, RemoveSettingHandler)
 }
 
-func initScylla(c *Configuration) {
-	hosts := strings.Split(c.DBHost, ",")
-	cluster := gocql.NewCluster(hosts...)
-	cluster.Authenticator = gocql.PasswordAuthenticator{Username: c.DBUsername, Password: c.DBPassword}
-	cluster.PoolConfig.HostSelectionPolicy = gocql.DCAwareRoundRobinPolicy(c.DBLocation)
+func initScylla(host []string, username string, password string, location string) {
+	cluster := gocql.NewCluster(host...)
+	cluster.Authenticator = gocql.PasswordAuthenticator{Username: username, Password: password}
+	cluster.PoolConfig.HostSelectionPolicy = gocql.DCAwareRoundRobinPolicy(location)
 	cluster.ConnectTimeout = time.Second * 10
 	cluster.DisableInitialHostLookup = true
 	cluster.Consistency = gocql.Quorum
 
-	log.Printf("Connecting to: %s\n", hosts)
+	//TODO: Config connect with TLS/SSL
+
+	log.Printf("Connect to db: %s\n", host)
 
 	var err error
 	DB, err = gocqlx.WrapSession(cluster.CreateSession())
 	if err != nil {
-		log.Fatalf("Can not create session: Host = %s, Error = %s ", hosts, err.Error())
+		Fatalf("Can not create session: Host = %s, Error = %s ", host, err.Error())
 	}
 }

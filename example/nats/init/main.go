@@ -9,9 +9,9 @@ const MODULE_CODE = "nats"
 
 func main() {
 	scyna.RemoteInit(scyna.RemoteConfig{
-		Url:     "https://localhost:8081",
-		Context: MODULE_CODE,
-		Secret:  "123456",
+		ManagerUrl: "https://localhost:8081",
+		Name:       MODULE_CODE,
+		Secret:     "123456",
 	})
 	defer scyna.Release()
 

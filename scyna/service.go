@@ -3,7 +3,6 @@ package scyna
 import (
 	"encoding/json"
 	"log"
-	reflect "reflect"
 	"time"
 
 	"github.com/nats-io/nats.go"
@@ -11,6 +10,7 @@ import (
 )
 
 type ServiceHandler[R proto.Message] func(ctx *Service, request R)
+type ServiceLiteHandler func(ctx *Service)
 
 func callService(url string, request proto.Message, response proto.Message) *Error {
 	trace := Trace{
@@ -26,8 +26,6 @@ func callService(url string, request proto.Message, response proto.Message) *Err
 func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	log.Println("Register Service: ", url)
 	var request R
-	ref := reflect.New(reflect.TypeOf(request).Elem())
-	request = ref.Interface().(R)
 
 	ctx := Service{
 		Context: Context{Logger{session: false}},
@@ -43,6 +41,8 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 		ctx.ID = ctx.Request.TraceID
 		ctx.Reply = m.Reply
 		ctx.Reset(ctx.ID)
+		ref := request.ProtoReflect().New()
+		request = ref.Interface().(R)
 
 		if ctx.Request.JSON {
 			if err := json.Unmarshal(ctx.Request.Body, request); err != nil {
@@ -63,7 +63,30 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	})
 
 	if err != nil {
-		log.Fatal("Can not register service:", url)
+		Fatal("Can not register service:", url)
+	}
+}
+
+func RegisterServiceLite(url string, handler ServiceLiteHandler) {
+	log.Println("Register Command:", url)
+	ctx := Service{
+		Context: Context{Logger{session: false}},
+	}
+
+	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {
+		if err := proto.Unmarshal(m.Data, &ctx.Request); err != nil {
+			log.Print("Register unmarshal error response data:", err.Error())
+			return
+		}
+
+		ctx.ID = ctx.Request.TraceID
+		ctx.Reply = m.Reply
+		ctx.Reset(ctx.ID)
+		handler(&ctx)
+	})
+
+	if err != nil {
+		Fatal("Can not register command:", url)
 	}
 }
 

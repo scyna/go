@@ -28,6 +28,3 @@ message EventOrSignal {
   string Data = 3;
   repeated uint64 Entities = 4;
 }
-
-message EmptyRequest {
-}

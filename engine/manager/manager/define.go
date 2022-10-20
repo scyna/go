@@ -3,8 +3,8 @@ package manager
 import "github.com/scyna/go/scyna"
 
 const (
-	ENGINE_CONTEXT = "scyna.engine"
-	ENGINE_SECRET  = "123456"
+	MODULE_CODE   = "scyna.engine"
+	MODULE_SECRET = "123456"
 )
 
 var DefaultConfig *scyna.Configuration = &scyna.Configuration{

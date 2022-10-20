@@ -23,9 +23,9 @@ func main() {
 	flag.Parse()
 
 	scyna.RemoteInit(scyna.RemoteConfig{
-		Url:     *managerUrl,
-		Context: MODULE_CODE,
-		Secret:  *secret_,
+		ManagerUrl: *managerUrl,
+		Name:       MODULE_CODE,
+		Secret:     *secret_,
 	})
 	scyna.UseDirectLog(3)
 	defer scyna.Release()

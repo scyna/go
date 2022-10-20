@@ -12,8 +12,9 @@ import (
 func CreateClient(s *scyna.Service, request *proto.Client) {
 	s.Logger.Info("Receive CreateClientRequest")
 
-	if validateClient(request) != nil {
+	if err := validateClient(request); err != nil {
 		s.Error(scyna.REQUEST_INVALID)
+		s.Logger.Error(err.Error())
 		return
 	}
 
@@ -24,6 +25,7 @@ func CreateClient(s *scyna.Service, request *proto.Client) {
 
 	if !utils.ValidatePassword(request.Secret) {
 		s.Error(scyna.REQUEST_INVALID)
+		s.Logger.Error("Password is too weak!")
 		return
 	}
 
@@ -35,11 +37,12 @@ func CreateClient(s *scyna.Service, request *proto.Client) {
 	}
 
 	s.Done(scyna.OK)
+	scyna.Connection.Publish(scyna.CLIENT_UPDATE_CHANNEL, []byte("Reload clients"))
 }
 
 func validateClient(request *proto.Client) error {
 	return validation.ValidateStruct(request,
-		validation.Field(&request.Id, validation.Required, validation.Length(5, 100)), //FIXME: name rules
-		validation.Field(&request.Secret, validation.Required, validation.Length(8, 50)),
+		validation.Field(&request.Id, validation.Required, validation.Length(2, 100)), //FIXME: name rules
+		validation.Field(&request.Secret, validation.Required, validation.Length(5, 50)),
 	)
 }

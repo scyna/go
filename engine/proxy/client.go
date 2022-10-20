@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"fmt"
+
 	"github.com/nats-io/nats.go"
 	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/scyna/go/scyna"
@@ -10,8 +11,6 @@ import (
 type Client struct {
 	ID     string `db:"id"`
 	Secret string `db:"secret"`
-	Type   string `db:"type"`
-	State  uint32 `db:"state"`
 }
 
 func (proxy *Proxy) initClients() {
@@ -30,7 +29,7 @@ func (proxy *Proxy) loadClients() map[string]Client {
 	var clients []Client
 
 	if err := qb.Select("scyna.client").
-		Columns("id", "secret", "type", "state").
+		Columns("id", "secret").
 		Query(scyna.DB).
 		SelectRelease(&clients); err == nil {
 		for _, c := range clients {

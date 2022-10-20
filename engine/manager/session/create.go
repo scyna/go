@@ -25,39 +25,18 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if request.Context == manager.ENGINE_CONTEXT {
+	if request.Module == manager.MODULE_CODE {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
-	if sid, err := createSession(request.Context, request.Secret); err == scyna.OK {
+	if sid, err := newSession(request.Module, request.Secret); err == scyna.OK {
 		var response scyna.CreateSessionResponse
 		response.SessionID = sid
 
-		// var value string
-		// if err := qb.Select("scyna.setting").
-		// 	Columns("value").
-		// 	Where(qb.Eq("module_code"), qb.Eq("key")).
-		// 	Limit(1).
-		// 	Query(scyna.DB).
-		// 	Bind(request.Context, scyna.SETTING_KEY).
-		// 	GetRelease(&value); err != nil {
-		// 	log.Println("Can not find module config for module " + request.Context + " - " + err.Error())
-		// }
+		/*TODO: load config from setting*/
 
-		// if len(value) > 0 {
-		// 	var config scyna.Configuration
-		// 	err := protojson.Unmarshal([]byte(value), &config)
-		// 	if err != nil {
-		// 		response.Config = manager.DefaultConfig
-		// 	} else {
-		// 		response.Config = &config
-		// 	}
-		// } else {
-		// 	response.Config = manager.DefaultConfig
-		// }
-
-		response.Config = manager.DefaultConfig //FIXME
+		response.Config = manager.DefaultConfig
 
 		if data, err := proto.Marshal(&response); err == nil {
 			w.WriteHeader(200)

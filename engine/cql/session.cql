@@ -4,12 +4,12 @@ DROP TABLE IF EXISTS session;
 CREATE TABLE session
 (
     id          bigint,
-    context_code text,
+    context     text,
     start       timestamp,
     last_update timestamp,
     end         timestamp,
     exit_code   int, /*normal, crash, ....*/
-    PRIMARY KEY (module_code, id) 
+    PRIMARY KEY (context, id) 
 );
 CREATE INDEX ON scyna.session (id);
 

@@ -106,7 +106,7 @@ func (proxy *Proxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 	trace.RequestBody = string(ctx.Request.Body)
 	ctx.Request.TraceID = callID
-	ctx.Request.Data = client.Type
+	//ctx.Request.Data = client.Type
 
 	/*serialize the request */
 	reqBytes, err := proto.Marshal(&ctx.Request)

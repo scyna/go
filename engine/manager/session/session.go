@@ -8,18 +8,18 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func Init(context string, secret string) {
-	if id, err := createSession(context, secret); err != scyna.OK {
-		log.Fatal("Error in create session")
+func Init(module string, secret string) {
+	if id, err := newSession(module, secret); err != scyna.OK {
+		scyna.Fatal("Error in create session")
 	} else {
-		scyna.Session = scyna.NewSession(id, context)
+		scyna.Session = scyna.NewSession(id)
 	}
 }
 
-func createSession(module string, secret string) (uint64, *scyna.Error) {
-	log.Print("Creating session for module: ", module)
+func newSession(module string, secret string) (uint64, *scyna.Error) {
+	log.Print("Creating session for context: ", module)
 	var secret_ string
-	if err := qb.Select("scyna.module").
+	if err := qb.Select("scyna.context").
 		Columns("secret").
 		Where(qb.Eq("code")).
 		Limit(1).
@@ -31,7 +31,7 @@ func createSession(module string, secret string) (uint64, *scyna.Error) {
 	}
 
 	if secret != secret_ {
-		log.Print("Module secret is not correct")
+		log.Print("Context secret is not correct")
 		return 0, scyna.PERMISSION_ERROR
 	}
 
@@ -39,7 +39,7 @@ func createSession(module string, secret string) (uint64, *scyna.Error) {
 	now := time.Now()
 
 	if err := qb.Insert("scyna.session").
-		Columns("id", "module_code", "start", "last_update").
+		Columns("id", "context", "start", "last_update").
 		Query(scyna.DB).
 		Bind(sid, module, now, now).
 		ExecRelease(); err != nil {

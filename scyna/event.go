@@ -51,7 +51,7 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 		if err := proto.Unmarshal(msg.Body, event); err == nil {
 			handler(&context, event)
 			// for _, entityID := range msg.Entities {
-			// 	addActivity(entityID, eventID)
+			// 	//addActivity(entityID, eventID)
 			// }
 			// TODO: update entity id to module_name.event_store
 		} else {
@@ -66,7 +66,7 @@ func (es *eventStream) start() {
 	sub, err := JetStream.PullSubscribe("", es.receiver, nats.BindStream(es.sender))
 
 	if err != nil {
-		log.Fatal("Error in start event stream:", err.Error())
+		Fatal("Error in start event stream - sender", es.sender, "- receiver", es.receiver, ":", err.Error())
 	}
 
 	go func() {
@@ -75,7 +75,12 @@ func (es *eventStream) start() {
 				if len(messages) == 1 {
 					m := messages[0]
 					if executor, ok := es.executors[m.Subject]; ok {
-						executor(m, 0) //FIXME
+						if ok, eventID := storeEvent(m); ok {
+							executor(m, eventID)
+						} else {
+							m.Nak()
+							continue
+						}
 					}
 					m.Ack()
 				}
@@ -91,7 +96,7 @@ func createOrGetEventStream(sender string) *eventStream {
 
 	stream := &eventStream{
 		sender:    sender,
-		receiver:  Session.context,
+		receiver:  module,
 		executors: make(map[string]func(m *nats.Msg, id int64)),
 	}
 

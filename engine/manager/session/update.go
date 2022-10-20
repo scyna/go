@@ -11,7 +11,7 @@ import (
 func Update(signal *scyna.UpdateSessionSignal) {
 	if applied, err := qb.Update("scyna.session").
 		Set("last_update").
-		Where(qb.Eq("id"), qb.Eq("module_code")).
+		Where(qb.Eq("id"), qb.Eq("context")).
 		Existing().
 		Query(scyna.DB).
 		Bind(time.Now(), signal.ID, signal.Module).

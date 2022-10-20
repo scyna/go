@@ -26,7 +26,7 @@ func CreateUser(s *scyna.Service, request *proto.User) {
 	//	return
 	//}
 
-	s.PostSync("account", user.ToDTO())
+	//s.PostSync("account", user.ToDTO())
 
 	s.Done(&proto.CreateUserResponse{Id: user.ID})
 }
