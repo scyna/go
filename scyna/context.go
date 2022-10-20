@@ -13,7 +13,7 @@ type Context struct {
 
 func (ctx *Context) PostEvent(channel string, data proto.Message) { // account_created
 	subject := context + "." + channel
-	msg := EventOrSignal{ParentID: ctx.ID}
+	msg := Event{ParentID: ctx.ID}
 	if data, err := proto.Marshal(data); err == nil {
 		msg.Body = data
 	}

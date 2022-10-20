@@ -35,7 +35,7 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 	}
 
 	stream.executors[subject] = func(m *nats.Msg, eventID int64) {
-		var msg EventOrSignal
+		var msg Event
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
 			return

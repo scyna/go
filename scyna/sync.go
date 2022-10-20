@@ -44,7 +44,7 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 			}
 			m := messages[0]
 
-			var msg EventOrSignal
+			var msg Event
 			if err := proto.Unmarshal(m.Data, &msg); err != nil {
 				log.Print("Register unmarshal error response data:", err.Error())
 				m.Ack()
