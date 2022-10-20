@@ -15,7 +15,7 @@ type EventHandler[R proto.Message] func(ctx *Context, data R)
 type eventStream struct {
 	sender    string
 	receiver  string
-	executors map[string]func(m *nats.Msg, id int64)
+	executors map[string]func(m *nats.Msg)
 }
 
 var eventStreams map[string]*eventStream = make(map[string]*eventStream)
@@ -34,7 +34,7 @@ func RegisterEvent[R proto.Message](sender string, channel string, handler Event
 		Type:      TRACE_EVENT,
 	}
 
-	stream.executors[subject] = func(m *nats.Msg, eventID int64) {
+	stream.executors[subject] = func(m *nats.Msg) {
 		var msg Event
 		if err := proto.Unmarshal(m.Data, &msg); err != nil {
 			log.Print("Register unmarshal error response data:", err.Error())
@@ -75,12 +75,7 @@ func (es *eventStream) start() {
 				if len(messages) == 1 {
 					m := messages[0]
 					if executor, ok := es.executors[m.Subject]; ok {
-						if ok, eventID := storeEvent(m); ok {
-							executor(m, eventID)
-						} else {
-							m.Nak()
-							continue
-						}
+						executor(m)
 					}
 					m.Ack()
 				}
@@ -97,7 +92,7 @@ func createOrGetEventStream(sender string) *eventStream {
 	stream := &eventStream{
 		sender:    sender,
 		receiver:  context,
-		executors: make(map[string]func(m *nats.Msg, id int64)),
+		executors: make(map[string]func(m *nats.Msg)),
 	}
 
 	eventStreams[sender] = stream
