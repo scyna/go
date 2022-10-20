@@ -94,13 +94,13 @@ message ServiceDoneSignal {
 
 /*SETTING*/
 message WriteSettingRequest {
-  string Module = 1;
+  string Context = 1;
   string Key = 2;
   string Value = 3;
 }
 
 message ReadSettingRequest {
-  string Module = 1;
+  string Context = 1;
   string Key = 2;
 }
 
@@ -109,18 +109,18 @@ message ReadSettingResponse {
 }
 
 message SettingUpdatedSignal {
-  string Module = 1;
+  string Context = 1;
   string Key = 2;
   string Value = 3;
 }
 
 message SettingRemovedSignal {
-  string Module = 1;
+  string Context = 1;
   string Key = 2;
 }
 
 message RemoveSettingRequest {
-  string Module = 1;
+  string Context = 1;
   string Key = 2;
 }
 
