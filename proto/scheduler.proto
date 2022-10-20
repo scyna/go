@@ -8,7 +8,7 @@ option  optimize_for = CODE_SIZE;
 option  go_package = "./;scyna";
 
 message StartTaskRequest {
-  string Module = 1;
+  string Context = 1;
   string Topic = 2;
   bytes  Data = 3;
   int64  Time = 4;     /* Unit: second */

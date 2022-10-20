@@ -25,12 +25,12 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if request.Module == manager.MODULE_CODE {
+	if request.Context == manager.CONTEXT_CODE {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
-	if sid, err := newSession(request.Module, request.Secret); err == scyna.OK {
+	if sid, err := newSession(request.Context, request.Secret); err == scyna.OK {
 		var response scyna.CreateSessionResponse
 		response.SessionID = sid
 

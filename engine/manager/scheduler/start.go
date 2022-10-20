@@ -31,7 +31,7 @@ func StartTask(s *scyna.Service, request *scyna.StartTaskRequest) {
 		"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
 		taskID, request.Topic, request.Data, start, start, request.Interval, request.Loop, 0, false)
 
-	qBatch.Query("INSERT INTO scyna.module_has_task(module, task_id) VALUES (?, ?);", request.Module, taskID)
+	qBatch.Query("INSERT INTO scyna.module_has_task(module, task_id) VALUES (?, ?);", request.Context, taskID)
 
 	bucket := GetBucket(start) // Generate period id
 	qBatch.Query("INSERT INTO scyna.todo(bucket, task_id) VALUES (?, ?);", bucket, taskID)
@@ -53,6 +53,6 @@ func validateStartTaskRequest(request *scyna.StartTaskRequest) error {
 	}
 	return validation.ValidateStruct(request,
 		validation.Field(&request.Topic, validation.Required, validation.Length(1, 255)),
-		validation.Field(&request.Module, validation.Required, validation.Length(1, 255)),
+		validation.Field(&request.Context, validation.Required, validation.Length(1, 255)),
 	)
 }

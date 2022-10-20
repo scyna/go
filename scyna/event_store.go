@@ -94,7 +94,7 @@ func storeEvent(m *nats.Msg) (bool, int64) {
 }
 
 func reserveBucket(bucket int64) error {
-	if applied, err := qb.Insert(module+".event_store").
+	if applied, err := qb.Insert(context+".event_store").
 		Columns("bucket", "id").
 		Unique().
 		Query(DB).
@@ -107,7 +107,7 @@ func reserveBucket(bucket int64) error {
 
 func getLastBucket() (int64, error) {
 	var lastBucket int64
-	if err := qb.Select(module + ".event_store").
+	if err := qb.Select(context + ".event_store").
 		Columns("id").
 		Where(qb.Eq("bucket")).
 		Query(DB).Bind(0).
@@ -119,7 +119,7 @@ func getLastBucket() (int64, error) {
 
 func getLastID(bucket int64) (int64, error) {
 	var lastID int64
-	if err := qb.Select(module + ".event_store").
+	if err := qb.Select(context + ".event_store").
 		Columns("id").
 		Where(qb.Eq("bucket")).
 		Query(DB).Bind(bucket).
@@ -131,7 +131,7 @@ func getLastID(bucket int64) (int64, error) {
 
 func appendEvent(id int64, m *nats.Msg) error {
 	bucket := id/es_BUCKET_SIZE + 1
-	if applied, err := qb.Insert(module+".event_store").
+	if applied, err := qb.Insert(context+".event_store").
 		Columns("bucket", "id", "subject", "data", "time").
 		Unique().
 		Query(DB).
@@ -149,7 +149,7 @@ func appendEvent(id int64, m *nats.Msg) error {
 func GetEvent(eventID int64) *EventStore {
 	var eventStore EventStore
 	bucket := eventID/es_BUCKET_SIZE + 1
-	if err := qb.Select(module+".event_store").
+	if err := qb.Select(context+".event_store").
 		Columns("bucket", "id", "subject", "data", "time", "entity_id").
 		Where(qb.Eq("bucket"), qb.Eq("id")).
 		Query(DB).

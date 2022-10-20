@@ -96,7 +96,7 @@ func createOrGetEventStream(sender string) *eventStream {
 
 	stream := &eventStream{
 		sender:    sender,
-		receiver:  module,
+		receiver:  context,
 		executors: make(map[string]func(m *nats.Msg, id int64)),
 	}
 

@@ -12,7 +12,7 @@ type Context struct {
 }
 
 func (ctx *Context) PostEvent(channel string, data proto.Message) { // account_created
-	subject := module + "." + channel
+	subject := context + "." + channel
 	msg := EventOrSignal{ParentID: ctx.ID}
 	if data, err := proto.Marshal(data); err == nil {
 		msg.Body = data
@@ -26,8 +26,8 @@ func (ctx *Context) PostEvent(channel string, data proto.Message) { // account_c
 func (ctx *Context) Schedule(task string, start time.Time, interval int64, data []byte, loop uint64) (*Error, uint64) {
 	var response StartTaskResponse
 	if err := ctx.CallService(START_TASK_URL, &StartTaskRequest{
-		Module:   module,
-		Topic:    fmt.Sprintf("%s.task.%s", module, task),
+		Context:  context,
+		Topic:    fmt.Sprintf("%s.task.%s", context, task),
 		Data:     data,
 		Time:     start.Unix(),
 		Interval: interval,
@@ -46,7 +46,7 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 		Time:     time.Now(),
 		Path:     url,
 		Type:     TRACE_SERVICE,
-		Source:   module,
+		Source:   context,
 	}
 	return callService_(&trace, url, request, response)
 }

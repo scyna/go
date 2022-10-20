@@ -27,7 +27,7 @@ func RegisterTask[R proto.Message](sender string, channel string, handler TaskHa
 		Type:      TRACE_TASK,
 	}
 
-	sub, err := JetStream.PullSubscribe(subject, durable, nats.BindStream(module))
+	sub, err := JetStream.PullSubscribe(subject, durable, nats.BindStream(context))
 
 	if err != nil {
 		Fatal("Error in start event stream:", err.Error())

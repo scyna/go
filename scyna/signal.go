@@ -16,7 +16,7 @@ func RegisterSignal[R proto.Message](channel string, handler SignalHandler[R]) {
 	ref := reflect.New(reflect.TypeOf(signal).Elem())
 	signal = ref.Interface().(R)
 
-	if _, err := Connection.QueueSubscribe(channel, module, func(m *nats.Msg) {
+	if _, err := Connection.QueueSubscribe(channel, context, func(m *nats.Msg) {
 		if err := proto.Unmarshal(m.Data, signal); err == nil {
 			handler(signal)
 		} else {

@@ -26,7 +26,7 @@ func NewSession(id uint64) *session {
 		for {
 			select {
 			case <-ticker.C:
-				EmitSignal(SESSION_UPDATE_CHANNEL, &UpdateSessionSignal{ID: ret.id, Module: module})
+				EmitSignal(SESSION_UPDATE_CHANNEL, &UpdateSessionSignal{ID: ret.id, Context: context})
 			case <-ret.quit:
 				ticker.Stop()
 				return

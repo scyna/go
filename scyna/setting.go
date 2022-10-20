@@ -12,7 +12,7 @@ type settings struct {
 }
 
 func (s *settings) Remove(key string) bool {
-	request := RemoveSettingRequest{Module: module, Key: key}
+	request := RemoveSettingRequest{Module: context, Key: key}
 	var response Error
 	if err := callService(SETTING_REMOVE_URL, &request, &response); err.Code == OK.GetCode() {
 		s.removed(key)
@@ -22,7 +22,7 @@ func (s *settings) Remove(key string) bool {
 }
 
 func (s *settings) Write(key string, value string) bool {
-	request := WriteSettingRequest{Module: module, Key: key, Value: value}
+	request := WriteSettingRequest{Module: context, Key: key, Value: value}
 	var response Error
 	if err := callService(SETTING_WRITE_URL, &request, &response); err.Code == OK.GetCode() {
 		s.updated(key, value)
@@ -41,7 +41,7 @@ func (s *settings) ReadString(key string) (bool, string) {
 	s.mutex.Unlock()
 
 	/*from manager*/
-	request := ReadSettingRequest{Module: module, Key: key}
+	request := ReadSettingRequest{Module: context, Key: key}
 	var response ReadSettingResponse
 	if err := callService(SETTING_READ_URL, &request, &response); err.Code == OK.GetCode() {
 		s.updated(key, response.Value)
@@ -78,13 +78,13 @@ func (s *settings) ReadObject(key string, value interface{}) bool {
 }
 
 func UpdateSettingHandler(data *SettingUpdatedSignal) {
-	if data.Module == module {
+	if data.Module == context {
 		Settings.updated(data.Key, data.Value)
 	}
 }
 
 func RemoveSettingHandler(data *SettingRemovedSignal) {
-	if data.Module == module {
+	if data.Module == context {
 		Settings.removed(data.Key)
 	}
 }

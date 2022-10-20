@@ -22,7 +22,7 @@ var ID generator
 var Settings settings
 
 var httpClient *http.Client
-var module string
+var context string
 var LOG *Logger
 
 func Release() {
