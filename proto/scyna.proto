@@ -23,8 +23,9 @@ message Response {
 }
 
 message Event {
-  uint64 ParentID = 1;
-  bytes  Body = 2;
-  string Data = 3;
-  uint64 AggregateID = 4;
+  uint64 AggregateID = 1;
+  uint64 Version = 2;
+  bytes  Body = 3;
+  string Data = 4;
+  uint64 TraceID = 5;
 }

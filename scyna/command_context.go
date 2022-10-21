@@ -35,7 +35,7 @@ func (ctx *Command) Error(e *Error) {
 	ctx.tag(uint32(response.Code), e)
 }
 
-func (ctx *Command) Done(r proto.Message, event string, eventData proto.Message) {
+func (ctx *Command) Done(r proto.Message, aggregate uint64, channel string, event proto.Message) {
 	response := Response{Code: 200}
 
 	var err error
@@ -49,9 +49,11 @@ func (ctx *Command) Done(r proto.Message, event string, eventData proto.Message)
 		response.Code = int32(500)
 		response.Body = []byte(err.Error())
 	} else {
-		/*TODO: add event to EventStore (batch)*/
-		/*TODO: commit*/
-		/*TODO: publish event*/
+		if !EventStore.Add(ctx, aggregate, channel, event) {
+			ctx.Error(SERVER_ERROR)
+			return
+		}
+		ctx.PostEvent(channel, event)
 	}
 
 	ctx.flush(&response)
