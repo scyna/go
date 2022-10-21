@@ -44,17 +44,18 @@ func (ctx *Command) Done(r proto.Message, event string, eventData proto.Message)
 	} else {
 		response.Body, err = proto.Marshal(r)
 	}
+
 	if err != nil {
 		response.Code = int32(500)
 		response.Body = []byte(err.Error())
+	} else {
+		/*TODO: add event to EventStore (batch)*/
+		/*TODO: commit*/
+		/*TODO: publish event*/
 	}
 
-	/*TODO: add event to EventStore (batch)*/
-	/*TODO: commit*/
-	/*TODO: publish event*/
-
 	ctx.flush(&response)
-	ctx.tag(200, r)
+	ctx.tag(uint32(response.Code), r)
 }
 
 func (ctx *Command) flush(response *Response) {

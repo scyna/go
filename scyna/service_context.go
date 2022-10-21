@@ -48,7 +48,7 @@ func (ctx *Service) Done(r proto.Message) {
 	}
 
 	ctx.flush(&response)
-	ctx.tag(200, r)
+	ctx.tag(uint32(response.Code), r)
 }
 
 func (ctx *Service) AuthDone(r proto.Message, token string, expired uint64) {
