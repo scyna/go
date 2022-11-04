@@ -12,4 +12,5 @@ const (
 	EVENT_CREATE_URL          = "/scyna/manager/event/create"
 	SYNC_CREATE_URL           = "/scyna/manager/sync/create"
 	TASK_CREATE_URL           = "/scyna/manager/task/create"
+	PROXY_REFRESH_URL         = "/scyna/manager/proxy/refresh"
 )

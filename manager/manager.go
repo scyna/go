@@ -9,6 +9,7 @@ import (
 	"github.com/scyna/go/manager/service/event"
 	"github.com/scyna/go/manager/service/module"
 	"github.com/scyna/go/manager/service/organization"
+	"github.com/scyna/go/manager/service/proxy"
 	"github.com/scyna/go/manager/service/service"
 	"github.com/scyna/go/manager/service/sync"
 	"github.com/scyna/go/manager/service/task"
@@ -41,5 +42,6 @@ func main() {
 	scyna.RegisterService(model.EVENT_CREATE_URL, event.CreateEvent)
 	scyna.RegisterService(model.SYNC_CREATE_URL, sync.CreateSync)
 	scyna.RegisterService(model.TASK_CREATE_URL, task.CreateTask)
+	scyna.RegisterService(model.PROXY_REFRESH_URL, proxy.Refresh)
 	scyna.Start()
 }

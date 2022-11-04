@@ -6,3 +6,4 @@ protoc -I=. --go_out=./generated sync.proto
 protoc -I=. --go_out=./generated event.proto
 protoc -I=. --go_out=./generated application.proto
 protoc -I=. --go_out=./generated task.proto
+protoc -I=. --go_out=./generated proxy.proto
