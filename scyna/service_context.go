@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -33,12 +34,17 @@ func (ctx *Service) Error(e *Error) {
 	ctx.tag(uint32(response.Code), e)
 }
 
+var jsonMarshaller = protojson.MarshalOptions{
+	EmitUnpopulated: true,
+	UseProtoNames:   true,
+}
+
 func (ctx *Service) Done(r proto.Message) {
 	response := Response{Code: 200}
 
 	var err error
 	if ctx.Request.JSON {
-		response.Body, err = json.Marshal(r)
+		response.Body, err = jsonMarshaller.Marshal(r)
 	} else {
 		response.Body, err = proto.Marshal(r)
 	}
