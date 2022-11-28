@@ -20,7 +20,6 @@ var Session *session
 var DB gocqlx.Session
 var ID generator
 var Settings settings
-var EventStore *eventStore
 
 var httpClient *http.Client
 var context string
