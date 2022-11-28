@@ -24,5 +24,5 @@ func TestMain(m *testing.M) {
 }
 
 func cleanup() {
-	//scyna.DB.Query("TRUNCATE ex.user", nil).ExecRelease()
+	scyna.DB.Query("TRUNCATE ex.user", nil).ExecRelease()
 }

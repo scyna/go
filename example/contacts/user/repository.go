@@ -33,11 +33,12 @@ func newGetQuery() *gocqlx.Queryx {
 }
 
 func (r *repository) GetByEmail(LOG scyna.Logger, email string) (*scyna.Error, *User) {
-	var query = r.GetQueries.GetQuery()
-	defer r.GetQueries.PutQuery(query)
-
 	var user User
-	if err := query.Bind(email).Get(&user); err != nil {
+	if err := qb.Select("ex.user").
+		Columns("id", "name", "email", "password").
+		Where(qb.Eq("email")).
+		Limit(1).
+		Query(scyna.DB).Bind(email).Get(&user); err != nil {
 		LOG.Error(err.Error())
 		return USER_NOT_EXISTED, nil
 	}
