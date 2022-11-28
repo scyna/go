@@ -12,6 +12,14 @@ type repository struct {
 
 var Repository *repository = &repository{GetQueries: scyna.NewQueryPool(newGetQuery)}
 
+func (r *repository) PrepareCreate(cmd *scyna.Command, user *User) {
+	cmd.Batch.Query("INSERT INTO ex.user(id, name, email, password) VALUES(?,?,?,?)",
+		user.ID,
+		user.Name,
+		user.Email,
+		user.Password)
+}
+
 func (r *repository) Create(LOG scyna.Logger, user *User) *scyna.Error {
 	if err := qb.Insert("ex.user").
 		Columns("id", "name", "email", "password").

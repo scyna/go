@@ -23,7 +23,8 @@ func CreateUserHandler(cmd *scyna.Command, request *proto.User) {
 	user := FromDTO(request)
 	user.ID = scyna.ID.Next()
 
-	cmd.Batch.Query("INSERT INTO ex.user(id, name, email, password) VALUES(?,?,?,?)", user.ID, user.Name, user.Email, user.Password)
+	Repository.PrepareCreate(cmd, user)
+
 	cmd.Done(&proto.CreateUserResponse{Id: user.ID},
 		user.ID,
 		"ex.user.user_created",
