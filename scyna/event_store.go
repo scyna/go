@@ -16,10 +16,10 @@ type eventStore struct {
 
 var EventStore *eventStore
 
-func InitEventStore(ctx string, name string) {
+func InitEventStore(keyspace string, name string) {
 	var version uint64 = 0
 
-	esTable := fmt.Sprintf("%s.%s_event_store", ctx, name)
+	esTable := fmt.Sprintf("%s.%s_event_store", keyspace, name)
 
 	if err := qb.Select(esTable).
 		Max("event_id").
@@ -32,8 +32,8 @@ func InitEventStore(ctx string, name string) {
 
 	EventStore = &eventStore{
 		version:       version,
-		esQuery:       fmt.Sprintf("INSERT INTO %s.%s_event_store(event_id, aggregate_id, channel, data) VALUES(?,?,?,?)", ctx, name),
-		activityQuery: fmt.Sprintf("INSERT INTO %s.%s_activity(aggregate_id, event_id) VALUES(?,?)", ctx, name),
+		esQuery:       fmt.Sprintf("INSERT INTO %s.%s_event_store(event_id, aggregate_id, channel, data) VALUES(?,?,?,?)", keyspace, name),
+		activityQuery: fmt.Sprintf("INSERT INTO %s.%s_activity(aggregate_id, event_id) VALUES(?,?)", keyspace, name),
 	}
 }
 
