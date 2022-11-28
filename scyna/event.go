@@ -66,7 +66,7 @@ func (es *eventStream) start() {
 	sub, err := JetStream.PullSubscribe("", es.receiver, nats.BindStream(es.sender))
 
 	if err != nil {
-		Fatal("Error in start event stream - sender", es.sender, "- receiver", es.receiver, ":", err.Error())
+		Fatal("Error in start event stream - sender ", es.sender, "- receiver ", es.receiver, " : ", err.Error())
 	}
 
 	go func() {
