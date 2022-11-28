@@ -19,21 +19,12 @@ CREATE TABLE ex.has_friend
     PRIMARY KEY(user_id, friend_id)
 );
 
-DROP TABLE IF EXISTS ex.user_event_store;
-CREATE TABLE ex.user_event_store
+DROP TABLE IF EXISTS ex.event_store;
+CREATE TABLE ex.event_store
 (
-    event_id        bigint,
-    aggregate_id    bigint,
+    event_id        bigint PRIMARY KEY,
+    entity_id       bigint,
     channel         text,
     data            blob,
-    PRIMARY KEY(event_id)
-);
-
-
-DROP TABLE IF EXISTS ex.user_activity;
-CREATE TABLE ex.user_activity
-(
-    aggregate_id    bigint,
-    event_id        bigint, 
-    PRIMARY KEY(aggregate_id, event_id)
+    time            time,
 );

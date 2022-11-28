@@ -11,7 +11,7 @@ import (
 
 func TestMain(m *testing.M) {
 	scyna_test.Init()
-	scyna.InitEventStore("ex", "user")
+	scyna.InitEventStore("ex")
 
 	/*register services*/
 	scyna.RegisterCommand(user.CREATE_USER_URL, user.CreateUserHandler)

@@ -9,19 +9,16 @@ import (
 )
 
 type eventStore struct {
-	version       uint64
-	esQuery       string
-	activityQuery string
+	version uint64
+	esQuery string
 }
 
 var EventStore *eventStore
 
-func InitEventStore(keyspace string, name string) {
+func InitEventStore(keyspace string) {
 	var version uint64 = 0
 
-	esTable := fmt.Sprintf("%s.%s_event_store", keyspace, name)
-
-	if err := qb.Select(esTable).
+	if err := qb.Select(keyspace + ".event_store").
 		Max("event_id").
 		Query(DB).
 		GetRelease(&version); err != nil {
@@ -31,9 +28,8 @@ func InitEventStore(keyspace string, name string) {
 	/*TODO: push last event*/
 
 	EventStore = &eventStore{
-		version:       version,
-		esQuery:       fmt.Sprintf("INSERT INTO %s.%s_event_store(event_id, aggregate_id, channel, data) VALUES(?,?,?,?)", keyspace, name),
-		activityQuery: fmt.Sprintf("INSERT INTO %s.%s_activity(aggregate_id, event_id) VALUES(?,?)", keyspace, name),
+		version: version,
+		esQuery: fmt.Sprintf("INSERT INTO %s.event_store(event_id, entity_id, channel, data) VALUES(?,?,?,?)", keyspace),
 	}
 }
 
@@ -47,7 +43,6 @@ func (es *eventStore) Add(ctx *Command, aggregate uint64, channel string, event 
 	}
 
 	ctx.Batch.Query(es.esQuery, id, aggregate, channel, bytes)
-	ctx.Batch.Query(es.activityQuery, aggregate, id)
 
 	if err := DB.ExecuteBatch(ctx.Batch); err == nil {
 		es.version = id
