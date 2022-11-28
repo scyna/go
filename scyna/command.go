@@ -21,7 +21,7 @@ func RegisterCommand[R proto.Message](url string, handler CommandHandler[R]) {
 	ctx := Command{
 		Context: Context{Logger{session: false}},
 		request: request,
-		batch:   DB.NewBatch(gocql.UnloggedBatch),
+		Batch:   DB.NewBatch(gocql.UnloggedBatch),
 	}
 
 	_, err := Connection.QueueSubscribe(SubscriberURL(url), "API", func(m *nats.Msg) {

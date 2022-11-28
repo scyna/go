@@ -16,6 +16,12 @@ message CreateUserResponse {
   uint64 id = 1;
 }
 
+message UserCreated{
+  uint64 id = 1;
+  string email = 2;
+  string name = 3;
+}
+
 /*UPDATE*/
 //message UpdateUserRequest = User
 //message UpdateUserResponse = Nothing

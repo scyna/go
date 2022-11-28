@@ -5,27 +5,30 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func CreateUserHandler(s *scyna.Command, request *proto.User) {
-	s.Logger.Info("Receive CreateUserRequest")
+const CreateUserUrl = "/scyna.example/user/create"
+
+func CreateUserHandler(cmd *scyna.Command, request *proto.User) {
+	cmd.Logger.Info("Receive CreateUserRequest")
 	if err := validateCreateUserRequest(request); err != nil {
-		s.Error(scyna.REQUEST_INVALID)
+		cmd.Error(scyna.REQUEST_INVALID)
 		return
 	}
 
-	if err, _ := Repository.GetByEmail(s.Logger, request.Email); err == nil {
-		s.Error(USER_EXISTED)
+	if err, _ := Repository.GetByEmail(cmd.Logger, request.Email); err == nil {
+		cmd.Error(USER_EXISTED)
 		return
+
 	}
 
 	user := FromDTO(request)
 	user.ID = scyna.ID.Next()
 
-	//if err := Repository.Create(s.Logger, user); err != nil {
-	//	s.Error(err)
-	//	return
-	//}
-
-	//s.PostSync("account", user.ToDTO())
-
-	s.Done(&proto.CreateUserResponse{Id: user.ID}, user.ID, "ex.user.user_created", nil) //FIXME
+	cmd.Batch.Query("INSERT INTO ex.user(id, name, email, password) VALUES(?,?,?,?)", user.ID, user.Name, user.Email, user.Password)
+	cmd.Done(&proto.CreateUserResponse{Id: user.ID},
+		user.ID,
+		"ex.user.user_created",
+		&proto.UserCreated{
+			Id:    user.ID,
+			Name:  user.Name,
+			Email: user.Email})
 }

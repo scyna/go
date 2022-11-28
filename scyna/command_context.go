@@ -14,7 +14,7 @@ type Command struct {
 	Request Request
 	Reply   string
 	request proto.Message
-	batch   *gocql.Batch
+	Batch   *gocql.Batch
 }
 
 func (ctx *Command) Error(e *Error) {

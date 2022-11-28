@@ -15,7 +15,6 @@ func main() {
 	})
 	defer scyna.Release()
 
-	scyna.RegisterService("/scyna.example/user/create", user.CreateUser)
-	scyna.RegisterSync("channel", "receiver", user.HandlerSyncMessage)
+	scyna.RegisterCommand("/scyna.example/user/create", user.CreateUserHandler)
 	scyna.Start()
 }

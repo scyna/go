@@ -139,6 +139,69 @@ func (x *CreateUserResponse) GetId() uint64 {
 	return 0
 }
 
+type UserCreated struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id    uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Email string `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Name  string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (x *UserCreated) Reset() {
+	*x = UserCreated{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_API_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserCreated) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserCreated) ProtoMessage() {}
+
+func (x *UserCreated) ProtoReflect() protoreflect.Message {
+	mi := &file_API_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserCreated.ProtoReflect.Descriptor instead.
+func (*UserCreated) Descriptor() ([]byte, []int) {
+	return file_API_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *UserCreated) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *UserCreated) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *UserCreated) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 //GET
 type GetUserByEmailRequest struct {
 	state         protoimpl.MessageState
@@ -151,7 +214,7 @@ type GetUserByEmailRequest struct {
 func (x *GetUserByEmailRequest) Reset() {
 	*x = GetUserByEmailRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_API_proto_msgTypes[2]
+		mi := &file_API_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -164,7 +227,7 @@ func (x *GetUserByEmailRequest) String() string {
 func (*GetUserByEmailRequest) ProtoMessage() {}
 
 func (x *GetUserByEmailRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_API_proto_msgTypes[2]
+	mi := &file_API_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -177,7 +240,7 @@ func (x *GetUserByEmailRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserByEmailRequest.ProtoReflect.Descriptor instead.
 func (*GetUserByEmailRequest) Descriptor() ([]byte, []int) {
-	return file_API_proto_rawDescGZIP(), []int{2}
+	return file_API_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetUserByEmailRequest) GetEmail() string {
@@ -198,7 +261,7 @@ type GetUserByIDRequest struct {
 func (x *GetUserByIDRequest) Reset() {
 	*x = GetUserByIDRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_API_proto_msgTypes[3]
+		mi := &file_API_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -211,7 +274,7 @@ func (x *GetUserByIDRequest) String() string {
 func (*GetUserByIDRequest) ProtoMessage() {}
 
 func (x *GetUserByIDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_API_proto_msgTypes[3]
+	mi := &file_API_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -224,7 +287,7 @@ func (x *GetUserByIDRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserByIDRequest.ProtoReflect.Descriptor instead.
 func (*GetUserByIDRequest) Descriptor() ([]byte, []int) {
-	return file_API_proto_rawDescGZIP(), []int{3}
+	return file_API_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetUserByIDRequest) GetId() uint64 {
@@ -246,7 +309,7 @@ type ListFriendRequest struct {
 func (x *ListFriendRequest) Reset() {
 	*x = ListFriendRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_API_proto_msgTypes[4]
+		mi := &file_API_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -259,7 +322,7 @@ func (x *ListFriendRequest) String() string {
 func (*ListFriendRequest) ProtoMessage() {}
 
 func (x *ListFriendRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_API_proto_msgTypes[4]
+	mi := &file_API_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -272,7 +335,7 @@ func (x *ListFriendRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListFriendRequest.ProtoReflect.Descriptor instead.
 func (*ListFriendRequest) Descriptor() ([]byte, []int) {
-	return file_API_proto_rawDescGZIP(), []int{4}
+	return file_API_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ListFriendRequest) GetEmail() string {
@@ -293,7 +356,7 @@ type ListFriendResponse struct {
 func (x *ListFriendResponse) Reset() {
 	*x = ListFriendResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_API_proto_msgTypes[5]
+		mi := &file_API_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -306,7 +369,7 @@ func (x *ListFriendResponse) String() string {
 func (*ListFriendResponse) ProtoMessage() {}
 
 func (x *ListFriendResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_API_proto_msgTypes[5]
+	mi := &file_API_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -319,7 +382,7 @@ func (x *ListFriendResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListFriendResponse.ProtoReflect.Descriptor instead.
 func (*ListFriendResponse) Descriptor() ([]byte, []int) {
-	return file_API_proto_rawDescGZIP(), []int{5}
+	return file_API_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ListFriendResponse) GetItems() []*User {
@@ -341,19 +404,24 @@ var file_API_proto_rawDesc = []byte{
 	0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x24, 0x0a, 0x12, 0x43, 0x72, 0x65,
 	0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
 	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x22,
-	0x2d, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x42, 0x79, 0x45, 0x6d, 0x61, 0x69,
-	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69,
-	0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x22, 0x24,
-	0x0a, 0x12, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x42, 0x79, 0x49, 0x44, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04,
-	0x52, 0x02, 0x69, 0x64, 0x22, 0x29, 0x0a, 0x11, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x72, 0x69, 0x65,
-	0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61,
-	0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x22,
-	0x31, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1b, 0x0a, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x18, 0x01,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x05, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x05, 0x69, 0x74, 0x65,
-	0x6d, 0x73, 0x42, 0x13, 0x50, 0x01, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa,
-	0x02, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x47, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x14,
+	0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65,
+	0x6d, 0x61, 0x69, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x2d, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x55,
+	0x73, 0x65, 0x72, 0x42, 0x79, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x22, 0x24, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x55, 0x73,
+	0x65, 0x72, 0x42, 0x79, 0x49, 0x44, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x22, 0x29, 0x0a,
+	0x11, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x22, 0x31, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74,
+	0x46, 0x72, 0x69, 0x65, 0x6e, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1b,
+	0x0a, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x05, 0x2e,
+	0x55, 0x73, 0x65, 0x72, 0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x42, 0x13, 0x50, 0x01, 0x5a,
+	0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0xaa, 0x02, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -368,14 +436,15 @@ func file_API_proto_rawDescGZIP() []byte {
 	return file_API_proto_rawDescData
 }
 
-var file_API_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_API_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_API_proto_goTypes = []interface{}{
 	(*User)(nil),                  // 0: User
 	(*CreateUserResponse)(nil),    // 1: CreateUserResponse
-	(*GetUserByEmailRequest)(nil), // 2: GetUserByEmailRequest
-	(*GetUserByIDRequest)(nil),    // 3: GetUserByIDRequest
-	(*ListFriendRequest)(nil),     // 4: ListFriendRequest
-	(*ListFriendResponse)(nil),    // 5: ListFriendResponse
+	(*UserCreated)(nil),           // 2: UserCreated
+	(*GetUserByEmailRequest)(nil), // 3: GetUserByEmailRequest
+	(*GetUserByIDRequest)(nil),    // 4: GetUserByIDRequest
+	(*ListFriendRequest)(nil),     // 5: ListFriendRequest
+	(*ListFriendResponse)(nil),    // 6: ListFriendResponse
 }
 var file_API_proto_depIdxs = []int32{
 	0, // 0: ListFriendResponse.items:type_name -> User
@@ -417,7 +486,7 @@ func file_API_proto_init() {
 			}
 		}
 		file_API_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserByEmailRequest); i {
+			switch v := v.(*UserCreated); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -429,7 +498,7 @@ func file_API_proto_init() {
 			}
 		}
 		file_API_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserByIDRequest); i {
+			switch v := v.(*GetUserByEmailRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -441,7 +510,7 @@ func file_API_proto_init() {
 			}
 		}
 		file_API_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListFriendRequest); i {
+			switch v := v.(*GetUserByIDRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -453,6 +522,18 @@ func file_API_proto_init() {
 			}
 		}
 		file_API_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListFriendRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_API_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListFriendResponse); i {
 			case 0:
 				return &v.state
@@ -471,7 +552,7 @@ func file_API_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_API_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

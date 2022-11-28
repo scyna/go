@@ -20,12 +20,13 @@ func InitEventStore(name string) *eventStore {
 	esTable := fmt.Sprintf("%s.%s_event_store", context, name)
 
 	if err := qb.Select(esTable).
-		Columns("max(event_id)"). //FIXME
-		Limit(1).
+		Max("event_id").
 		Query(DB).
 		GetRelease(&version); err != nil {
 		log.Fatal("Can not init EventStore")
 	}
+
+	/*TODO: push last event*/
 
 	return &eventStore{
 		version:       version,
@@ -43,10 +44,10 @@ func (es *eventStore) Add(ctx *Command, aggregate uint64, channel string, event 
 		return false
 	}
 
-	ctx.batch.Query(es.esQuery, id, aggregate, channel, bytes)
-	ctx.batch.Query(es.activityQuery, aggregate, id)
+	ctx.Batch.Query(es.esQuery, id, aggregate, channel, bytes)
+	ctx.Batch.Query(es.activityQuery, aggregate, id)
 
-	if err := DB.ExecuteBatch(ctx.batch); err == nil {
+	if err := DB.ExecuteBatch(ctx.Batch); err == nil {
 		es.version = id
 		return true
 	}
