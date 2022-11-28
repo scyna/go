@@ -107,7 +107,7 @@ func sendSyncRequest(request *http.Request) bool {
 		bodyString := string(bodyBytes)
 		LOG.Info(fmt.Sprintf("Sync: %s - %d - %s", request.URL, response.StatusCode, bodyString))
 
-		if response.StatusCode == 500 {
+		if response.StatusCode >= 500 && response.StatusCode <= 599 {
 			return false
 		}
 	}
