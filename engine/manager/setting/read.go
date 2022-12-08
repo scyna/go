@@ -1,6 +1,7 @@
 package setting
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/scylladb/gocqlx/v2/qb"
@@ -18,7 +19,7 @@ func Read(s *scyna.Service, request *scyna.ReadSettingRequest) {
 		Query(scyna.DB).
 		Bind(request.Module, request.Key).
 		GetRelease(&value); err != nil {
-		s.Logger.Info("Can not read setting - " + err.Error())
+		s.Logger.Info(fmt.Sprintf("Cannot read setting: %s - request = %s\n", err.Error(), request.String()))
 		s.Error(scyna.REQUEST_INVALID)
 		return
 	}
