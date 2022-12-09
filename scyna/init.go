@@ -44,7 +44,7 @@ func RemoteInit(config RemoteConfig) {
 	}
 
 	if res.StatusCode != 200 {
-		log.Fatal("Error in autheticate")
+		log.Fatalf("Error in autheticate: cannot create: %s with password: %s", config.Name, config.Secret)
 	}
 
 	resBody, err := io.ReadAll(res.Body)
