@@ -75,12 +75,8 @@ func (es *eventStream) start() {
 				if len(messages) == 1 {
 					m := messages[0]
 					if executor, ok := es.executors[m.Subject]; ok {
-						if ok, eventID := storeEvent(m); ok {
-							executor(m, eventID)
-						} else {
-							m.Nak()
-							continue
-						}
+						_, eventID := storeEvent(m)
+						executor(m, eventID)
 					}
 					m.Ack()
 				}
