@@ -42,7 +42,10 @@ func (ctx *Context) PostEventAndActivity(channel string, data proto.Message, ent
 	}
 
 	if data, err := proto.Marshal(&msg); err == nil {
-		JetStream.Publish(subject, data)
+		_, err := JetStream.Publish(subject, data)
+		if err != nil {
+			ctx.Logger.Error(fmt.Sprintf("Publish to jetstream: %s\n", err.Error()))
+		}
 	}
 }
 
