@@ -23,6 +23,7 @@ func CreateStreamForModule(module string) error {
 		Subjects: []string{module + ".>"},
 		Storage:  nats.FileStorage,
 		MaxAge:   time.Hour * 24 * 7, //keep for a week
+		Replicas: 2,
 	}); err != nil {
 		log.Print("Create stream for module " + module + ": Error: " + err.Error())
 		return err
