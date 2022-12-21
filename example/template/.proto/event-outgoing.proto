@@ -1,0 +1,8 @@
+syntax = "proto3";
+package proto;
+option  optimize_for = CODE_SIZE;
+option  go_package = "./;proto";
+
+message NameCreated {
+  string name = 1;
+}

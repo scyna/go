@@ -5,4 +5,5 @@ use (
 	./example
 	./manager
 	./scyna
+	./example/template
 )
