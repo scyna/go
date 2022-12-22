@@ -2,6 +2,7 @@ package scyna
 
 import (
 	"encoding/json"
+	"google.golang.org/protobuf/encoding/protojson"
 	"log"
 	"time"
 
@@ -78,6 +79,15 @@ func callService_(trace *Trace, url string, request proto.Message, response prot
 			return BAD_REQUEST
 		}
 	}
+
+	defer EmitSignalLite(
+		TAG_CREATED_CHANNEL,
+		&TagCreatedSignal{
+			TraceID: trace.ID,
+			Key:     "request",
+			Value:   protojson.Format(request),
+		},
+	)
 
 	if data, err := proto.Marshal(&req); err == nil {
 		if msg, err := Connection.Request(PublishURL(url), data, 10*time.Second); err == nil {
