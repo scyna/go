@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 
+	"template/event"
+	"template/model"
+	"template/service"
+
 	"github.com/scyna/go/scyna"
-	"vf.support/event"
-	"vf.support/model"
-	"vf.support/service"
 )
 
 const MODULE_CODE = "vf_support"

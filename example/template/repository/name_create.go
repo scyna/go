@@ -1,9 +1,10 @@
 package repository
 
 import (
+	"template/model"
+
 	"github.com/gocql/gocql"
 	"github.com/scyna/go/scyna"
-	"vf.support/model"
 )
 
 func CreateName(LOG scyna.Logger, name string) *scyna.Error {

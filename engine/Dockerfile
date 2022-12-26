@@ -1,4 +1,4 @@
-FROM golang:1.18.4-alpine3.16 AS build-env
+FROM golang:1.18.9-alpine3.17 AS build-env
 
 ENV GO111MODULE=on
 
@@ -10,11 +10,12 @@ COPY ./manager/ ./manager
 COPY ./engine.go ./engine.go
 COPY ./go.mod ./go.mod
 
-RUN go mod tidy
+RUN go env
+RUN go mod tidy -e -v
 RUN go get github.com/scyna/go/scyna@latest
 RUN go build -o ./application .
 
-FROM alpine:3.16
+FROM alpine:3.17
 
 WORKDIR /app
 
