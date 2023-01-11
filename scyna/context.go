@@ -104,6 +104,18 @@ func (ctx *Context) CallService(url string, request proto.Message, response prot
 	return callService_(&trace, url, request, response)
 }
 
+func (ctx *Context) CallEndpoint(url string, request proto.Message, response proto.Message) *Error {
+	trace := Trace{
+		ID:       ID.Next(),
+		ParentID: ctx.ID,
+		Time:     time.Now(),
+		Path:     url,
+		Type:     TRACE_SERVICE,
+		Source:   module,
+	}
+	return callEndpoint_(&trace, url, request, response)
+}
+
 func (ctx *Context) Tag(key string, value string) {
 	if ctx.ID == 0 {
 		return
