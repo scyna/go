@@ -13,17 +13,6 @@ import (
 
 type EndpointHandler[R proto.Message] func(ctx *Endpoint, request R) *Error
 
-func callEndpoint(url string, request proto.Message, response proto.Message) *Error {
-	trace := Trace{
-		ID:       ID.Next(),
-		ParentID: 0,
-		Time:     time.Now(),
-		Path:     url,
-		Type:     TRACE_SERVICE,
-	}
-	return callEndpoint_(&trace, url, request, response)
-}
-
 func RegisterEndpoint[R proto.Message](url string, handler EndpointHandler[R]) {
 	log.Println("Register Service: ", url)
 	var request R
