@@ -2,9 +2,10 @@ package scyna
 
 import (
 	"encoding/json"
-	"google.golang.org/protobuf/encoding/protojson"
 	"log"
 	"time"
+
+	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
@@ -70,7 +71,7 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 func callService_(trace *Trace, url string, request proto.Message, response proto.Message) *Error {
 	defer trace.Record()
 
-	req := Request{TraceID: trace.ID, JSON: false}
+	req := Request{TraceID: trace.ID, JSON: false, Data: module}
 	res := Response{}
 
 	if request != nil {
