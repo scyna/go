@@ -9,7 +9,7 @@ WORKDIR  /workspace/vinfast
 WORKDIR  /workspace/vinfast
 
 RUN go mod tidy
-RUN go get github.com/scyna/go/scyna@latest
+
 
 RUN go build -o ./application .
 

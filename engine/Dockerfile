@@ -12,7 +12,7 @@ COPY ./go.mod ./go.mod
 
 RUN go env
 RUN go mod tidy -e -v
-RUN go get github.com/scyna/go/scyna@latest
+
 RUN go build -o ./application .
 
 FROM alpine:3.17
