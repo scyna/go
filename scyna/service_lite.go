@@ -7,9 +7,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type CommandHandler func(ctx *Service)
+type ServiceLiteHandler func(ctx *Service)
 
-func RegisterCommand(url string, handler CommandHandler) {
+func RegisterServiceLite(url string, handler ServiceLiteHandler) {
 	log.Println("Register Command:", url)
 	ctx := Service{
 		Context: Context{Logger{session: false}},

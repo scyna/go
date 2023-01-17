@@ -56,7 +56,7 @@ func main() {
 	scyna.UseDirectLog(5)
 
 	/* generator */
-	scyna.RegisterCommand(scyna.GEN_GET_ID_URL, generator.GetID)
+	scyna.RegisterServiceLite(scyna.GEN_GET_ID_URL, generator.GetID)
 	scyna.RegisterService(scyna.GEN_GET_SN_URL, generator.GetSN)
 
 	/*logging*/

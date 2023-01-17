@@ -1,11 +1,12 @@
 package service
 
 import (
+	proto "template/.proto/generated"
+	"template/model"
+	"template/repository"
+
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/scyna/go/scyna"
-	proto "vf.support/.proto/generated"
-	"vf.support/model"
-	"vf.support/repository"
 )
 
 func CreateName(s *scyna.Service, request *proto.CreateNameRequest) {

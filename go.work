@@ -3,7 +3,7 @@ go 1.18
 use (
 	./engine
 	./example
+	./example/template
 	./manager
 	./scyna
-	./example/template
 )

@@ -11,24 +11,13 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type ServiceHandler[R proto.Message] func(ctx *Service, request R)
+type EndpointHandler[R proto.Message] func(ctx *Endpoint, request R) *Error
 
-func callService(url string, request proto.Message, response proto.Message) *Error {
-	trace := Trace{
-		ID:       ID.Next(),
-		ParentID: 0,
-		Time:     time.Now(),
-		Path:     url,
-		Type:     TRACE_SERVICE,
-	}
-	return callService_(&trace, url, request, response)
-}
-
-func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
+func RegisterEndpoint[R proto.Message](url string, handler EndpointHandler[R]) {
 	log.Println("Register Service: ", url)
 	var request R
 
-	ctx := Service{
+	ctx := Endpoint{
 		Context: Context{Logger{session: false}},
 		request: request,
 	}
@@ -41,6 +30,7 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 
 		ctx.ID = ctx.Request.TraceID
 		ctx.Reply = m.Reply
+		ctx.finished = false
 		ctx.Reset(ctx.ID)
 		ref := request.ProtoReflect().New()
 		request = ref.Interface().(R)
@@ -49,16 +39,22 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 			if err := json.Unmarshal(ctx.Request.Body, request); err != nil {
 				log.Print("Bad Request: " + err.Error())
 				ctx.Error(BAD_REQUEST)
-			} else {
-				handler(&ctx, request)
 			}
-
 		} else {
 			if err := proto.Unmarshal(ctx.Request.Body, request); err != nil {
 				log.Print("Bad Request: " + err.Error())
 				ctx.Error(BAD_REQUEST)
+			}
+		}
+
+		if !ctx.finished {
+			ret := handler(&ctx, request)
+			if ret == OK {
+				if !ctx.finished {
+					ctx.Done(OK)
+				}
 			} else {
-				handler(&ctx, request)
+				ctx.Error(ret)
 			}
 		}
 	})
@@ -68,10 +64,10 @@ func RegisterService[R proto.Message](url string, handler ServiceHandler[R]) {
 	}
 }
 
-func callService_(trace *Trace, url string, request proto.Message, response proto.Message) *Error {
+func callEndpoint_(trace *Trace, url string, request proto.Message, response proto.Message) *Error {
 	defer trace.Record()
 
-	req := Request{TraceID: trace.ID, JSON: false, Data: module}
+	req := Request{TraceID: trace.ID, JSON: false}
 	res := Response{}
 
 	if request != nil {
