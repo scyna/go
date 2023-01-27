@@ -10,8 +10,7 @@ COPY ./manager/ ./manager
 COPY ./engine.go ./engine.go
 COPY ./go.mod ./go.mod
 
-RUN go env
-RUN go mod tidy -e -v
+RUN go mod tidy -v
 
 RUN go build -o ./application .
 

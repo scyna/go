@@ -48,6 +48,8 @@ github.com/scylladb/gocqlx/v2 v2.7.0 h1:/w1VeJHCEAsg9eTculTvIS9eIe/VmEu0clhlH1CF
 github.com/scylladb/gocqlx/v2 v2.7.0/go.mod h1:jKhM0/LkEAhEOSwd10TCMQdlC5x8aEzK7cXjQcPyMJ0=
 github.com/scyna/go/scyna v0.0.0-20220825040035-c413b5d6ccc8 h1:gDuJPb5oN3JMrV2OkI0nbJkpxh0H6UD16cc7WQHKldE=
 github.com/scyna/go/scyna v0.0.0-20220825040035-c413b5d6ccc8/go.mod h1:dPkjCHyJVpknMz7tNRV/eMWFFo+PU+fjTJwxdgZZIIM=
+github.com/scyna/go/scyna v0.0.0-20230117025741-2ba4bb52de64 h1:aK+9Rr4eJ1NXimeuwZ6xulVsfYNWIuTm4vsBz52n5jk=
+github.com/scyna/go/scyna v0.0.0-20230117025741-2ba4bb52de64/go.mod h1:Rz0ovqgjtdohfrj/ESZgbco3DttcDMbcm5yy2A5g3dA=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=

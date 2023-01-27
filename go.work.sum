@@ -10,6 +10,7 @@ github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/nats-io/nats.go v1.15.0/go.mod h1:BPko4oXsySz4aSWeFgOHLZs3G4Jq4ZAyE6/zMCxRT6w=
 github.com/scyna/go v0.2.9 h1:s1ryq2LobHBLUW6F/waKe/GrKc+Cis2xLcE4yt5usyI=
 github.com/scyna/go v0.2.9/go.mod h1:tmKYbfOZZzviSZg5M9SH8AaZ+8QOQEhTFD8cwlc1PIs=
+github.com/scyna/go/manager v0.0.0-20230117025741-2ba4bb52de64/go.mod h1:XQTzldt76RHD4coQsVJNmal3S2zf1gov6kUOurSwgfc=
 github.com/scyna/go/scyna v0.0.0-20220512030619-99a437576b42/go.mod h1:YxK43DDoBgvtiKISUJRSx6HlqCZQxbgzI2cMufhIp0c=
 golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
 golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2/go.mod h1:9nx3DQGgdP8bBQD5qxJ1jj9UTztislL4KSBs9R2vV5Y=

@@ -7,7 +7,7 @@ require (
 	github.com/gocql/gocql v1.3.1
 	github.com/nats-io/nats.go v1.14.0
 	github.com/scylladb/gocqlx/v2 v2.7.0
-	github.com/scyna/go/scyna v0.0.0-20220825040035-c413b5d6ccc8
+	github.com/scyna/go/scyna v0.0.0-20230117025741-2ba4bb52de64
 	google.golang.org/protobuf v1.28.1
 )
 
