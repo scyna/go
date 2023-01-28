@@ -19,10 +19,16 @@ func DeleteStream(name string) error {
 
 func CreateStreamForModule(module string) error {
 	if _, err := scyna.JetStream.AddStream(&nats.StreamConfig{
-		Name:     module,
-		Subjects: []string{module + ".>"},
-		Storage:  nats.FileStorage,
-		MaxAge:   time.Hour * 24 * 7, //keep for a week
+		Name:         module,
+		Subjects:     []string{module + ".>"},
+		Storage:      nats.FileStorage,
+		MaxAge:       time.Hour * 24 * 7, //keep for a week
+		Replicas:     3,
+		Retention:    nats.LimitsPolicy,
+		MaxMsgs:      -1,
+		MaxConsumers: -1,
+		MaxBytes:     -1,
+		MaxMsgSize:   -1,
 	}); err != nil {
 		log.Print("Create stream for module " + module + ": Error: " + err.Error())
 		return err
