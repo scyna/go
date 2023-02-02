@@ -29,3 +29,7 @@ message StreamInfo {
 message ListStreamResponse {
   repeated StreamInfo streams = 1;
 }
+
+message UpdateStreamRequest {
+  string name = 1;
+}

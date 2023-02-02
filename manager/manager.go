@@ -49,6 +49,8 @@ func main() {
 	scyna.RegisterService(model.NATS_ADD_STREAM_URL, nats_manager.AddStream)
 	scyna.RegisterService(model.NATS_DELETE_STREAM_URL, nats_manager.DeleteStream)
 	scyna.RegisterService(model.NATS_LIST_STREAM_URL, nats_manager.ListStream)
-	// scyna.RegisterService(model.NATS_DELETE_STREAM_URL, proxy.Refresh)
+	scyna.RegisterService(model.NATS_GET_STREAM_URL, nats_manager.GetStream)
+	scyna.RegisterService(model.NATS_UPDATE_STREAM_URL, nats_manager.UpdateStream)
+
 	scyna.Start()
 }

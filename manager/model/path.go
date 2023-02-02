@@ -17,4 +17,5 @@ const (
 	NATS_ADD_STREAM_URL       = "/scyna/manager/nats/add-stream"
 	NATS_GET_STREAM_URL       = "/scyna/manager/nats/get-stream"
 	NATS_DELETE_STREAM_URL    = "/scyna/manager/nats/delete-stream"
+	NATS_UPDATE_STREAM_URL    = "/scyna/manager/nats/update-stream"
 )

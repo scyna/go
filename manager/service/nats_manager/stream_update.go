@@ -7,9 +7,8 @@ import (
 	"github.com/scyna/go/scyna"
 )
 
-func GetStream(s *scyna.Service, request *proto.DeleteStreamRequest) {
+func UpdateStream(s *scyna.Service, request *proto.UpdateStreamRequest) {
 	s.Logger.Info(fmt.Sprintf("%s\n", request.String()))
-
 	// TODO
 	s.Done(scyna.OK)
 }
