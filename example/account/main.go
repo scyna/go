@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"github.com/scyna/go/example/account/model"
+	"github.com/scyna/go/example/account/service"
 
 	"github.com/scyna/go/scyna"
 )
@@ -19,6 +21,9 @@ func main() {
 		Secret:     *secret_,
 	})
 	scyna.UseRemoteLog(3)
+
+	scyna.RegisterService(model.CREATE_ACCOUNT_URL, service.CreateAccount)
+
 	defer scyna.Release()
 
 	scyna.Start()
