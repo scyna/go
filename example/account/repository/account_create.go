@@ -11,8 +11,8 @@ const TABLE_NAME = "account"
 
 func CreateAccount(LOG scyna.Logger, a model.Account) *scyna.Error {
 	batch := scyna.DB.NewBatch(gocql.LoggedBatch)
-	batch.Query("INSERT INTO "+KEY_SPACE+"."+TABLE_NAME+"(entity_id, email,tel,first_name,last_name,name,language,created,updated,active,metadata)"+
-		"VALUES(?,?,?,?,?,?,?,?,?,?,?)", a.ID, a.Email, a.Tel, a.FirstName, a.LastName, a.Name, a.Language, a.Created, a.Updated, true, a.Metadata)
+	batch.Query("INSERT INTO "+KEY_SPACE+"."+TABLE_NAME+"(entity_id,email,name,password)"+
+		"VALUES(?,?,?,?)", a.ID, a.Email, a.Name, a.Password)
 
 	if err := scyna.DB.ExecuteBatch(batch); err != nil {
 		LOG.Error("Can not execute batch " + err.Error())
