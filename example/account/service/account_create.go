@@ -27,6 +27,7 @@ func CreateAccount(s *scyna.Service, request *proto.CreateAccountRequest) {
 	if err := repository.CreateAccount(s.Logger, account); err != nil {
 		s.Logger.Error("Create account err: " + err.Message)
 		s.Error(err)
+		return
 	}
 
 	s.Done(&proto.CreateAccountResponse{

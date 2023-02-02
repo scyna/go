@@ -4,7 +4,7 @@ import validation "github.com/go-ozzo/ozzo-validation"
 
 type EmailAddress struct {
 	EmailPattern string
-	Value        string
+	Value        string `db:"email" json:"email"`
 }
 
 func (emailAddress *EmailAddress) Validate() error {

@@ -3,7 +3,7 @@ package model
 import validation "github.com/go-ozzo/ozzo-validation"
 
 type Password struct {
-	Value string
+	Value string `db:"password" json:"password"`
 }
 
 func (password *Password) Validate() error {

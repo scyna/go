@@ -5,7 +5,7 @@ import (
 )
 
 type Name struct {
-	Value string
+	Value string `db:"name" json:"name"`
 }
 
 func (name *Name) Validate() error {
