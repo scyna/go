@@ -59,7 +59,7 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 			}
 
 			if err := proto.Unmarshal(msg.Body, event); err != nil {
-				log.Print("Error in parsing data:", err)
+				context.Logger.Error(fmt.Sprintf("Error in parsing data: %s\n", err.Error()))
 				m.Ack()
 				continue
 			}
