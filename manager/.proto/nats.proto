@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package proto;
+option  optimize_for = CODE_SIZE;
+option  go_package = "./;proto";
+
+message AddStreamRequest {
+  string name = 1;
+}
+
+
+message DeleteStreamRequest {
+  string name = 1;
+}
+
+message GetStreamRequest {
+  string name = 1;
+}
+
+message ListStreamRequest {
+}
+
+message StreamInfo {
+  string name = 1;
+  repeated string subject = 2;
+  string created = 3;
+}
+
+message ListStreamResponse {
+  repeated StreamInfo streams = 1;
+}

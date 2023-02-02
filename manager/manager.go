@@ -8,6 +8,7 @@ import (
 	"github.com/scyna/go/manager/service/client"
 	"github.com/scyna/go/manager/service/event"
 	"github.com/scyna/go/manager/service/module"
+	"github.com/scyna/go/manager/service/nats_manager"
 	"github.com/scyna/go/manager/service/organization"
 	"github.com/scyna/go/manager/service/proxy"
 	"github.com/scyna/go/manager/service/service"
@@ -43,5 +44,11 @@ func main() {
 	scyna.RegisterService(model.SYNC_CREATE_URL, sync.CreateSync)
 	scyna.RegisterService(model.TASK_CREATE_URL, task.CreateTask)
 	scyna.RegisterService(model.PROXY_REFRESH_URL, proxy.Refresh)
+
+	/* nats manager */
+	scyna.RegisterService(model.NATS_ADD_STREAM_URL, nats_manager.AddStream)
+	scyna.RegisterService(model.NATS_DELETE_STREAM_URL, nats_manager.DeleteStream)
+	scyna.RegisterService(model.NATS_LIST_STREAM_URL, nats_manager.ListStream)
+	// scyna.RegisterService(model.NATS_DELETE_STREAM_URL, proxy.Refresh)
 	scyna.Start()
 }

@@ -13,4 +13,8 @@ const (
 	SYNC_CREATE_URL           = "/scyna/manager/sync/create"
 	TASK_CREATE_URL           = "/scyna/manager/task/create"
 	PROXY_REFRESH_URL         = "/scyna/manager/proxy/refresh"
+	NATS_LIST_STREAM_URL      = "/scyna/manager/nats/list-stream"
+	NATS_ADD_STREAM_URL       = "/scyna/manager/nats/add-stream"
+	NATS_GET_STREAM_URL       = "/scyna/manager/nats/get-stream"
+	NATS_DELETE_STREAM_URL    = "/scyna/manager/nats/delete-stream"
 )

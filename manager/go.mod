@@ -4,10 +4,10 @@ go 1.18
 
 require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
-	github.com/nats-io/nats.go v1.14.0
+	github.com/nats-io/nats.go v1.23.0
 	github.com/scylladb/gocqlx/v2 v2.7.0
 	github.com/scyna/go/scyna v0.0.0-20220825040035-c413b5d6ccc8
-	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
+	golang.org/x/crypto v0.5.0
 	google.golang.org/protobuf v1.28.1
 )
 
