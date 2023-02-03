@@ -73,7 +73,7 @@ func RegisterSync[R proto.Message](channel string, receiver string, handler Sync
 				for i := 0; i < 3; i++ {
 					request := handler(&context, event)
 					if sendSyncRequest(request) {
-						context.Logger.Info("Send request success!")
+						context.Logger.Info("Resend request success!")
 						m.Ack()
 						sent = true
 						break
