@@ -28,7 +28,7 @@ func (ctx *HttpContext) reset() {
 func newHttpContext() *HttpContext {
 	return &HttpContext{
 		Request: Request{
-			Body:    make([]byte, 4096),
+			Body:    make([]byte, 16384),
 			TraceID: 0,
 		},
 		Response: Response{
