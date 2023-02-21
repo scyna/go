@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/scyna/go/manager/service/monitor"
 
 	"github.com/scyna/go/manager/model"
 	"github.com/scyna/go/manager/service/application"
@@ -51,6 +52,9 @@ func main() {
 	scyna.RegisterService(model.NATS_LIST_STREAM_URL, nats_manager.ListStream)
 	scyna.RegisterService(model.NATS_GET_STREAM_URL, nats_manager.GetStream)
 	scyna.RegisterService(model.NATS_UPDATE_STREAM_URL, nats_manager.UpdateStream)
+
+	/* scyna monitor */
+	scyna.RegisterService(model.MONITOR_PROCESS_BY_DAY_URL, monitor.ProcessMonitorByDay)
 
 	scyna.Start()
 }
