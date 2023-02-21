@@ -73,6 +73,7 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDay) {
 
 	totalError := 0
 	totalSuccess := 0
+	totalPermission := 0
 	avgLatency := 0
 
 	minLatency := 0
@@ -90,6 +91,9 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDay) {
 		if t.Status >= 500 {
 			totalError = totalError + 1
 			slots[t.Time.Hour()].Error = slots[t.Time.Hour()].Error + 1
+		} else if t.Status == 401 {
+			totalPermission = totalPermission + 1
+			slots[t.Time.Hour()].Success = slots[t.Time.Hour()].Success + 1
 		} else {
 			totalSuccess = totalSuccess + 1
 			slots[t.Time.Hour()].Success = slots[t.Time.Hour()].Success + 1
@@ -108,12 +112,13 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDay) {
 	}
 
 	if err := qb.Insert("scyna.api_report_by_day").
-		Columns("day", "total_error", "total_success", "avg_latency", "min_latency", "max_latency", "data").
+		Columns("day", "total_error", "total_success", "avg_latency",
+			"min_latency", "max_latency", "total_permission", "data").
 		Query(scyna.DB).
-		Bind(date, totalError, totalSuccess, avgLatency, minLatency, maxLatency, data).ExecRelease(); err != nil {
+		Bind(date, totalError, totalSuccess, avgLatency, minLatency, maxLatency, totalPermission, data).
+		ExecRelease(); err != nil {
 		s.Logger.Info(err.Error())
 	}
-
 }
 
 type slot struct {
