@@ -20,7 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type ProcessMonitorByDay struct {
+type ProcessMonitorByDayRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -28,8 +28,8 @@ type ProcessMonitorByDay struct {
 	Day string `protobuf:"bytes,1,opt,name=day,proto3" json:"day,omitempty"` //
 }
 
-func (x *ProcessMonitorByDay) Reset() {
-	*x = ProcessMonitorByDay{}
+func (x *ProcessMonitorByDayRequest) Reset() {
+	*x = ProcessMonitorByDayRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_monitor_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -37,13 +37,13 @@ func (x *ProcessMonitorByDay) Reset() {
 	}
 }
 
-func (x *ProcessMonitorByDay) String() string {
+func (x *ProcessMonitorByDayRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ProcessMonitorByDay) ProtoMessage() {}
+func (*ProcessMonitorByDayRequest) ProtoMessage() {}
 
-func (x *ProcessMonitorByDay) ProtoReflect() protoreflect.Message {
+func (x *ProcessMonitorByDayRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_monitor_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,14 +55,225 @@ func (x *ProcessMonitorByDay) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ProcessMonitorByDay.ProtoReflect.Descriptor instead.
-func (*ProcessMonitorByDay) Descriptor() ([]byte, []int) {
+// Deprecated: Use ProcessMonitorByDayRequest.ProtoReflect.Descriptor instead.
+func (*ProcessMonitorByDayRequest) Descriptor() ([]byte, []int) {
 	return file_monitor_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ProcessMonitorByDay) GetDay() string {
+func (x *ProcessMonitorByDayRequest) GetDay() string {
 	if x != nil {
 		return x.Day
+	}
+	return ""
+}
+
+type ProcessSessionActiveRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ProcessSessionActiveRequest) Reset() {
+	*x = ProcessSessionActiveRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_monitor_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProcessSessionActiveRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProcessSessionActiveRequest) ProtoMessage() {}
+
+func (x *ProcessSessionActiveRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_monitor_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProcessSessionActiveRequest.ProtoReflect.Descriptor instead.
+func (*ProcessSessionActiveRequest) Descriptor() ([]byte, []int) {
+	return file_monitor_proto_rawDescGZIP(), []int{1}
+}
+
+type ProcessSessionActiveResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Items []*ProcessSessionActiveResponse_Module `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+}
+
+func (x *ProcessSessionActiveResponse) Reset() {
+	*x = ProcessSessionActiveResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_monitor_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProcessSessionActiveResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProcessSessionActiveResponse) ProtoMessage() {}
+
+func (x *ProcessSessionActiveResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_monitor_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProcessSessionActiveResponse.ProtoReflect.Descriptor instead.
+func (*ProcessSessionActiveResponse) Descriptor() ([]byte, []int) {
+	return file_monitor_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ProcessSessionActiveResponse) GetItems() []*ProcessSessionActiveResponse_Module {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+type ProcessSessionActiveResponse_Module struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code     string                                  `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	Actives  int32                                   `protobuf:"varint,2,opt,name=actives,proto3" json:"actives,omitempty"`
+	Sessions []*ProcessSessionActiveResponse_Session `protobuf:"bytes,3,rep,name=sessions,proto3" json:"sessions,omitempty"`
+}
+
+func (x *ProcessSessionActiveResponse_Module) Reset() {
+	*x = ProcessSessionActiveResponse_Module{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_monitor_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProcessSessionActiveResponse_Module) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProcessSessionActiveResponse_Module) ProtoMessage() {}
+
+func (x *ProcessSessionActiveResponse_Module) ProtoReflect() protoreflect.Message {
+	mi := &file_monitor_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProcessSessionActiveResponse_Module.ProtoReflect.Descriptor instead.
+func (*ProcessSessionActiveResponse_Module) Descriptor() ([]byte, []int) {
+	return file_monitor_proto_rawDescGZIP(), []int{2, 0}
+}
+
+func (x *ProcessSessionActiveResponse_Module) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *ProcessSessionActiveResponse_Module) GetActives() int32 {
+	if x != nil {
+		return x.Actives
+	}
+	return 0
+}
+
+func (x *ProcessSessionActiveResponse_Module) GetSessions() []*ProcessSessionActiveResponse_Session {
+	if x != nil {
+		return x.Sessions
+	}
+	return nil
+}
+
+type ProcessSessionActiveResponse_Session struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id         string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Start      string `protobuf:"bytes,3,opt,name=start,proto3" json:"start,omitempty"`
+	LastUpdate string `protobuf:"bytes,4,opt,name=last_update,json=lastUpdate,proto3" json:"last_update,omitempty"`
+}
+
+func (x *ProcessSessionActiveResponse_Session) Reset() {
+	*x = ProcessSessionActiveResponse_Session{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_monitor_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProcessSessionActiveResponse_Session) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProcessSessionActiveResponse_Session) ProtoMessage() {}
+
+func (x *ProcessSessionActiveResponse_Session) ProtoReflect() protoreflect.Message {
+	mi := &file_monitor_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProcessSessionActiveResponse_Session.ProtoReflect.Descriptor instead.
+func (*ProcessSessionActiveResponse_Session) Descriptor() ([]byte, []int) {
+	return file_monitor_proto_rawDescGZIP(), []int{2, 1}
+}
+
+func (x *ProcessSessionActiveResponse_Session) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ProcessSessionActiveResponse_Session) GetStart() string {
+	if x != nil {
+		return x.Start
+	}
+	return ""
+}
+
+func (x *ProcessSessionActiveResponse_Session) GetLastUpdate() string {
+	if x != nil {
+		return x.LastUpdate
 	}
 	return ""
 }
@@ -71,11 +282,33 @@ var File_monitor_proto protoreflect.FileDescriptor
 
 var file_monitor_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x6d, 0x6f, 0x6e, 0x69, 0x74, 0x6f, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
-	0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x27, 0x0a, 0x13, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73,
-	0x73, 0x4d, 0x6f, 0x6e, 0x69, 0x74, 0x6f, 0x72, 0x42, 0x79, 0x44, 0x61, 0x79, 0x12, 0x10, 0x0a,
-	0x03, 0x64, 0x61, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x61, 0x79, 0x42,
-	0x0c, 0x48, 0x02, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x2e, 0x0a, 0x1a, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73,
+	0x73, 0x4d, 0x6f, 0x6e, 0x69, 0x74, 0x6f, 0x72, 0x42, 0x79, 0x44, 0x61, 0x79, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x61, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x03, 0x64, 0x61, 0x79, 0x22, 0x1d, 0x0a, 0x1b, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73,
+	0x73, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0xb3, 0x02, 0x0a, 0x1c, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73,
+	0x73, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x40, 0x0a, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x72,
+	0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x69,
+	0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x4d, 0x6f, 0x64, 0x75, 0x6c,
+	0x65, 0x52, 0x05, 0x69, 0x74, 0x65, 0x6d, 0x73, 0x1a, 0x7f, 0x0a, 0x06, 0x4d, 0x6f, 0x64, 0x75,
+	0x6c, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65,
+	0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x73,
+	0x12, 0x47, 0x0a, 0x08, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x2b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x72, 0x6f, 0x63, 0x65,
+	0x73, 0x73, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x41, 0x63, 0x74, 0x69, 0x76, 0x65, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52,
+	0x08, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x1a, 0x50, 0x0a, 0x07, 0x53, 0x65, 0x73,
+	0x73, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x02, 0x69, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x72, 0x74, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x73, 0x74, 0x61, 0x72, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x6c, 0x61,
+	0x73, 0x74, 0x5f, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0a, 0x6c, 0x61, 0x73, 0x74, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x42, 0x0c, 0x48, 0x02, 0x5a,
+	0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -90,16 +323,22 @@ func file_monitor_proto_rawDescGZIP() []byte {
 	return file_monitor_proto_rawDescData
 }
 
-var file_monitor_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_monitor_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_monitor_proto_goTypes = []interface{}{
-	(*ProcessMonitorByDay)(nil), // 0: proto.ProcessMonitorByDay
+	(*ProcessMonitorByDayRequest)(nil),           // 0: proto.ProcessMonitorByDayRequest
+	(*ProcessSessionActiveRequest)(nil),          // 1: proto.ProcessSessionActiveRequest
+	(*ProcessSessionActiveResponse)(nil),         // 2: proto.ProcessSessionActiveResponse
+	(*ProcessSessionActiveResponse_Module)(nil),  // 3: proto.ProcessSessionActiveResponse.Module
+	(*ProcessSessionActiveResponse_Session)(nil), // 4: proto.ProcessSessionActiveResponse.Session
 }
 var file_monitor_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	3, // 0: proto.ProcessSessionActiveResponse.items:type_name -> proto.ProcessSessionActiveResponse.Module
+	4, // 1: proto.ProcessSessionActiveResponse.Module.sessions:type_name -> proto.ProcessSessionActiveResponse.Session
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_monitor_proto_init() }
@@ -109,7 +348,55 @@ func file_monitor_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_monitor_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProcessMonitorByDay); i {
+			switch v := v.(*ProcessMonitorByDayRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_monitor_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProcessSessionActiveRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_monitor_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProcessSessionActiveResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_monitor_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProcessSessionActiveResponse_Module); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_monitor_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProcessSessionActiveResponse_Session); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -127,7 +414,7 @@ func file_monitor_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_monitor_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

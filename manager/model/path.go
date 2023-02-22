@@ -19,4 +19,5 @@ const (
 	NATS_DELETE_STREAM_URL     = "/scyna/manager/nats/delete-stream"
 	NATS_UPDATE_STREAM_URL     = "/scyna/manager/nats/update-stream"
 	MONITOR_PROCESS_BY_DAY_URL = "/scyna/manager/monitor/process-by-day"
+	SESSION_PROCESS_ACTIVE_URL = "/scyna/manager/monitor/process-session"
 )

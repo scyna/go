@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDay) {
+func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDayRequest) {
 	s.Logger.Info("Receive ProcessMonitorByDay request")
 	if validateProcessMonitorByDay(request) != nil {
 		s.Error(scyna.REQUEST_INVALID)
@@ -145,7 +145,7 @@ type distinct struct {
 	Path string `db:"path"`
 }
 
-func validateProcessMonitorByDay(request *proto.ProcessMonitorByDay) error {
+func validateProcessMonitorByDay(request *proto.ProcessMonitorByDayRequest) error {
 	return validation.ValidateStruct(request,
 		validation.Field(&request.Day, validation.Required, validation.Length(5, 100)))
 }

@@ -12,7 +12,7 @@ COPY ./utils/ ./utils
 COPY ./manager.go ./manager.go
 COPY ./go.mod ./go.mod
 
-RUN go mod tidy -v -e
+RUN go mod tidy
 
 RUN go build -o ./application .
 

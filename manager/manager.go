@@ -55,6 +55,7 @@ func main() {
 
 	/* scyna monitor */
 	scyna.RegisterService(model.MONITOR_PROCESS_BY_DAY_URL, monitor.ProcessMonitorByDay)
+	scyna.RegisterService(model.SESSION_PROCESS_ACTIVE_URL, monitor.ProcessSessionActive)
 
 	scyna.Start()
 }
