@@ -3,6 +3,7 @@ package monitor
 import (
 	"encoding/json"
 	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/gocql/gocql"
 	"github.com/scylladb/gocqlx/v2/qb"
 	proto "github.com/scyna/go/manager/.proto/generated"
 	"github.com/scyna/go/scyna"
@@ -79,6 +80,8 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDayReq
 	minLatency := 0
 	maxLatency := 0
 	totalLatency := 0
+	var tracePermission []trace
+	var traceError []trace
 	for i, t := range totalTrace {
 
 		totalLatency += t.Duration
@@ -91,9 +94,11 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDayReq
 		if t.Status >= 500 {
 			totalError = totalError + 1
 			slots[t.Time.Hour()].Error = slots[t.Time.Hour()].Error + 1
+			traceError = append(traceError, t)
 		} else if t.Status == 401 {
 			totalPermission = totalPermission + 1
 			slots[t.Time.Hour()].Success = slots[t.Time.Hour()].Success + 1
+			tracePermission = append(tracePermission, t)
 		} else {
 			totalSuccess = totalSuccess + 1
 			slots[t.Time.Hour()].Success = slots[t.Time.Hour()].Success + 1
@@ -118,6 +123,20 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDayReq
 		Bind(date, totalError, totalSuccess, avgLatency, minLatency, maxLatency, totalPermission, data).
 		ExecRelease(); err != nil {
 		s.Logger.Info(err.Error())
+	}
+	scynaSession := scyna.DB.Session
+	batch := scynaSession.NewBatch(gocql.LoggedBatch)
+	for _, t := range tracePermission {
+		batch.Query("INSERT INTO scyna.api_report_by_permission(day,trace_id,path,client_id) VALUES (?,?,?,?);",
+			day, t.Id, t.Path, t.Source)
+	}
+	for _, t := range traceError {
+		batch.Query("INSERT INTO scyna.api_report_by_error(day,trace_id,path,client_id) VALUES (?,?,?,?);",
+			day, t.Id, t.Path, t.Source)
+	}
+
+	if err := scynaSession.ExecuteBatch(batch); err != nil {
+		s.Logger.Info("Save batch error: " + err.Error())
 	}
 }
 
