@@ -128,11 +128,11 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDayReq
 	batch := scynaSession.NewBatch(gocql.LoggedBatch)
 	for _, t := range tracePermission {
 		batch.Query("INSERT INTO scyna.api_report_by_permission(day,trace_id,path,client_id) VALUES (?,?,?,?);",
-			day, t.Id, t.Path, t.Source)
+			date, t.Id, t.Path, t.Source)
 	}
 	for _, t := range traceError {
 		batch.Query("INSERT INTO scyna.api_report_by_error(day,trace_id,path,client_id) VALUES (?,?,?,?);",
-			day, t.Id, t.Path, t.Source)
+			date, t.Id, t.Path, t.Source)
 	}
 
 	if err := scynaSession.ExecuteBatch(batch); err != nil {
