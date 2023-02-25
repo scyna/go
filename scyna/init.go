@@ -102,8 +102,10 @@ func initScylla(host []string, username string, password string, location string
 	cluster.Authenticator = gocql.PasswordAuthenticator{Username: username, Password: password}
 	cluster.PoolConfig.HostSelectionPolicy = gocql.DCAwareRoundRobinPolicy(location)
 	cluster.ConnectTimeout = time.Second * 10
+	//cluster.Timeout = time.Second * 3
 	cluster.DisableInitialHostLookup = true
 	cluster.Consistency = gocql.Quorum
+	//cluster.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: 3}
 
 	//TODO: Config connect with TLS/SSL
 

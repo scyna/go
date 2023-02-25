@@ -40,17 +40,17 @@ func UseDirectLog(count int) {
 
 	for i := 0; i < count; i++ {
 		go func() {
-			qSession := qb.Insert("scyna.session_log").Columns("session_id", "day", "time", "seq", "level", "message").Unique().Query(DB)
-			qService := qb.Insert("scyna.log").Columns("trace_id", "time", "seq", "level", "message").Unique().Query(DB)
 			for l := range logQueue {
 				time_ := time.Now()
 				if l.Session {
-					if _, err := qSession.Bind(l.ID, GetDayByTime(time_), time_, l.Sequence, l.Level, l.Message).
+					if _, err := qb.Insert("scyna.session_log").Columns("session_id", "day", "time", "seq", "level", "message").Unique().Query(DB).
+						Bind(l.ID, GetDayByTime(time_), time_, l.Sequence, l.Level, l.Message).
 						ExecCAS(); err != nil {
 						log.Println("saveSessionLog: " + err.Error())
 					}
 				} else {
-					if _, err := qService.Bind(l.ID, time_, l.Sequence, l.Level, l.Message).
+					if _, err := qb.Insert("scyna.log").Columns("trace_id", "time", "seq", "level", "message").Unique().Query(DB).
+						Bind(l.ID, time_, l.Sequence, l.Level, l.Message).
 						ExecCAS(); err != nil {
 						log.Println("saveServiceLog: " + err.Error())
 					}
