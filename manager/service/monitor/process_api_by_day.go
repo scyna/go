@@ -97,7 +97,7 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDayReq
 			traceError = append(traceError, t)
 		} else if t.Status == 401 {
 			totalPermission = totalPermission + 1
-			slots[t.Time.Hour()].Success = slots[t.Time.Hour()].Success + 1
+			slots[t.Time.Hour()].Permission = slots[t.Time.Hour()].Permission + 1
 			tracePermission = append(tracePermission, t)
 		} else {
 			totalSuccess = totalSuccess + 1
@@ -123,6 +123,7 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDayReq
 		Bind(date, totalError, totalSuccess, avgLatency, minLatency, maxLatency, totalPermission, data).
 		ExecRelease(); err != nil {
 		s.Logger.Info(err.Error())
+		return
 	}
 	scynaSession := scyna.DB.Session
 	batch := scynaSession.NewBatch(gocql.LoggedBatch)
@@ -141,9 +142,10 @@ func ProcessMonitorByDay(s *scyna.Service, request *proto.ProcessMonitorByDayReq
 }
 
 type slot struct {
-	Time    int `json:"time"`
-	Error   int `json:"error"`
-	Success int `json:"success"`
+	Time       int `json:"time"`
+	Error      int `json:"error"`
+	Success    int `json:"success"`
+	Permission int `json:"permission"`
 }
 
 type trace struct {
