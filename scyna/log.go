@@ -45,13 +45,13 @@ func UseDirectLog(count int) {
 				if l.Session {
 					if _, err := qb.Insert("scyna.session_log").Columns("session_id", "day", "time", "seq", "level", "message").Unique().Query(DB).
 						Bind(l.ID, GetDayByTime(time_), time_, l.Sequence, l.Level, l.Message).
-						ExecCAS(); err != nil {
+						ExecCASRelease(); err != nil {
 						log.Println("saveSessionLog: " + err.Error())
 					}
 				} else {
 					if _, err := qb.Insert("scyna.log").Columns("trace_id", "time", "seq", "level", "message").Unique().Query(DB).
 						Bind(l.ID, time_, l.Sequence, l.Level, l.Message).
-						ExecCAS(); err != nil {
+						ExecCASRelease(); err != nil {
 						log.Println("saveServiceLog: " + err.Error())
 					}
 				}
