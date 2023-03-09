@@ -11,4 +11,24 @@ message Module{
     string secret = 4;
 }
 
+message Session {
+    
+}
+
 // CreateModuleRequest = Module
+
+message ListModuleRequest {
+
+}
+
+message ListModuleResponse {
+    repeated Module items = 1;
+}
+
+message ListSessionByModuleRequest {
+    string module = 1;
+}
+
+message ListSessionByModuleResponse {
+    repeated Session items = 1;
+}
