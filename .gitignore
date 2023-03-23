@@ -2,3 +2,5 @@
 .vscode
 engine/build.sh
 manager/build.sh
+engine/.cert/localhost.crt
+engine/.cert/localhost.key
