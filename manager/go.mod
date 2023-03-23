@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
+	github.com/gocql/gocql v1.3.1
 	github.com/nats-io/nats.go v1.23.0
 	github.com/scylladb/gocqlx/v2 v2.7.0
 	github.com/scyna/go/scyna v0.0.0-20220825040035-c413b5d6ccc8
@@ -13,7 +14,6 @@ require (
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
-	github.com/gocql/gocql v1.3.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed // indirect
 	github.com/klauspost/compress v1.15.13 // indirect

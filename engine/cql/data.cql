@@ -12,6 +12,7 @@ insert into scyna.module(org_code, code, description, type, secret) values ('scy
 insert into scyna.module(org_code, code, description, type, secret) values ('scyna', 'scyna.admin', 'Scyna Admin', 2, '123456'); 
 insert into scyna.module(org_code, code, description, type, secret) values ('scyna', 'scyna.test', 'Scyna Testing', 2, '123456');
 insert into scyna.module(org_code, code, description, type, secret) values ('scyna', 'scyna.data', 'Scyna Data', 2, '123456');
+insert into scyna.module(org_code, code, description, type, secret) values ('scyna', 'scyna.manager', 'Scyna Data', 2, '123456');
 
 /* service */
 insert into scyna.service(module_code, url, active, description) VALUES ('scyna.engine', '/scyna/task/add', true, 'Add Task');

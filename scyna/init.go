@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/gocql/gocql"
 	"github.com/nats-io/nats.go"
@@ -101,10 +100,13 @@ func initScylla(host []string, username string, password string, location string
 	cluster := gocql.NewCluster(host...)
 	cluster.Authenticator = gocql.PasswordAuthenticator{Username: username, Password: password}
 	cluster.PoolConfig.HostSelectionPolicy = gocql.DCAwareRoundRobinPolicy(location)
-	cluster.ConnectTimeout = time.Second * 10
+	// cluster.ConnectTimeout = time.Second * 1
 	//cluster.Timeout = time.Second * 3
 	cluster.DisableInitialHostLookup = true
 	cluster.Consistency = gocql.Quorum
+	// cluster.ReconnectInterval = time.Second * 5
+	// cluster.NumConns = 2
+	// cluster.ReconnectionPolicy = &gocql.ConstantReconnectionPolicy{MaxRetries: 100, Interval: 1 * time.Second}
 	//cluster.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: 3}
 
 	//TODO: Config connect with TLS/SSL
