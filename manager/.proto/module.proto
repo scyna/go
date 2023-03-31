@@ -4,15 +4,18 @@ package proto;
 option  optimize_for = CODE_SIZE;
 option  go_package = "./;proto";
 
-message Module{
+message Module {
     string organization = 1;
     string code = 2;
     string description = 3;
     string secret = 4;
+    repeated Session sessions = 5;
 }
 
 message Session {
-    
+    string id = 1;
+    string start = 3;
+    string last_update = 4;
 }
 
 // CreateModuleRequest = Module
@@ -31,4 +34,8 @@ message ListSessionByModuleRequest {
 
 message ListSessionByModuleResponse {
     repeated Session items = 1;
+}
+
+message ListSessionActiveRequest {
+    repeated Module items = 1;
 }

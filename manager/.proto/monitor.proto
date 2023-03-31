@@ -8,23 +8,3 @@ message ProcessMonitorByDayRequest {
   string day = 1; //
 }
 
-message ProcessSessionActiveRequest {
-
-}
-
-message ProcessSessionActiveResponse {
-  repeated Module items = 1;
-
-  message Module {
-    string code = 1;
-    int32  actives = 2;
-    repeated Session sessions = 3;
-  }
-
-  message Session {
-    string id = 1;
-    string start = 3;
-    string last_update = 4;
-  }
-}
-
