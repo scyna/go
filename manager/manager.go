@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/scyna/go/manager/service/monitor"
 
 	"github.com/scyna/go/manager/model"
@@ -55,7 +56,8 @@ func main() {
 
 	/* scyna monitor */
 	scyna.RegisterService(model.MONITOR_PROCESS_BY_DAY_URL, monitor.ProcessMonitorByDay)
-	scyna.RegisterService(model.SESSION_PROCESS_ACTIVE_URL, monitor.ProcessSessionActive)
+	scyna.RegisterService(model.LIST_ALL_MODULE_URL, monitor.ListAllModule)
+	scyna.RegisterService(model.GET_ACTIVE_SESSION_URL, monitor.GetActiveSession)
 
 	scyna.Start()
 }

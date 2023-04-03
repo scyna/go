@@ -1,5 +1,4 @@
 syntax = "proto3";
-
 package proto;
 option  optimize_for = CODE_SIZE;
 option  go_package = "./;proto";
@@ -10,12 +9,17 @@ message Module {
     string description = 3;
     string secret = 4;
     repeated Session sessions = 5;
+    uint32 totalActive = 6;
 }
 
 message Session {
-    string id = 1;
+    uint64 id = 1;
     string start = 3;
-    string last_update = 4;
+    string lastUpdate = 4;
+    string end = 5;
+    string moduleCode = 6;
+    uint32 exitCode = 7;
+    string status = 8;
 }
 
 // CreateModuleRequest = Module
@@ -28,14 +32,23 @@ message ListModuleResponse {
     repeated Module items = 1;
 }
 
-message ListSessionByModuleRequest {
-    string module = 1;
+message ProcessMonitorByDayRequest {
+    string day = 1;
 }
-
-message ListSessionByModuleResponse {
+  
+message ListActiveSessionRequest {
+    string moduleCode = 1;
+}
+  
+message ListSessionResponse {
     repeated Session items = 1;
+    uint32 total = 2;
 }
 
-message ListSessionActiveRequest {
+message ListAllModuleRequest {
+    
+}
+
+message ListAllModuleResponse {
     repeated Module items = 1;
 }

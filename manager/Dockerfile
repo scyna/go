@@ -4,13 +4,7 @@ ENV GO111MODULE=on
 
 WORKDIR /workspace/manager
 
-COPY ./.proto/ ./.proto
-COPY ./model/ ./model
-COPY ./repository/ ./repository
-COPY ./service/ ./service
-COPY ./utils/ ./utils
-COPY ./manager.go ./manager.go
-COPY ./go.mod ./go.mod
+COPY . .
 
 RUN go mod tidy
 
